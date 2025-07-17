@@ -1,0 +1,13 @@
+{
+	"id": "MadLib",
+	"name": "MadLib",
+	"author": ["RGBeet"],
+	"description": "MadLib Moment",
+	"prefix": "madlib",
+	"main_file": "madlib.lua",
+	"priority": 115,
+	"dependencies": [
+		"Steamodded (>=1.*)",
+	],
+	"version": "1.0.0"
+}

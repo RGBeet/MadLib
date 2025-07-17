@@ -1,0 +1,233 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 1000
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "x_mult = center.config.Xmult or 1,"
+position = "after"
+payload = '''
+x_score = center.config.Xscore or 0,
+e_score = center.config.Escore or 0,
+ee_score = center.config.EEscore or 0,
+eee_score = center.config.EEEscore or 0,
+hyper_score = type(center.config.Hscore) == 'table' and center.config.Hscore or {0, 0},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "elseif eval_type == 'dollars' then"
+position = "before"
+payload = '''
+elseif eval_type == 'x_score' then
+	sound = 'talisman_xchip'
+	amt = amt
+	text = 'X' .. amt
+	colour = G.C.PURPLE
+	config.type = 'fade'
+	config.scale = 0.7
+elseif eval_type == 'e_score' then
+	sound = 'talisman_echip'
+	amt = amt
+	text = '^' .. amt
+	colour = G.C.PURPLE
+	config.type = 'fade'
+	config.scale = 0.7
+elseif eval_type == 'ee_score' then
+	sound = 'talisman_eechip'
+	amt = amt
+	text = '^^' .. amt
+	colour = G.C.PURPLE
+	config.type = 'fade'
+	config.scale = 0.7
+elseif eval_type == 'eee_score' then
+	sound = 'talisman_eeechip'
+	amt = amt
+	text = '^^^' .. amt
+	colour = G.C.PURPLE
+	config.type = 'fade'
+	config.scale = 0.7
+elseif eval_type == 'hyper_score' then
+	sound = 'talisman_eeechip'
+	text = (amt[1] > 5 and ('{' .. tostring(amt[1]) .. '}') or string.rep('^', amt[1])) .. tostring(amt[2])
+	amt = amt[2]
+	colour = G.C.PURPLE
+	config.type = 'fade'
+	config.scale = 0.7
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "if effects[ii].message then"
+position = "before"
+payload = '''
+if effects[ii].x_score then
+	mod_percent = true
+    total_chip_score = total_chip_score * effects[ii].x_score
+	card_eval_status_text(G.hand.cards[i], 'x_score', effects[ii].x_chips, percent)
+end
+if effects[ii].e_score then
+	mod_percent = true
+    total_chip_score = total_chip_score ^ effects[ii].e_score
+	card_eval_status_text(G.hand.cards[i], 'e_score', effects[ii].e_chips, percent)
+end
+if effects[ii].ee_score then
+	mod_percent = true
+    total_chip_score = total_chip_score:arrow(2, effects[ii].ee_score)
+	card_eval_status_text(G.hand.cards[i], 'ee_score', effects[ii].ee_chips, percent)
+end
+if effects[ii].eee_score then
+	mod_percent = true
+    total_chip_score = total_chip_score:arrow(3, effects[ii].eee_score)
+	card_eval_status_text(G.hand.cards[i], 'eee_score', effects[ii].eee_chips, percent)
+end
+if effects[ii].hyper_score and type(effects[ii].hyper_score) == 'table' then
+	mod_percent = true
+    total_chip_score = total_chip_score:arrow(2, effects[ii].hyper_score[1], effects[ii].hyper_score[2])
+	card_eval_status_text(G.hand.cards[i], 'hyper_score', effects[ii].hyper_chips, percent)
+end
+'''
+match_indent = true
+
+
+[[patches]]
+[patches.pattern]
+target = 'main.lua'
+pattern = 'if not smods_xchips then'
+position = 'before'
+match_indent = true
+payload = '''
+for _, v in ipairs({'x_score', 'e_score', 'ee_score', 'eee_score', 'hyper_score', 'xscore', 'escore', 'eescore', 'eeescore', 'hyperscore', 'Xscore_mod', 'Xscore_mod', 'Escore_mod', 'EEscore_mod', 'EEEscore_mod', 'hyperscore_mod'}) do
+	table.insert(SMODS.calculation_keys, v)
+end
+'''
+
+[[patches]]
+[patches.pattern]
+target = 'main.lua'
+pattern = '''if (key == 'hyper_mult' or key == 'hypermult' or key == 'hypermult_mod') and type(amount) == 'table' then
+      if effect.card then juice_card(effect.card) end
+      mult = mod_mult(mult:arrow(amount[1], amount[2]))
+      update_hand_text({delay = 0}, {chips = hand_chips, mult = mult})
+      if not effect.remove_default_message then
+          if from_edition then
+              card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = ((amount[1] > 5 and ('{' .. amount[1] .. '}') or string.rep('^', amount[1])) .. amount[2]).." Mult", colour =  G.C.EDITION, edition = true})
+          elseif key ~= 'hypermult_mod' then
+              if effect.hypermult_message then
+                  card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.hypermult_message)
+              else
+                  card_eval_status_text(scored_card or effect.card or effect.focus, 'hyper_mult', amount, percent)
+              end
+          end
+      end
+      return true
+    end'''
+position = 'after'
+match_indent = true
+payload = '''
+if (key == 'x_score' or key == 'xscore' or key == 'Xscore_mod') and amount ~= 1 then
+        if effect.card then juice_card(effect.card) end
+        G.GAME.chips = mod_total_score(G.GAME.chips * amount)
+
+        if not effect.remove_default_message then
+            if from_edition then
+                card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "X"..amount.." Score", colour =  G.C.EDITION, edition = true})
+            elseif key ~= 'Xscore_mod' then
+                if effect.xchip_message then
+                    card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.xscore_message)
+                else
+                    card_eval_status_text(scored_card or effect.card or effect.focus, 'x_score', amount, percent)
+                end
+            end
+        end
+        return true
+    end
+
+    if (key == 'e_score' or key == 'escore' or key == 'Escore_mod') and amount ~= 1 then
+        if effect.card then juice_card(effect.card) end
+        G.GAME.chips = mod_total_score(G.GAME.chips ^ amount)
+        if not effect.remove_default_message then
+            if from_edition then
+                card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "^"..amount.." Score", colour =  G.C.EDITION, edition = true})
+            elseif key ~= 'Escore_mod' then
+                if effect.escore_message then
+                    card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.escore_message)
+                else
+                    card_eval_status_text(scored_card or effect.card or effect.focus, 'e_score', amount, percent)
+                end
+            end
+        end
+        return true
+    end'''
+
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = 'function evaluate_play_main(text, disp_text, poker_hands, scoring_hand, non_loc_disp_text, percent, percent_delta)'
+position = 'after'
+match_indent = true
+payload = 'total_chip_score = G.GAME.chips'
+
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = 'local hand = (G.GAME.hands[text])'
+position = 'after'
+match_indent = true
+payload = 'total_chip_score = G.GAME.chips'
+
+
+
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = 'if effects[ii].edition.p_dollars_mod then'
+position = 'before'
+match_indent = true
+payload = '''
+if scoring_hand and scoring_hand[i] and scoring_hand[i].edition then
+	local trg = scoring_hand[i]
+	local edi = trg.edition
+	if edi.x_score then
+        total_chip_score = mod_total_score(total_chip_score * edi.x_score)
+		card_eval_status_text(trg, 'extra', nil, percent, nil,
+		{message = 'X'.. edi.x_score ,
+		edition = true,
+		x_score = true})
+	end
+	if edi.e_score then
+        total_chip_score = mod_total_score(total_chip_score ^ edi.e_score)
+		card_eval_status_text(trg, 'extra', nil, percent, nil,
+		{message = '^'.. edi.e_score ,
+		edition = true,
+		e_score = true})
+	end
+	if edi.ee_score then
+        total_chip_score = mod_total_score(total_chip_score:arrow(2, edi.ee_score))
+		card_eval_status_text(trg, 'extra', nil, percent, nil,
+		{message = '^^'.. edi.ee_chips ,
+		edition = true,
+		ee_score = true})
+	end
+	if edi.eee_score then
+        total_chip_score = mod_total_score(total_chip_score:arrow(3, edi.eee_score))
+		card_eval_status_text(trg, 'extra', nil, percent, nil,
+		{message = '^^^'.. edi.eee_score ,
+		edition = true,
+		eee_score = true})
+	end
+	if edi.hyper_score and type(edi.score) == 'table' then
+        total_chip_score = mod_total_score(total_chip_score:arrow(2, edi.hyper_score[1], edi.hyper_score[2]))
+		card_eval_status_text(trg, 'extra', nil, percent, nil,
+		{message = (edi.hyper_score[1] > 5 and ('{' .. edi.hyper_score[1] .. '}') or string.rep('^', edi.hyper_score[1])) .. edi.hyper_score[2] ,
+		edition = true,
+		eee_score = true})
+	end
+end
+'''
