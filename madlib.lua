@@ -417,6 +417,30 @@ local function not_proper_number(n)
     return not n or type(n) ~= 'number'
 end
 
+-- Rounds to 
+
+--[[function MadLib.round(number, digit_position)
+    local precision = (10 ^ (digit_position or 0))
+    number = number + (precision / 2)
+    return math.floor(number / precision) * precision
+end]]
+
+
+
+function MadLib.round(value, decimals)
+    local factor = 10 ^ (math.floor(decimals or 2))
+    return math.floor(value * factor + 0.5) / factor
+end
+
+function MadLib.random(v, d)
+    return MadLib.round(math.random() * v, d)
+end
+
+function MadLib.random_between(v1, v2, d)
+    local min, max = math.min(v1, v2), math.max(v1, v2)
+    return MadLib.round(min + math.random() * (max - min), d)
+end
+
 --[[
     FOR LOOP FUNCTIONS
     Just a fancy way of doing for-loops in one line!
@@ -449,6 +473,25 @@ function MadLib.loop_func_table(loop, func, bypass_check)
     return passes
 end
 MadLib.loop_table = MadLib.loop_func_table -- alias
+
+function MadLib.loop_func_grid(loop_y, loop_x, func, bypass_check)
+    if 
+        not bypass_check
+        and (not_proper_table(loop_y)
+        or not_proper_table(loop_x)
+        or not_proper_func(func)) 
+    then 
+        return -1 
+    end -- prevent crash!
+    local passes = 0
+    for i=1, #loop_y do
+        for j=1, #loop_x do
+            passes = passes + (func(loop_y[i],loop_x[j],i,j) and 1 or 0) 
+        end
+    end
+    return passes
+end
+MadLib.loop_grid = MadLib.loop_func_grid -- alias
 
 -- Returns the item (if not nil)
 function MadLib.get_loop_func(loop, func, bypass_check)
@@ -984,7 +1027,7 @@ function MadLib.get_voucher_reqs(...)
 end
 
 function MadLib.list_append(list,prefix,suffix)
-	MadLib.loop_func(Madcap.JokerLists.Meme, function(v,i)
+	MadLib.loop_func(list, function(v,i)
 		v = (prefix or '') .. v .. (suffix or '')
 	end)
 end
@@ -994,13 +1037,6 @@ end
     Used primarily for quick detection of rank groupings (e.g. is 2 a fib number),
     but can be used for any number stuff.
 ]]
-
-function MadLib.round(number, digit_position)
-    local precision = (10 ^ (digit_position or 0))
-    number = number + (precision / 2)
-    return math.floor(number / precision) * precision
-end
-
 local function not_real_number(n)
     return type(n) ~= "number" or n < 0
 end
