@@ -2,7 +2,6 @@ return {
     modid   = 'UnStable',
     prefix  = 'unstb',
     content = {
-        },
         PointValues = {
             Editions = {
             },
@@ -10,7 +9,7 @@ return {
             },
         },
         RankCompat = { '0', '0.5', '1', 'r2', 'e', 'Pi', '???', '21', '11', '12', '13', '25', '161' },
-        RankTypes = {
+        RankType = {
         },
         Weights = {
             Boosters = {
@@ -61,7 +60,7 @@ return {
 
         -- ditto, but with joker ranks (uses unstable id for conflicting ranks if unstable is added)
         local pu =  (UnStable and 'unstb' or c.prefix) ..'_'
-        local n0        = pu..'0'Jokers
+        local n0        = pu..'0'
         local nHalf     = pu..'0.5'
         local n1        = pu..'1'
         local n11       = pu..'11'

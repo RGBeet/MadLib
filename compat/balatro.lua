@@ -105,21 +105,21 @@ return {
             ['rocket']      = { MadLib.JokerLists.Money.Add, MadLib.JokerLists.Scaling.Money },
             ['obelisk']     = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Scaling.Mult },
 
-            ['midas_mask']  = { MadLib.JokerLists.Effect.Card, MadLib.JokerLists.RankTypes.Face },
+            ['midas_mask']  = { MadLib.JokerLists.Effect.Card, MadLib.JokerLists.RankType.Face },
             ['luchador']    = { MadLib.JokerLists.Effect, MadLib.JokerLists.Sell },
-            ['photograph']  = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.RankTypes.Face },
+            ['photograph']  = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.RankType.Face },
             ['gift']        = { MadLib.JokerLists.Money.Add, MadLib.JokerLists.Scaling.Money},
-            ['turtle_bean']     = { MadLib.JokerLists.Effects.Game, MadLib.JokerLists.Descaling, MadLib.JokerLists.Food },
+            ['turtle_bean']     = { MadLib.JokerLists.Effect.Game, MadLib.JokerLists.Descaling, MadLib.JokerLists.Food },
 
             ['erosion']         = { MadLib.JokerLists.Mult.Multiply },
-            ['reserved_parking']    = { MadLib.JokerLists.Probability, MadLib.JokerLists.Money.Add, MadLib.JokerLists.RankTypes.Face},
+            ['reserved_parking']    = { MadLib.JokerLists.Probability, MadLib.JokerLists.Money.Add, MadLib.JokerLists.RankType.Face},
             ['mail']            = { MadLib.JokerLists.Money.Add, MadLib.JokerLists.RankType.Random },
-            ['to_the_moon']     = { MadLib.JokerLists.Effects.Game, MadLib.JokerLists.RankType.Random },
+            ['to_the_moon']     = { MadLib.JokerLists.Effect.Game, MadLib.JokerLists.RankType.Random },
             ['hallucination']   = { MadLib.JokerLists.Probability, MadLib.JokerLists.Generative.Consumable },
 
             ['fortune_teller']  = { MadLib.JokerLists.Mult.Add, MadLib.JokerLists.Scaling.Mult },
-            ['juggler']     = { MadLib.JokerLists.Effects.Game },
-            ['drunkard']    = { MadLib.JokerLists.Effects.Game },
+            ['juggler']     = { MadLib.JokerLists.Effect.Game },
+            ['drunkard']    = { MadLib.JokerLists.Effect.Game },
             ['stone']       = { MadLib.JokerLists.Chips.Add },
             ['golden']      = { MadLib.JokerLists.Money.Add },
 
@@ -137,9 +137,9 @@ return {
 
             ['walkie_talkie']   = { MadLib.JokerLists.Mult.Add, MadLib.JokerLists.Chips.Add, },
             ['seltzer']           = { MadLib.JokerLists.Retrigger.Card, MadLib.JokerLists.Descaling, MadLib.JokerLists.Food },
-            ['castle']      = { MadLib.JokerLists.Chips.Add, JokerList.Scaling.Chips, MadLib.JokerLists.Suit.Random },
-            ['smiley_face'] = { MadLib.JokerLists.Mult.Add, JokerList.RankType.Face },
-            ['campfire']    = { MadLib.JokerLists.Mult.Multiply, JokerList.Scaling.Mult },
+            ['castle']      = { MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Scaling.Chips, MadLib.JokerLists.Suit.Random },
+            ['smiley_face'] = { MadLib.JokerLists.Mult.Add, MadLib.JokerLists.RankType.Face },
+            ['campfire']    = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Scaling.Mult },
 
             ['mr_bones']        = { MadLib.JokerLists.Effect.Game },
             ['acrobat']         = { MadLib.JokerLists.Mult.Multiply },
@@ -177,16 +177,16 @@ return {
             ['order']       = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.HandType['Straight'] },
             ['tribe']       = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.HandType['Flush'] },
 
-            ['stuntman']    = { MadLib.JokerLists.Chips.Add, JokerList.Effect.Game },
-            ['invisible_joker'] = { MadLib.JokerLists.Sell, JokerList.Generative.Joker},
+            ['stuntman']    = { MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Effect.Game },
+            ['invisible_joker'] = { MadLib.JokerLists.Sell, MadLib.JokerLists.Generative.Joker},
             ['brainstorm']      = { MadLib.JokerLists.Retrigger.Joker },
             ['satellite']       = { MadLib.JokerLists.Money.Add, MadLib.JokerLists.Scaling.Money },
             ['shoot_the_moon']  = { MadLib.JokerLists.Mult.Add, MadLib.JokerLists.Rank['Queen'] },
 
-            ['drivers_license'] = { MadLib.JokerLists.Mult.Multiply, JokerList.Scaling.Mult },
+            ['drivers_license'] = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Scaling.Mult },
             ['cartomancer']     = { MadLib.JokerLists.Generative.Consumable },
-            ['astronomer']      = { MadLib.JokerLists.Effects.Game },
-            ['burnt']           = { MadLib.JokerLists.Effects.Game },
+            ['astronomer']      = { MadLib.JokerLists.Effect.Game },
+            ['burnt']           = { MadLib.JokerLists.Effect.Game },
             ['bootstraps']      = { MadLib.JokerLists.Mult.Add },
 
             ['canio']           = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Scaling.Mult },
@@ -210,7 +210,7 @@ return {
                 ['steel']   = 3,
                 ['glass']   = 4,
             },
-        }
+        },
         QuantumRanks = {
             ['Ace'] = {
                 values = {'1', '11'},
@@ -278,7 +278,7 @@ return {
                 ['buffoon_normal'] 	    = 9,
                 ['buffoon_jumbo'] 	    = 7,
                 ['buffoon_mega']        = 4,
-            }
+            },
             Editions = {
                 ['foil']        = 4,
                 ['holo']        = 3,

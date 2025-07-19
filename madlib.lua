@@ -433,12 +433,41 @@ function MadLib.round(value, decimals)
 end
 
 function MadLib.random(v, d)
-    return MadLib.round(math.random() * v, d)
+    return MadLib.round(math.random() * v, d or 2)
+end
+
+function MadLib.random_int(v)
+    return MadLib.round(math.random() * v, 0)
 end
 
 function MadLib.random_between(v1, v2, d)
     local min, max = math.min(v1, v2), math.max(v1, v2)
-    return MadLib.round(min + math.random() * (max - min), d)
+    return MadLib.round(min + math.random() * (max - min), d or 0)
+end
+
+function MadLib.get_random_id(_num)
+	local res = ""
+	for i = 1, _num do
+		res = res .. string.char(math.random(97, 122))
+	end
+	return res
+end
+
+function MadLib.pair_cards(v1,v2,length,remove)
+    local _string = MadLib.get_random_id(length or 5)
+    v1.config.extra = v1.config.extra or {}
+    v2.config.extra = v2.config.extra or {}
+    v1.config.extra.rand_id = not remove and _string or nil
+    v2.config.extra.rand_id = not remove and _string or nil
+    return _string
+end
+
+function MadLib.compare_ids(v1,v2)
+    local id1 = v1.config.extra and v1.config.extra.rand_id
+    local id2 = v2.config.extra and v2.config.extra.rand_id
+    print(id1)
+    print(id2)
+    return id1 ~= nil and id1 == id2
 end
 
 --[[
@@ -1632,17 +1661,20 @@ end
 -- Gets a list of cards that the player can possibly encounter
 -- only using their "full discards" (e.g. 5 cards per discard, 3 discards = 15)
 -- Specifically applies to G.deck
-function MadLib.get_possible_deck()
-    if not (G.deck and G.deck.cards) then return {} end
+function MadLib.get_possible_deck(_cards)
 
-    local max_discard_size  = math.max(G.GAME.starting_params.discard_limit or 0)
-    local num_discards      = math.max(G.GAME.current_round.discards_left or 0)
+    local max_discard_size  = G.GAME.starting_params.discard_limit  or 5
+    local num_discards      = G.GAME.current_round.discards_left    or 3
     local deck_selection    = {}
 
-    for i=1, math.min(max_discard_size * num_discards, #G.deck.cards) do
-        deck_selection[#deck_selection+1] = G.deck.cards[i]
-    end
+    --print('Max Discard Size: ' ..  tostring(G.GAME.starting_params.discard_limit))
+    --print('Discards Left: ' ..  tostring(G.GAME.current_round.discards_left))
 
+    local i = 0
+    while (#_cards - i) > (max_discard_size * num_discards) and i < #_cards do
+        table.insert(deck_selection,_cards[#_cards - i])
+        i = i+1
+    end
     return deck_selection
 end
 
@@ -2541,12 +2573,24 @@ function MadLib.load_folder(folder)
 			if loaded then curr_obj.init(curr_obj.content) end
             if curr_obj.content then
                 local p = curr_obj.prefix or ''
-                for j, r in pairs(curr_obj.content.JokerRanks) do table.insert(curr_obj.content.JokerCategories[j], MadLib.JokerLists.Rank[r]) end
-                for j, s in pairs(curr_obj.content.JokerSuits) do table.insert(curr_obj.content.JokerCategories[j], MadLib.JokerLists.Suit[s]) end
+                if curr_obj.content.JokerRanks then
+                    for j, r in pairs(curr_obj.content.JokerRanks) do 
+                        MadLib.JokerLists.Rank[r] = MadLib.JokerLists.Rank[r] or {}
+                        table.insert(MadLib.JokerLists.Rank[r], curr_obj.content.JokerCategories[j])   
+                    end
+                end
+                if curr_obj.content.JokerSuits then
+                    for j, s in pairs(curr_obj.content.JokerSuits) do 
+                        MadLib.JokerLists.Suit[s] = MadLib.JokerLists.Suit[s] or {}
+                        table.insert(MadLib.JokerLists.Suit[s], curr_obj.content.JokerCategories[j]) 
+                    end
+                end
                 -- Do the JokerList if it exist
-                for joker,cat in pairs(curr_obj.content.JokerCategories) do
-                    local joker_id = 'j_'..p..joker  -- add joker_id to category
-                    if G.P_CENTERS[joker_id] then table.insert(cat, 'j_'..joker_id) end
+                if curr_obj.content.JokerCategories then
+                    for joker,cat in pairs(curr_obj.content.JokerCategories) do
+                        local joker_id = 'j_'..p..joker  -- add joker_id to category
+                        if G.P_CENTERS[joker_id] then table.insert(cat, 'j_'..joker_id) end
+                    end
                 end
             end
 		end

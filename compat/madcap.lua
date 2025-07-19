@@ -244,7 +244,7 @@ return {
 
         -- ditto, but with joker ranks (uses unstable id for conflicting ranks if unstable is added)
         local pu =  (UnStable and 'unstb' or c.prefix) ..'_'
-        local n0        = pu..'0'Jokers
+        local n0        = pu..'0'
         local nHalf     = pu..'0.5'
         local n1        = pu..'1'
         local n11       = pu..'11'
