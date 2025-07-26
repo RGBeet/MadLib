@@ -316,6 +316,17 @@ return {
         table.insert(MadLib.SuitTypes.Light, Blooms)
         table.insert(MadLib.SuitTypes.Dark, Daggers)
 
+        local light_dark_conversions = {
+            Goblets     = Towers,
+            Towers      = Goblets,
+            Blooms      = Daggers,
+            Daggers     = Blooms
+        }
+
+        for k,v in pairs(light_dark_conversions) do
+            MadLib.SuitConversions[k] = v
+        end
+
         MadLib.loop_table_func(joker_poker_hands, function(k,v) table.insert(c.JokerCategories[k], MadLib.JokerLists.HandType[v]) end)
         MadLib.transfer_to_new_table(joker_suits,c.content.JokerSuits)
         MadLib.transfer_to_new_table(joker_ranks,c.content.JokerRanks)

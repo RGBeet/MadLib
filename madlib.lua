@@ -445,6 +445,8 @@ function MadLib.random_between(v1, v2, d)
     return MadLib.round(min + math.random() * (max - min), d or 0)
 end
 
+
+
 function MadLib.get_random_id(_num)
 	local res = ""
 	for i = 1, _num do
@@ -534,15 +536,17 @@ function MadLib.get_loop_func(loop, func, bypass_check)
 end
 
 -- Ditto, but doesn't require a list - just a number.
-function MadLib.get_loop_func_number(n, func, bypass_check)
+function MadLib.number_func(n, func, bypass_check)
     if not bypass_check and (type(n) ~= 'number' or not_proper_func(func)) then return {} end -- prevent crash!
-    local nl = {}
+    local passes = 0
     for i=1, n do
-        local item = func(loop[i],i)
-        if item ~= nil then nl[#nl+1] = item end
+        local item = func(i)
+        passes =passes + (item and 1 or 0) 
     end
-    return nl
+    return passes
 end
+
+--MadLib.get_loop_func_number
 
 -- Takes a list, loops through multiple functions.
 function MadLib.loop_func_list_multi(loop, funcs, bypass_check, simultaneous)
@@ -960,9 +964,9 @@ end
 
 -- Key and path are same, e is extension (e.g. ogg)
 function MadLib.keypath_simple_loop(k,e,n)
-    local path, list = k..'.'..e, {}
-    return { list = MadLib.get_loop_func_number(n, function(v,i)
-        return MadLib.key_path(k, path .. tostring(i))
+    local _path, _list = k..'.'..e, {}
+    return { list = MadLib.number_func(n, function(v,i)
+        return MadLib.key_path(k, _path .. tostring(i))
     end)}
 end
 
@@ -1112,6 +1116,10 @@ function MadLib.is_composite(n)
         if n % i == 0 then return true end
     end
     return false
+end
+
+function MadLib.random_element(table,seed)
+
 end
 
 --[[
@@ -1641,10 +1649,24 @@ end
 -- Gets a list of enhanced cards within the group.
 -- If key is specified, returns specific cards of specific enhancement
 -- If table is given, returns specific cards of all enhancements in table
+function MadLib.valid_table(group,min,max)
+    return type(group) == 'table'
+        and (not min or #group >= min)
+        and (not max or #group <= max)
+end
+
 function MadLib.get_enhanced_cards(group, key)
     return not (G.GAME and group ~= nil) and {}
         or MadLib.get_list_matches(group, function(card)
-            return SMODS.has_enhancement(card, 'm_'..key)
+            return SMODS.has_enhancement(card, key and ('m_'..key) or nil)
+        end)
+end
+
+function MadLib.get_editioned_cards(group, key)
+    return not (G.GAME and group ~= nil) and {}
+        or (not key and card.edition)
+        or MadLib.get_list_matches(group, function(card)
+            return card.edition and card.edition[key]
         end)
 end
 
@@ -2462,7 +2484,7 @@ function MadLib.create_joker(joker_id, area)
     local target    = G.P_CENTERS['j_'..joker_id]
     if not (#G[to].cards < G[to].config.card_limit or self.area == G[to]) then return nil end
     -- function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
-    local new_card = create_card(target.name, G.jokers, nil, nil, nil, nil, target.key)
+    local new_card = create_card(target.name, G[to], nil, nil, nil, nil, target.key)
     new_card:add_to_deck()
     G[to]:emplace(new_card)
     return new_card
