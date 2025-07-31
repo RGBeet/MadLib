@@ -7,6 +7,14 @@ SMODS.Atlas({
 })
 
 MadLib = {
+    Prefixes = {
+        Boosters        = 'p_',
+        Vouchers        = 'v_',
+        Enhancements    = 'm_',
+        Editions        = 'e_',
+        Jokers          = 'j_',
+        Blind           = 'bl_',            
+    },
     ActiveAreas 	= { -- References CardAreas that appear on screen. Do not remove these values!
         G['jokers'], G['hand'], G['play'],
     },
@@ -190,14 +198,14 @@ MadLib = {
         },
         ExpMult = {
             key = 'a_powmult',
-            add = 'emult_mod',
+            add = 'Emult_mod',
             set = 'e_mult',
             colour = G.C.MULT,
             sign = "^",
         },
         ExpChips = {
             key = 'e_powchips',
-            add = 'echips_mod',
+            add = 'Echips_mod',
             set = 'e_chips',
             colour = G.C.CHIPS,
             sign = "^",
@@ -267,9 +275,30 @@ MadLib = {
         Special = {},
     },
     SpectrumId = nil,   -- Which Spectrum id does
-    Weights = {},
+    Weights = {
+        Boosters        = {},
+        Editions        = {},
+        Enhancements    = {},
+        Stickers        = {},
+        Seals           = {},
+        Vouchers        = {},
+    },
+    RankKeyId = {}
 }
 MLIB = MadLib -- shorter ref
+
+for k,v in pairs(SMODS.Ranks) do
+    MadLib.RankKeyId[v.id] = v.key
+end
+
+function MadLib.get_value_from_id(_id)
+    return SMODS.Ranks[MadLib.RankKeyId[_id]] or nil
+end
+
+function MadLib.get_card_value(_card)
+    local value = MadLib.get_value_from_id(_card:get_id())
+    return value and value.key or nil
+end
 
 --[[Add Score-based stats to SMODS (WIP!)
 for _, v in ipairs({'x_score', 'e_score', 'ee_score', 'eee_score', 'hyper_score', 'Xscore_mod', 'Escore_mod', 'EEscore_mod', 'EEEscore_mod', 'hyperscore_mod'}) do
@@ -280,7 +309,6 @@ local scie = SMODS.calculate_individual_effect
 
 -- Initalized for further editing by other mods.
 function mod_total_score(_score)
-    print("mod score timee!!")
     return _score
 end
 
@@ -405,16 +433,16 @@ end
 -- Quick way to ensure the table will actually work as intended.
 -- Otherwise, it could crash the game!
 local function not_proper_table(table)
-    return not table or type(table) ~= 'table'
+    return table == nil or type(table) ~= 'table'
 end
 
 -- Same as above, but for functions (or funcs for short).
 local function not_proper_func(func)
-    return not func or type(func) ~= 'function'
+    return func == nil or type(func) ~= 'function'
 end
 
 local function not_proper_number(n)
-    return not n or type(n) ~= 'number'
+    return n == nil or type(n) ~= 'number'
 end
 
 -- Rounds to 
@@ -455,20 +483,21 @@ function MadLib.get_random_id(_num)
 	return res
 end
 
-function MadLib.pair_cards(v1,v2,length,remove)
+function MadLib.pair_cards(v1,v2,id,length,remove)
     local _string = MadLib.get_random_id(length or 5)
-    v1.config.extra = v1.config.extra or {}
-    v2.config.extra = v2.config.extra or {}
-    v1.config.extra.rand_id = not remove and _string or nil
-    v2.config.extra.rand_id = not remove and _string or nil
+    print('adding for id ' .. (id or "default"))
+    v1.ids = v1.ids or {}
+    v2.ids = v2.ids or {}
+    v1.ids[id or 'default'] = (not remove) and _string or nil
+    v2.ids[id or 'default'] = (not remove) and _string or nil
+    print(v1.ids[id or 'default'])
+    print(v2.ids[id or 'default'])
     return _string
 end
 
-function MadLib.compare_ids(v1,v2)
-    local id1 = v1.config.extra and v1.config.extra.rand_id
-    local id2 = v2.config.extra and v2.config.extra.rand_id
-    print(id1)
-    print(id2)
+function MadLib.compare_ids(v1,v2,id)
+    local id1 = v1.ids and v1.ids[id or 'default']
+    local id2 = v2.ids and v2.ids[id or 'default']
     return id1 ~= nil and id1 == id2
 end
 
@@ -740,14 +769,15 @@ end
 function MadLib.get_combined_list(...)
     local args = {...}
     if not args or #args < 2 then return {} end -- can't combine
-
-    for _, t in pairs(args) do
+    for _, t in pairs(args) do 
         if not_proper_table(t) then return {} end
     end
-
     local merged = {}
-    for _, t in pairs(args) do table.insert(merged,t) end -- commence the merge
-
+    MadLib.loop_func(args, function(_list)
+        MadLib.loop_func(_list, function(_entry)
+            table.insert(merged,_entry)
+        end)
+    end)
     return merged
 end
 
@@ -939,9 +969,6 @@ end
 -- Gets the coords of an atlas using the atlas's width.
 function MadLib.get_coords(index,width)
     if type(index) == 'table' or type(width) == 'table' then
-        print("might wanna check")
-        print(index)
-        print(width)
         return { y = 0, x = 0 }
     end
     return { y = math.floor(index / (width or 1)), x = (index % (width or 1)) }
@@ -984,7 +1011,10 @@ end
 -- Ditto, but only focuses on trigger, delay, and function.
 -- Requires a function to operate.
 function MadLib.simple_event(_f, _d, _t, _b)
-    if not_proper_func(f) then return false end
+    if not_proper_func(_f) then 
+        print('ERROR! Not a proper func!')
+        return false 
+    end
     MadLib.event({
         trigger     = _t or "immediate",
         delay       = _d or 0.08,
@@ -1021,7 +1051,7 @@ end
 function MadLib.seal_event(card, seal, snd)
     MadLib.event({
         func = function()
-            card:set_seal(seal, true, true)
+            card:set_seal(seal or "red", true, true)
             card:juice_up(0.5, 0.7)
             play_sound((snd or 'tarot2'), 0.76, 0.4)
             return true
@@ -1063,6 +1093,15 @@ function MadLib.list_append(list,prefix,suffix)
 	MadLib.loop_func(list, function(v,i)
 		v = (prefix or '') .. v .. (suffix or '')
 	end)
+end
+
+function MadLib.has_contexts(...)
+    local args = {...}
+    local _context = args[1]
+    for i=2, #args do 
+        if not _context[args[i]] then return false end
+    end
+    return true
 end
 
 --[[
@@ -1137,8 +1176,22 @@ end
 -- Reverses the table order. Credit to ThatOneGuyAli for code!
 function MadLib.reverse_table(table)
 	local reversed = {}
-	for i = #table, 1, -1 do reversed[#reversed+1] = table[i] end
+    for i = 1, #table do
+        reversed[#reversed+1] = table[#table-i+1]
+    end
 	return reversed
+end
+
+function MadLib.reverse_in_place(t)
+    local len = #t
+    for i = 1, math.floor(len / 2) do
+        t[i], t[len - i + 1] = t[len - i + 1], t[i]
+    end
+end
+
+function CardArea:reverse()
+    MadLib.reverse_in_place(self.cards)
+    self:set_ranks()
 end
 
 --[[
@@ -1149,7 +1202,7 @@ end
 
 -- Returns if there are ANY matches.
 function MadLib.list_matches_one(list, func, bypass_check)
-    if not bypass_check and (not_proper_table(loop) or not_proper_func(func)) then return false end -- prevent crash!
+    if not bypass_check and (not_proper_table(list) or not_proper_func(func)) then return false end -- prevent crash!
     for k,v in pairs(list) do
         if func(v,k) then return true end -- value/key
     end
@@ -1159,7 +1212,7 @@ end
 -- Returns whether at least X of the values in the list
 -- satisfy the function
 function MadLib.list_matches_some(list, func, points, bypass_check)
-    if not bypass_check and (not_proper_table(loop) or not_proper_func(func)) then return false end -- prevent crash!
+    if not bypass_check and (not_proper_table(list) or not_proper_func(func)) then return false end -- prevent crash!
     points = math.min((points or 2),#list) -- can only be as large as the list size
     local total = 0
     for _,v in pairs(list) do
@@ -1171,7 +1224,7 @@ end
 
 -- Returns whether ALL the values in the list satisfy the function.
 function MadLib.list_matches_all(list, func, bypass_check)
-    if not bypass_check and (not_proper_table(loop) or not_proper_func(func)) then return false end -- prevent crash!
+    if not bypass_check and (not_proper_table(list) or not_proper_func(func)) then return false end -- prevent crash!
     for k,v in pairs(list) do
         if not func(v,k) then return false end
     end
@@ -1183,7 +1236,7 @@ function MadLib.get_list_matches(list,func)
     if not_proper_table(list) or (func ~= nil and not_proper_func(func)) then return nil end
     local matches = {}
     for k,v in pairs(list) do
-        if (func(v,k) or true) then table.insert(matches,v) end
+        if func(v,k) then table.insert(matches,v) end
     end
     return matches
 end
@@ -1192,7 +1245,7 @@ function MadLib.get_list_matches_limited(list,func,max)
     if not_proper_table(list) or (func ~= nil and not_proper_func(func)) then return nil end
     local matches, i = {}, 0
     for k,v in pairs(list) do
-        if (func(v,k) or true) then
+        if func(v,k) then
             table.insert(matches,v)
             i = i+1
         end
@@ -1206,6 +1259,15 @@ function MadLib.get_first_list_match(list,func)
     if not_proper_table(list) or not_proper_func(func) then return nil end
     for k,v in pairs(list) do
         if func(v,k) then return v, k end
+    end
+    return nil
+end
+
+-- Returns the first list match (or nothing, if there are no matches).
+function MadLib.get_first_match_info(list,check,func)
+    if not_proper_table(list) or not_proper_func(check) or not_proper_func(func) then return nil end
+    for k,v in pairs(list) do
+        if check(v,k) then return func(v,k) end
     end
     return nil
 end
@@ -1260,9 +1322,17 @@ function MadLib.calculate_roll(params)
 
     local card = params.card or nil
 
-    local denom = params.denom or card and (card.ability.odds or card.ability.extra.odds or card.ability.immutable.odds) or 2
-    local numer = (params.card and MadLib.base_prob(card)) or params.numer or 1
+    local denom = params.denom or card and (card.ability.odds or (card.ability.extra and card.ability.extra.odds) or (card.ability.immutable and card.ability.immutable.odds)) or 2
+    local numer = (params.card and MadLib.base_prob(card)) or params.numer or G.GAME.probabilities.normal or 0
     local exp   = params.exp or 1
+
+    --print('prob is ' .. tostring(G.GAME.probabilities.normal))
+
+    if params.card then
+        print('base card type shit is ' .. tostring(MadLib.base_prob(card)))
+    end
+
+    --print('numer is ' .. tostring(numer))
 
     --tell('Denom is ' .. tostring(denom))
     --tell('Card Denom is ' .. tostring(card and (card.ability.odds or card.ability.extra.odds or card.ability.immutable.odds)))
@@ -1272,11 +1342,10 @@ function MadLib.calculate_roll(params)
 
     if params.card then -- Uses a card
         if Cryptid then
-            numer = params.numer or params.card.ability.cry_prob
-
+            numer = params.numer or (G.GAME and G.GAME.probabilities.normal or 1) * params.card.ability.cry_prob
+            --numer = cry_prob(card.ability.cry_prob, card.ability.extra.odds, card.ability.cry_rigged)
             -- If no denominator is dictated, looks for card odds or drops a 1 in 2.
             ceiling = (numer ^ exp) / denom
-
             final = params.card.ability.cry_rigged or roll < ceiling
         else
             final = roll < ceiling
@@ -1295,9 +1364,10 @@ end
 
 -- [Return BOOL] Does a random based on card and seed (if provided!)
 function MadLib.calculate_card_odds(c, s)
-    local params = { card = card }
-    if s then params.seed = s end
-    return MadLib.calculate_roll(params)
+    return MadLib.calculate_roll({
+        card = c,
+        seed = s or 'madlib'
+    })
 end
 
 
@@ -1376,13 +1446,12 @@ function MadLib.flip_cards(card_list, func, before, after)
                     if c.flip then c:flip() end
                     -- do sound if there
                     return true
-                end, 0.1, "after")
+                end, 0.5, "after")
             end
         end
     elseif before then
         for _, c in ipairs(card_list) do before(c) end
     end
-
     -- Do the func
     if not enable_animations then
         for _, c in ipairs(card_list) do
@@ -1390,13 +1459,12 @@ function MadLib.flip_cards(card_list, func, before, after)
                 MadLib.simple_event(function()
                     if func then func(c) end
                     return true
-                end, 0.1, "after")
+                end, 0.5, "after")
             end
         end
     else
         for _, c in ipairs(card_list) do func(c) end
     end
-
     -- After
     if not enable_animations then
         for _, c in ipairs(card_list) do
@@ -1406,50 +1474,47 @@ function MadLib.flip_cards(card_list, func, before, after)
                     -- do sound if there
                     if after then after(c) end
                     return true
-                end, 0.1, "after")
+                end, 0.5, "after")
             end
         end
     elseif after then
         for _, c in ipairs(card_list) do after(c) end
     end
-
     return true
 end
 
-function MadLib.flip_card(card, func, before, after)
+function MadLib.flip_card(c, func, before, after)
     local enable_animations = Talisman.config_file.disable_anims
-
     -- Before
     if not enable_animations then
         MadLib.simple_event(function()
             if before then before(c) end
             if c.flip then c:flip() end
             return true
-        end, 0.06, "after")
+        end, 0.5, "after")
     elseif before then
         before(c)
     end
-
     -- Do the func
     if not enable_animations then
         MadLib.simple_event(function()
             if func then func(c) end
             return true
-        end, 0.06, "after")
+        end, 0.5, "after")
     else
         func(c)
     end
-
     -- After
     if not enable_animations then
         MadLib.simple_event(function()
             if c.flip then c:flip() end
             if after then after(c) end
             return true
-        end, 0.06, "after")
+        end, 0.5, "after")
     elseif after then
         after(c)
     end
+    return true
 end
 
 -- Easy way of tetrating. Credit to More Fluff.
@@ -1476,9 +1541,9 @@ end
 
 -- [BOOL] Ditto, but with suits
 function MadLib.has_suit_in_list(card, list, true_values)
-    return (not card or not_proper_table(list)) and false
+    return not (card and not not_proper_table(list)) and false
         or not true_values and MadLib.list_matches_one(list, function(v) return card:is_suit(v) end)
-        or MadLib.list_matches_one(list, function(v) return SMODS.Ranks[card.base.suit].key == v end)
+        or MadLib.list_matches_one(list, function(v) return SMODS.Suits[card.base.suit].key == v end)
 end
 
 -- [Return List] Returns a list of ranks that the card group has - uses TRUE ranks (unless specified otherwise)
@@ -1656,28 +1721,36 @@ function MadLib.valid_table(group,min,max)
 end
 
 function MadLib.get_enhanced_cards(group, key)
-    return not (G.GAME and group ~= nil) and {}
+    return (not G.GAME or group == nil) and {}
         or MadLib.get_list_matches(group, function(card)
-            return SMODS.has_enhancement(card, key and ('m_'..key) or nil)
+            local _key = key and ('m_' .. key) or nil
+            return SMODS.has_enhancement(card, _key)
         end)
 end
 
 function MadLib.get_editioned_cards(group, key)
-    return not (G.GAME and group ~= nil) and {}
-        or (not key and card.edition)
+    return (not G.GAME or group == nil) and {}
         or MadLib.get_list_matches(group, function(card)
             return card.edition and card.edition[key]
         end)
 end
 
-function MadLib.get_unique_enhancements(group)
+function MadLib.get_table_entries(group)
+    return MadLib.loop_func_table(group, function() return true end)
+end
+
+function MadLib.get_num_unique_enhancements(group)
     if not (G.GAME and group ~= nil) then return 0 end
-    local enhancements = {}
-    MadLib.loop_func(group, function(v,i)
-        local full_key = MadLib.safe_get(v.config,'center','key')
-        if full_key then enhancements[full_key] = true end
+    local _enhancements = {}
+    MadLib.loop_func(group, function(v) 
+        _enhancements[v.config.center.key] = (_enhancements[v.config.center.key] or 0) + 1 
     end)
-    return #enhancements
+    --print(_enhancements)
+    return _enhancements
+end
+
+function MadLib.is_positive(val)
+    return val > 0
 end
 
 -- Gets a list of cards that the player can possibly encounter
@@ -1741,18 +1814,16 @@ end
 
 -- Determines whether the card is rankless
 function Card:is_rankless()
-    return self.config.center.no_rank
-        or MadLib.list_matches_one(MadLib.EnhancementLists.Rankless, function(v)
-            return SMODS.has_enhancement(self,v)
-        end)
+    MadLib.list_matches_one(MadLib.EnhancementLists.Rankless, function(v)
+        return SMODS.has_enhancement(self,v)
+    end)
 end
 
 -- Determines whether the card is suitless
 function Card:is_suitless()
-    return self.config.center.no_suit
-        or MadLib.list_matches_one(MadLib.EnhancementLists.Suitless, function(v)
-            return SMODS.has_enhancement(self,v)
-        end)
+    MadLib.list_matches_one(MadLib.EnhancementLists.Suitless, function(v)
+        return SMODS.has_enhancement(self,v)
+    end)
 end
 
 function Card:has_dark_suit()
@@ -1782,12 +1853,12 @@ end
 
 -- Easy way to dupe the card
 function Card:dupe(area)
-	if (area or G.hand) then
+    local _goto = area or G.hand
+	if _goto then
 		local new_card = copy_card(_card, nil, nil, self.playing_card)
 		new_card:add_to_deck()
 		table.insert(G.playing_cards, new_card)
-		local a = area or G.hand
-		a:emplace(new_card)
+		_goto:emplace(new_card)
         return new_card
     else
 		return nil
@@ -1902,7 +1973,7 @@ function Blind:add_chips(chadd,wiggle)
 end
 
 function Blind:multiply_chips(chult,wiggle)
-	G.GAME.blind.chips = G.GAME.blind.chips * chult
+	G.GAME.blind.chips = math.floor(G.GAME.blind.chips * chult)
 	G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 	if wiggle then G.GAME.blind:wiggle() end
 	return true
@@ -1923,30 +1994,28 @@ end
 
 -- Returns a list of all stickered cards.
 function MadLib.get_stickered_cards(key)
-    local func = key
-        and function(c) return c:has_negative_sticker() end
-        or function (c) return c.ability[key] end
-
     local stickered = {}
-    for _,v in pairs(MadLib.ActiveAreas) do
-        MadLib.merge_tables(all_stickered, MadLib.get_list_matches(v.cards, func))
-    end
-
+    MadLib.loop_func({ G.jokers.cards, G.hand.cards, G.hand.highlighted, G.consumeables.cards }, function(_list)
+        MadLib.loop_func(_list, function(v)
+            print(v:has_negative_sticker())
+            stickered[#stickered+1] = not key and v:has_negative_sticker() or v.ability[key]
+        end)
+    end)
     return stickered
 end
 
 -- Returns a selection from a weighted table (MadLib.Weights[X]).
-function MadLib.pick_from_weighted_table(table, whitelist, blacklist)
-    if type(table) ~= "table" then return nil end
+function MadLib.pick_from_weighted_table(wtable, whitelist, blacklist)
+    if type(wtable) ~= "table" then return nil end
 
     local weighted = {}
 
-    for k, v in pairs(table) do
+    for k, v in pairs(wtable) do
         local valid = ((not whitelist) or MadLib.get_item_index(v,whitelist) ~= -1)
             and ((not blacklist) or MadLib.get_item_index(v,whitelist) == -1)
             and type(v) == "number" and v > 0
         -- Handle whitelist vs blacklist logic
-        if valid  then  table.insert(weighted, {key = k, value = math.random() * v}) end
+        if valid then table.insert(weighted, {key = k, value = math.random() * v}) end
     end
 
     -- Sort by values in key-value table
@@ -2038,6 +2107,10 @@ end
 -- Can be used for other Jokers.
 --
 function MadLib.banana_remove(card, msg)
+    if not card then
+        print('Card does not exist!')
+        return nil
+    end
     MadLib.simple_event(function()
 		card.T.r = -0.2
         card:juice_up(0.3, 0.4)
@@ -2188,14 +2261,16 @@ local rank_patterns = { -- temp list to merge into RankTypes
     ['Square']      = {},
 }
 local function process_ranks(n,val)
+    print('Loading the Number ' .. ' "' .. tostring(n.rank) .. '"...')
     if n.even      then table.insert(rank_patterns['Even'], val)         end
     if n.odd       then table.insert(rank_patterns['Odd'], val)          end
     if n.prime     then table.insert(rank_patterns['Prime'], val)        end
     if n.fib       then table.insert(rank_patterns['Fibonacci'], val)    end
     if n.square    then table.insert(rank_patterns['Square'], val)       end
 end
-for i=2,9 do process_ranks(MadLib.check_numbered_rank(tostring(i)),v) end
-for k,_ in pairs(MadLib.RankIds) do process_ranks(MadLib.check_numbered_rank(k),v) end
+for i=2,9 do process_ranks(MadLib.check_numbered_rank(tostring(i)), tostring(i)) end
+print(rank_patterns)
+for k,_ in pairs(MadLib.RankIds) do process_ranks(MadLib.check_numbered_rank(k), tostring(i)) end
 MadLib.merge_tables(MadLib.RankTypes,rank_patterns)
 
 -- End rank pattern setting up
@@ -2223,6 +2298,10 @@ function MadLib.can_use_consumable(card)
 end
 
 function MadLib.get_simple_score_data(t,card,val)
+    if type(card) ~= "table" then 
+        print(card)
+        return false     
+    end
     local value = val or card.ability.extra[t.set]
 
     local ret = {
@@ -2301,13 +2380,13 @@ function MadLib.get_detailed_upgrade_data(t,card,val,bypass_safety)
     }
 end
 
-function MadLib.get_simple_reset_data(t,card,val)
+function MadLib.get_simple_reset_data(t,card,val,override)
     if not val then
         local var_key = (string.sub(t.key, 1, 2) == 'a_' and string.sub(t.key, 3))
             or t.key
-        card.ability.extra[var_key] = 0
+        card.ability.extra[var_key] = override or 0
     else
-        val = 0
+        val = override or 0
     end
     return {
         message     = localize('k_reset'),
@@ -2367,9 +2446,9 @@ function MadLib.get_card_info(c)
     return {
         suit        = c.base.suit,
         rank        = c.base.value,
-        enhancement = c.config.center,
-        edition     = c.edition,
-        seal        = c.seal
+        enhancement = c.config.center.key,
+        edition     = c.edition and c.edition.key or nil,
+        seal        = c.seal and c.seal.key or nil
     }
 end
 
@@ -2384,26 +2463,32 @@ end
 function MadLib.dupe_from_card_info(cards,func)
     local dupes = {}
     for _, v in pairs(cards) do
-         local suit = SMODS.Ranks[v.suit].card_key
-        local rank = SMODS.Ranks[v.rank].card_key
-        local n = create_playing_card({ front = G.P_CARDS[suit .. '_' .. rank] })
-        n = v.enhancement
-        n:set_edition(v.edition)
-        n:set_seal(v.seal)
-        if func then func(v,n) end -- in case you want to do some funky stuff
-        table.insert(dupes, n)
+        MadLib.simple_event(function()
+            local suit = SMODS.Suits[v.suit].card_key
+            local rank = SMODS.Ranks[v.rank].card_key
+            local n = create_playing_card({ front = G.P_CARDS[suit .. '_' .. rank] })
+            if v.enhancement then n:set_ability(v.enhancement) end
+            if v.edition then n:set_edition(v.edition) end
+            if v.seal then n:set_seal(v.seal) end
+            if func then func(n,v) end -- in case you want to do some funky stuff
+            n:add_to_deck()
+            G.deck.config.card_limit = G.deck.config.card_limit + 1
+            table.insert(G.playing_cards, n)
+            table.insert(dupes, n)
+            return true
+        end, 0.25, 'after')
     end
+    --return {}
     return dupes
 end
 
 -- silly way to determine the value of the card
 function MadLib.get_card_points(c)
     local info = MadLib.get_card_info(c)
-    local enhance = MadLib.PointValues.Enhancements[c.enhancement] or 0
-    local edition = MadLib.PointValues.Enhancements[c.edition] or 0
-    local nominal = SMODS.Ranks[c.rank]
-    local pts = (edition * 3) + (enhance * 2)
-    print('The card value is ' .. pts)
+    local enhance = MadLib.PointValues.Enhancements[info.enhancement] or 0
+    local edition = MadLib.PointValues.Enhancements[info.edition] or 0
+    --local nominal = SMODS.Ranks[info.rank].nominal + (SMODS.Ranks[info.rank].face_nominal or 0)
+    local pts = (edition * 3) + (enhance * 2) + math.random()
     return pts
 end
 
@@ -2420,7 +2505,7 @@ end
 -- Gets base probability - different for Cryptid.
 function MadLib.base_prob(card)
     return card and (cry_prob
-        and cry_prob(card.ability.cry_prob, card.ability.extra.odds, card.ability.cry_rigged)
+        and cry_prob(card.ability.cry_prob, card.ability.extra and card.ability.extra.odds or 1, card.ability.cry_rigged)
         or (G.GAME.probabilities.normal or 1))
 end
 
@@ -2474,19 +2559,23 @@ function MadLib.create_card(set, area, seed)
         if is_consumable then G.GAME.consumeable_buffer = 0 end
         play_sound('timpani')
         return true
-    end, 0.1, 'before')
+    end, 1.0, 'immediate')
     return c
 end
 
 -- Creates a Joker of [joker_id] in [area] (or G.jokers)
-function MadLib.create_joker(joker_id, area)
+function MadLib.create_joker(joker_id, area, sound)
     local to        = area or 'jokers'
     local target    = G.P_CENTERS['j_'..joker_id]
-    if not (#G[to].cards < G[to].config.card_limit or self.area == G[to]) then return nil end
+    if not (#G[to].cards < G[to].config.card_limit) then return nil end
     -- function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
-    local new_card = create_card(target.name, G[to], nil, nil, nil, nil, target.key)
-    new_card:add_to_deck()
-    G[to]:emplace(new_card)
+    MadLib.simple_event(function()
+        local new_card = create_card(target.name, G[to], nil, nil, nil, nil, target.key)
+        new_card:add_to_deck()
+        G[to]:emplace(new_card)
+        if sound then play_sound(sound) end
+        return true
+    end, 1.0, 'immediate')
     return new_card
 end
 
@@ -2577,6 +2666,16 @@ function MadLib.create_video_uibox(name, mod, button_name, args)
 	return t
 end
 
+function MadLib.check_add_list_entry(_list,_entry)
+    if not_proper_table(_list) then return false end
+    local _exists = MadLib.list_matches_one(_list, function(v) return v == _entry end)
+    if not _exists then
+        _list[#_list+1] = _entry
+        return true
+    end
+    return false
+end
+
 -- File loading based on Cryptid mod lmao
 local errors = {}
 function MadLib.load_folder(folder)
@@ -2588,31 +2687,80 @@ function MadLib.load_folder(folder)
 			errors[file] = err
 		else
 			local curr_obj = f()
-			local modid = curr_obj.modid
-			local loaded = not curr_obj.modid
-                or (curr_obj.modid and next(SMODS.find_mod(curr_obj.name)) or false)
+			
+            local modid = curr_obj.modid
+
+            print('MOD ID is ' .. (modid or '???'))
+			
+            local loaded = not curr_obj.modid
+                or (curr_obj.modid and SMODS.find_mod(curr_obj.name)) 
                 or false
-			if loaded then curr_obj.init(curr_obj.content) end
-            if curr_obj.content then
+
+            if loaded and curr_obj then
+                local curr_obj  = curr_obj.init(curr_obj)
+                local content   = curr_obj.content
+                
                 local p = curr_obj.prefix or ''
-                if curr_obj.content.JokerRanks then
-                    for j, r in pairs(curr_obj.content.JokerRanks) do 
-                        MadLib.JokerLists.Rank[r] = MadLib.JokerLists.Rank[r] or {}
-                        table.insert(MadLib.JokerLists.Rank[r], curr_obj.content.JokerCategories[j])   
-                    end
+
+                local load_list_table_loop = function(key,data)
+                    MadLib[key] = MadLib[key] or {}
+                    
+                    MadLib.loop_table(content[key], function(_id)
+                        -- init table at madlib if not there
+                        MadLib[key][_id] = MadLib[key][_id] or {}
+                        -- loop through content table
+                        MadLib.loop_func(content[key][_id], function(v)
+                            print('LOADING - Adding ' .. tostring(v) .. ' to content[' .. key .. '][' .. _id .. '].')
+                            MadLib.check_add_list_entry(MadLib[key][_id], v)
+                        end)
+                    end)
                 end
-                if curr_obj.content.JokerSuits then
-                    for j, s in pairs(curr_obj.content.JokerSuits) do 
-                        MadLib.JokerLists.Suit[s] = MadLib.JokerLists.Suit[s] or {}
-                        table.insert(MadLib.JokerLists.Suit[s], curr_obj.content.JokerCategories[j]) 
-                    end
+
+                local load_table_table_loop = function(key,data)
+                    MadLib[key] = MadLib[key] or {}
+                    
+                    MadLib.loop_table(content[key], function(_id)
+                        -- init table at madlib if not there
+                        MadLib[key][_id] = MadLib[key][_id] or {}
+                        -- loop through content table
+                        MadLib.loop_table(content[key][_id], function(k)
+                            MadLib[key][_id][k] = content[key][_id][k]
+                        end)
+                    end)
                 end
-                -- Do the JokerList if it exist
-                if curr_obj.content.JokerCategories then
-                    for joker,cat in pairs(curr_obj.content.JokerCategories) do
-                        local joker_id = 'j_'..p..joker  -- add joker_id to category
-                        if G.P_CENTERS[joker_id] then table.insert(cat, 'j_'..joker_id) end
-                    end
+
+                local load_table_table = function(key,data)
+                    MadLib[key] = MadLib[key] or {}
+                    
+                    MadLib.loop_table(content[key], function(_id)
+                        if MadLib[key][_id] then return false end 
+                        MadLib[key][_id] = content[key][_id]
+                    end)
+
+                end
+
+                -- a table containing keyed lists
+                load_list_table_loop('JokerSuits')
+                load_list_table_loop('JokerCategories')
+                load_list_table_loop('BanLists')
+                load_list_table_loop('SuitTypes')
+
+                -- a table containing tables containing key/value pairs
+                load_table_table_loop('SuitConversions')
+                load_table_table_loop('PointValues')
+                load_table_table_loop('Weights')
+                
+                -- a table conaining key/value_pairs
+                load_table_table('QuantumRanks')
+                load_table_table('RarityValues')
+
+                if content.RankCompat then
+                    MadLib.loop_table(content.RankCompat, function(k,v)
+                        if not MadLib.RankIds[k] then
+                            MadLib.RankIds[k] = v
+                            print('The id for Rank ' .. tostring(k) .. ' is now ' .. tostring(v) .. '.' )
+                        end
+                    end)
                 end
             end
 		end

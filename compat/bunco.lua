@@ -19,6 +19,6 @@ return {
         --
         table.insert(MadLib.SuitTypes.Light, Fleurons)
         table.insert(MadLib.SuitTypes.Dark, Halberds)
-		return true
+		return c
     end,
 }

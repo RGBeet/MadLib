@@ -1,144 +1,144 @@
 return {
-    modid   = 'RGMadcap',
+    modid   = 'rgmadcap',
     prefix  = 'rgmc',
     content = {
         BanLists = {
             SuperBlinds = {
-                'chaos_boss1',
-                'chaos_boss2',
-                'chaos_boss3',
+                'bl_rgmc_chaos_boss1',
+                'bl_rgmc_chaos_boss2',
+                'bl_rgmc_chaos_boss3',
             },
             Overpowered = {
 
             },
         },
         JokerRanks = {
-            ['thorium_joker']       = { '2', '3', '4', '5', '6', '7', '8', '9' },
+            ['j_rgmc_thorium_joker']       = { '2', '3', '4', '5', '6', '7', '8', '9' },
         }, -- might need for later idk
         JokerSuits = {
-            ['rhodochrosite'] = { 'Diamonds', 'Clubs', 'Spades' },
+            ['j_rgmc_rhodochrosite'] = { 'Diamonds', 'Clubs', 'Spades' },
         },
         JokerCategories = {
-            ['vari_seala']          = { MadLib.JokerLists.Probability, MadLib.JokerLists.Effect.Card, MadLib.JokerLists.Retrigger.Card },
-            ['bball_pasta']         = { MadLib.JokerLists.Probability, MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Mult.Add, MadLib.JokerLists.Scaling.Chips, MadLib.JokerLists.Scaling.Mult },
-            ['squeezy_cheeze']      = { MadLib.JokerLists.Chips.Multiply, MadLib.JokerLists.Food },
-            ['joker_squared']       = { MadLib.JokerLists.Mult.Add },
-            ['spectator']           = { MadLib.JokerLists.Mult.Add },
+            ['j_rgmc_vari_seala']          = { MadLib.JokerLists.Probability, MadLib.JokerLists.Effect.Card, MadLib.JokerLists.Retrigger.Card },
+            ['j_rgmc_bball_pasta']         = { MadLib.JokerLists.Probability, MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Mult.Add, MadLib.JokerLists.Scaling.Chips, MadLib.JokerLists.Scaling.Mult },
+            ['j_rgmc_squeezy_cheeze']      = { MadLib.JokerLists.Chips.Multiply, MadLib.JokerLists.Food },
+            ['j_rgmc_joker_squared']       = { MadLib.JokerLists.Mult.Add },
+            ['j_rgmc_spectator']           = { MadLib.JokerLists.Mult.Add },
 
-            ['lady_liberty']        = { MadLib.JokerLists.Effect.Card },
-            ['neighborhood_watch']  = { MadLib.JokerLists.Money.Add, MadLib.JokerLists.RankType.Random, MadLib.JokerLists.SuitType.Random },
-            ['penrose_stairs']      = { MadLib.JokerLists.Probability, MadLib.JokerLists.Effect.Card },
-            ['quick_brown_fox']     = { MadLib.JokerLists.Chips.Add,  MadLib.JokerLists.Scaling.Chips },
-            ['house_of_cards']      = { MadLib.JokerLists.Chips.Add,  MadLib.JokerLists.Scaling.Chips, MadLib.JokerLists.Probability },
+            ['j_rgmc_lady_liberty']        = { MadLib.JokerLists.Effect.Card },
+            ['j_rgmc_neighborhood_watch']  = { MadLib.JokerLists.Money.Add, MadLib.JokerLists.RankType.Random, MadLib.JokerLists.SuitType.Random },
+            ['j_rgmc_penrose_stairs']      = { MadLib.JokerLists.Probability, MadLib.JokerLists.Effect.Card },
+            ['j_rgmc_quick_brown_fox']     = { MadLib.JokerLists.Chips.Add,  MadLib.JokerLists.Scaling.Chips },
+            ['j_rgmc_house_of_cards']      = { MadLib.JokerLists.Chips.Add,  MadLib.JokerLists.Scaling.Chips, MadLib.JokerLists.Probability },
 
-            ['glass_michel']        = { MadLib.JokerLists.Probability, MadLib.JokerLists.Retrigger.Card },
-            ['chinese_takeout']     = { MadLib.JokerLists.Mult.Add, MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Chips.Multiply, MadLib.JokerLists.Food },
-            ['easter_egg']          = { MadLib.JokerLists.Effect.Card, MadLib.JokerLists.Scaling.Other },
-            ['null_and_void']       = { MadLib.JokerLists.Effect.Joker },
-            ['pretentious_joker']   = { MadLib.JokerLists.Mult.Add },
+            ['j_rgmc_glass_michel']        = { MadLib.JokerLists.Probability, MadLib.JokerLists.Retrigger.Card },
+            ['j_rgmc_chinese_takeout']     = { MadLib.JokerLists.Mult.Add, MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Chips.Multiply, MadLib.JokerLists.Food },
+            ['j_rgmc_easter_egg']          = { MadLib.JokerLists.Effect.Card, MadLib.JokerLists.Scaling.Other },
+            ['j_rgmc_null_and_void']       = { MadLib.JokerLists.Effect.Joker },
+            ['j_rgmc_pretentious_joker']   = { MadLib.JokerLists.Mult.Add },
 
-            ['deceitful_joker']     = { MadLib.JokerLists.Mult.Add },
-            ['pentagon']            = { MadLib.JokerLists.Mult.Add },
-            ['cup_of_joeker']       = { MadLib.JokerLists.Generative.Consumable },
-            ['barbershop_joker']    = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Suit.Random, MadLib.JokerLists.Rank.Random },
-            ['supreme_with_cheese'] = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Food },
+            ['j_rgmc_deceitful_joker']     = { MadLib.JokerLists.Mult.Add },
+            ['j_rgmc_pentagon']            = { MadLib.JokerLists.Mult.Add },
+            ['j_rgmc_cup_of_joeker']       = { MadLib.JokerLists.Generative.Consumable },
+            ['j_rgmc_barbershop_joker']    = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Suit.Random, MadLib.JokerLists.Rank.Random },
+            ['j_rgmc_supreme_with_cheese'] = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Food },
 
-            ['red_dacca']           = { MadLib.JokerLists.Mult.Exponent, MadLib.JokerLists.Probability, MadLib.JokerLists.Food, MadLib.JokerLists.Cavendish },
-            ['bluenana']            = { MadLib.JokerLists.Chips.Multiply, MadLib.JokerLists.Probability, MadLib.JokerLists.Food, MadLib.JokerLists.Cavendish },
-            ['changing_had']        = { MadLib.JokerLists.Retrigger.Card },
-            ['ball_breaker']        = { MadLib.JokerLists.Chips.Add,  MadLib.JokerLists.Scaling.Chips },
-            ['thorium_joker']       = { MadLib.JokerLists.Effect.Card },
+            ['j_rgmc_red_dacca']           = { MadLib.JokerLists.Mult.Exponent, MadLib.JokerLists.Probability, MadLib.JokerLists.Food, MadLib.JokerLists.Cavendish },
+            ['j_rgmc_bluenana']            = { MadLib.JokerLists.Chips.Multiply, MadLib.JokerLists.Probability, MadLib.JokerLists.Food, MadLib.JokerLists.Cavendish },
+            ['j_rgmc_changing_had']        = { MadLib.JokerLists.Retrigger.Card },
+            ['j_rgmc_ball_breaker']        = { MadLib.JokerLists.Chips.Add,  MadLib.JokerLists.Scaling.Chips },
+            ['j_rgmc_thorium_joker']       = { MadLib.JokerLists.Effect.Card },
 
-            ['twinkle_of_contagion']    = { MadLib.JokerLists.Effect.Card },
-            ['iron_joker']          = { MadLib.JokerLists.Chips.Add },
-            ['tungsten_joker']      = { MadLib.JokerLists.Mult.Add },
-            ['jeweler_joker']       = { MadLib.JokerLists.Mult.Multiply },
-            ['plentiful_ametrine'] = { MadLib.JokerLists.Mult.Add, MadLib.JokerLists.Probability, MadLib.JokerLists.Scaling.Mult },
+            ['j_rgmc_twinkle_of_contagion']    = { MadLib.JokerLists.Effect.Card },
+            ['j_rgmc_iron_joker']          = { MadLib.JokerLists.Chips.Add },
+            ['j_rgmc_tungsten_joker']      = { MadLib.JokerLists.Mult.Add },
+            ['j_rgmc_jeweler_joker']       = { MadLib.JokerLists.Mult.Multiply },
+            ['j_rgmc_plentiful_ametrine'] = { MadLib.JokerLists.Mult.Add, MadLib.JokerLists.Probability, MadLib.JokerLists.Scaling.Mult },
 
-            ['toughened_shungite']  = { MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Probability, MadLib.JokerLists.Scaling.Chips },
-            ['six_shooter']         = { MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Probability, MadLib.JokerLists.Scaling.Chips, MadLib.JokerLists.Rank['6'], MadLib.JokerLists.Destructive.Joker},
-            ['conspiracy_wizard']   = { MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Mult.Add, MadLib.JokerLists.SuitType.Random, MadLib.JokerLists.RankType.Random},
-            ['cavalier']            = { MadLib.JokerLists.Chips.Multiply },
-            ['blindfold_joker']     = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Descaling },
+            ['j_rgmc_toughened_shungite']  = { MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Probability, MadLib.JokerLists.Scaling.Chips },
+            ['j_rgmc_six_shooter']         = { MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Probability, MadLib.JokerLists.Scaling.Chips, MadLib.JokerLists.Rank['j_rgmc_6'], MadLib.JokerLists.Destructive.Joker},
+            ['j_rgmc_conspiracy_wizard']   = { MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Mult.Add, MadLib.JokerLists.SuitType.Random, MadLib.JokerLists.RankType.Random},
+            ['j_rgmc_cavalier']            = { MadLib.JokerLists.Chips.Multiply },
+            ['j_rgmc_blindfold_joker']     = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Descaling },
 
-            ['crystal_cola']        = { MadLib.JokerLists.Sell, MadLib.JokerLists.Generative.Misc },
-            ['sigma_joker']         = { MadLib.JokerLists.Mult.Multiply },
-            ['venn_diagram']        = { MadLib.JokerLists.Retrigger.Card },
-            ['continuum']           = { MadLib.JokerLists.Retrigger.Card, MadLib.JokerLists.Rank['8'] },
-            ['three_trees']         = { MadLib.JokerLists.Mult.Multiply },
+            ['j_rgmc_crystal_cola']        = { MadLib.JokerLists.Sell, MadLib.JokerLists.Generative.Misc },
+            ['j_rgmc_sigma_joker']         = { MadLib.JokerLists.Mult.Multiply },
+            ['j_rgmc_venn_diagram']        = { MadLib.JokerLists.Retrigger.Card },
+            ['j_rgmc_continuum']           = { MadLib.JokerLists.Retrigger.Card, MadLib.JokerLists.Rank['j_rgmc_8'] },
+            ['j_rgmc_three_trees']         = { MadLib.JokerLists.Mult.Multiply },
 
-            ['jimbos_funeral']      = { MadLib.JokerLists.Effect.Game },
-            ['shovel_joker']        = { MadLib.JokerLists.Mult.Multiply },
-            ['rhodochrosite']       = { MadLib.JokerLists.Mult.Add, MadLib.JokerLists.Chips.Add },
-            ['waveworx']            = { MadLib.JokerLists.Effect.PokerHand, MadLib.JokerLists.HandType['Straight'] },
-            ['la_jokeonde']         = { MadLib.JokerLists.Effect.Card },
+            ['j_rgmc_jimbos_funeral']      = { MadLib.JokerLists.Effect.Game },
+            ['j_rgmc_shovel_joker']        = { MadLib.JokerLists.Mult.Multiply },
+            ['j_rgmc_rhodochrosite']       = { MadLib.JokerLists.Mult.Add, MadLib.JokerLists.Chips.Add },
+            ['j_rgmc_waveworx']            = { MadLib.JokerLists.Effect.PokerHand, MadLib.JokerLists.HandType['j_rgmc_Straight'] },
+            ['j_rgmc_la_jokeonde']         = { MadLib.JokerLists.Effect.Card },
 
-            ['miracle_pop']         = { MadLib.JokerLists.Chips.Add,  MadLib.JokerLists.Scaling.Chips, MadLib.JokerLists.Sell, MadLib.JokerLists.Effect.Card },
-            ['doom_bunny']          = { MadLib.JokerLists.Effect.Card },
-            ['rocket_keychain']     = { MadLib.JokerLists.Effect.PokerHand },
-            ['legend_rio']          = { MadLib.JokerLists.Effect.Card },
-            ['legend_picky']        = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Scaling.Mult },
+            ['j_rgmc_miracle_pop']         = { MadLib.JokerLists.Chips.Add,  MadLib.JokerLists.Scaling.Chips, MadLib.JokerLists.Sell, MadLib.JokerLists.Effect.Card },
+            ['j_rgmc_doom_bunny']          = { MadLib.JokerLists.Effect.Card },
+            ['j_rgmc_rocket_keychain']     = { MadLib.JokerLists.Effect.PokerHand },
+            ['j_rgmc_legend_rio']          = { MadLib.JokerLists.Effect.Card },
+            ['j_rgmc_legend_picky']        = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Scaling.Mult },
 
-            ['primordial_joker']    = { MadLib.JokerLists.Mult.Add },
-            ['liberty_bell']        = { MadLib.JokerLists.Effect.Card },
-            ['joker_in_binary']     = { MadLib.JokerLists.Effect.Card },
-            ['sticker_shock']       = { MadLib.JokerLists.Chips.Add },
-            ['bolstered_joker']     = { MadLib.JokerLists.Mult.Add },
+            ['j_rgmc_primordial_joker']    = { MadLib.JokerLists.Mult.Add },
+            ['j_rgmc_liberty_bell']        = { MadLib.JokerLists.Effect.Card },
+            ['j_rgmc_joker_in_binary']     = { MadLib.JokerLists.Effect.Card },
+            ['j_rgmc_sticker_shock']       = { MadLib.JokerLists.Chips.Add },
+            ['j_rgmc_bolstered_joker']     = { MadLib.JokerLists.Mult.Add },
 
-            ['fortified_joker']     = { MadLib.JokerLists.Chips.Add },
-            ['nope_joker']          = { MadLib.JokerLists.Effect.Probability, MadLib.JokerLists.Effect.Card },
-            ['solar_eclipse']       = { MadLib.JokerLists.SuitType.Light},
-            ['lunar_eclipse']       = { MadLib.JokerLists.SuitType.Dark },
+            ['j_rgmc_fortified_joker']     = { MadLib.JokerLists.Chips.Add },
+            ['j_rgmc_nope_joker']          = { MadLib.JokerLists.Effect.Probability, MadLib.JokerLists.Effect.Card },
+            ['j_rgmc_solar_eclipse']       = { MadLib.JokerLists.SuitType.Light},
+            ['j_rgmc_lunar_eclipse']       = { MadLib.JokerLists.SuitType.Dark },
 
-            ['radioactive_chinese'] = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Chips.Multiply, MadLib.JokerLists.Score.Multiply, MadLib.JokerLists.Score.Exponent, MadLib.JokerLists.Food },
+            ['j_rgmc_radioactive_chinese'] = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Chips.Multiply, MadLib.JokerLists.Score.Multiply, MadLib.JokerLists.Score.Exponent, MadLib.JokerLists.Food },
 
-            ['outrageous_joker']    = { MadLib.JokerLists.Mult.Add },
-            ['flamboyant_joker']    = { MadLib.JokerLists.Chips.Add },
-            ['voracious_joker']     = { MadLib.JokerLists.Mult.Add },
-            ['arrogant_joker']      = { MadLib.JokerLists.Mult.Add },
-            ['captain_viridian']    = { MadLib.JokerLists.Mult.Add },
+            ['j_rgmc_outrageous_joker']    = { MadLib.JokerLists.Mult.Add },
+            ['j_rgmc_flamboyant_joker']    = { MadLib.JokerLists.Chips.Add },
+            ['j_rgmc_voracious_joker']     = { MadLib.JokerLists.Mult.Add },
+            ['j_rgmc_arrogant_joker']      = { MadLib.JokerLists.Mult.Add },
+            ['j_rgmc_captain_viridian']    = { MadLib.JokerLists.Mult.Add },
 
-            ['balutro']             = { MadLib.JokerLists.Retrigger.Cards },
-            ['vibrant_tourmaline']  = { MadLib.JokerLists.Money.Add, MadLib.JokerLists.Probability, MadLib.JokerLists.Scaling.Money },
-            ['obsidian_blade']      = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Probability, MadLib.JokerLists.Scaling.Mult },
-            ['made_of_honor']       = { MadLib.JokerLists.Generative.Card },
-            ['jestrogen']           = { MadLib.JokerLists.Probability, MadLib.JokerLists.Effect.Card },
+            ['j_rgmc_balutro']             = { MadLib.JokerLists.Retrigger.Cards },
+            ['j_rgmc_vibrant_tourmaline']  = { MadLib.JokerLists.Money.Add, MadLib.JokerLists.Probability, MadLib.JokerLists.Scaling.Money },
+            ['j_rgmc_obsidian_blade']      = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Probability, MadLib.JokerLists.Scaling.Mult },
+            ['j_rgmc_made_of_honor']       = { MadLib.JokerLists.Generative.Card },
+            ['j_rgmc_jestrogen']           = { MadLib.JokerLists.Probability, MadLib.JokerLists.Effect.Card },
 
-            ['pogladontasaurus']    = { MadLib.JokerLists.Effect.Card, MadLib.JokerLists.Rank['4'] },
-            ['sanguine']            = { MadLib.JokerLists.Mult.Multiply },
-            ['stonebound']          = { MadLib.JokerLists.Chips.Add },
-            ['metallurgist']        = { MadLib.JokerLists.Retrigger.Cards },
-            ['cosmamancer']         = { MadLib.JokerLists.Generative.Consumable },
+            ['j_rgmc_pogladontasaurus']    = { MadLib.JokerLists.Effect.Card, MadLib.JokerLists.Rank['j_rgmc_4'] },
+            ['j_rgmc_sanguine']            = { MadLib.JokerLists.Mult.Multiply },
+            ['j_rgmc_stonebound']          = { MadLib.JokerLists.Chips.Add },
+            ['j_rgmc_metallurgist']        = { MadLib.JokerLists.Retrigger.Cards },
+            ['j_rgmc_cosmamancer']         = { MadLib.JokerLists.Generative.Consumable },
 
-            ['arkose_michel']       = { MadLib.JokerLists.Mult.Add, MadLib.JokerLists.Probability, MadLib.JokerLists.Food },
-            ['catch_the_clown']     = { MadLib.JokerLists.Effect.Card, MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Scaling.Chips },
-            ['all_star_joker']      = { MadLib.JokerLists.Money.Add },
-            ['microfiche']          = { MadLib.JokerLists.Chips.Multiply, MadLib.JokerLists.Scaling.Chips },
-            ['squash_keychain']     = { MadLib.JokerLists.Generative.Consumable },
+            ['j_rgmc_arkose_michel']       = { MadLib.JokerLists.Mult.Add, MadLib.JokerLists.Probability, MadLib.JokerLists.Food },
+            ['j_rgmc_catch_the_clown']     = { MadLib.JokerLists.Effect.Card, MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Scaling.Chips },
+            ['j_rgmc_all_star_joker']      = { MadLib.JokerLists.Money.Add },
+            ['j_rgmc_microfiche']          = { MadLib.JokerLists.Chips.Multiply, MadLib.JokerLists.Scaling.Chips },
+            ['j_rgmc_squash_keychain']     = { MadLib.JokerLists.Generative.Consumable },
 
-            ['penumbral']           = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.SuitType.Dark },
-            ['photovoltaic']        = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.SuitType.Light },
-            ['palette']             = { MadLib.JokerLists.Mult.Multiply },
-            ['streemerz']           = { MadLib.JokerLists.Effect.Card },
-            ['formation']           = { MadLib.JokerLists.Mult.Multiply },
+            ['j_rgmc_penumbral']           = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.SuitType.Dark },
+            ['j_rgmc_photovoltaic']        = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.SuitType.Light },
+            ['j_rgmc_palette']             = { MadLib.JokerLists.Mult.Multiply },
+            ['j_rgmc_streemerz']           = { MadLib.JokerLists.Effect.Card },
+            ['j_rgmc_formation']           = { MadLib.JokerLists.Mult.Multiply },
 
-            ['jonster_cola']        = { MadLib.JokerLists.Sell, MadLib.JokerLists.Generative.Card },
-            ['xray_goggles']        = { MadLib.JokerLists.Probability, MadLib.JokerLists.Effect.Game },
-            ['weighted_die']        = { MadLib.JokerLists.Probability, MadLib.JokerLists.Effect.Game },
-            ['roshambo']            = { MadLib.JokerLists.Effect.Card },
-            ['lucky_troll_doll']    = { MadLib.JokerLists.Effect.Card },
+            ['j_rgmc_jonster_cola']        = { MadLib.JokerLists.Sell, MadLib.JokerLists.Generative.Card },
+            ['j_rgmc_xray_goggles']        = { MadLib.JokerLists.Probability, MadLib.JokerLists.Effect.Game },
+            ['j_rgmc_weighted_die']        = { MadLib.JokerLists.Probability, MadLib.JokerLists.Effect.Game },
+            ['j_rgmc_roshambo']            = { MadLib.JokerLists.Effect.Card },
+            ['j_rgmc_lucky_troll_doll']    = { MadLib.JokerLists.Effect.Card },
 
-            ['cat_planet']          = { MadLib.JokerLists.Effect.Game },
-            ['golden_house']        = { MadLib.JokerLists.Destructive.Consumable, MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Mult.Add },
-            ['spam']                = { MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Mult.Add, MadLib.JokerLists.Probability, MadLib.JokerLists.Food  },
-            ['lobster_thermidor']   = { MadLib.JokerLists.Score.Exponent, MadLib.JokerLists.Scaling.Score, MadLib.JokerLists.Food, MadLib.JokerLists.Cavendish },
-            ['chicken_jokey']       = { MadLib.JokerLists.Generative.Joker, MadLib.JokerLists.Probability },
+            ['j_rgmc_cat_planet']          = { MadLib.JokerLists.Effect.Game },
+            ['j_rgmc_golden_house']        = { MadLib.JokerLists.Destructive.Consumable, MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Mult.Add },
+            ['j_rgmc_spam']                = { MadLib.JokerLists.Chips.Add, MadLib.JokerLists.Mult.Add, MadLib.JokerLists.Probability, MadLib.JokerLists.Food  },
+            ['j_rgmc_lobster_thermidor']   = { MadLib.JokerLists.Score.Exponent, MadLib.JokerLists.Scaling.Score, MadLib.JokerLists.Food, MadLib.JokerLists.Cavendish },
+            ['j_rgmc_chicken_jokey']       = { MadLib.JokerLists.Generative.Joker, MadLib.JokerLists.Probability },
 
-            ['jegg_jarton']             = { MadLib.JokerLists.Generative.Joker, MadLib.JokerLists.Probability },
-            ['taking_bacteria_john']    = { MadLib.JokerLists.Generative.Card, MadLib.JokerLists.Probability },
-            ['legend_foreman']          = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Scaling.Mult },
-            ['legend_bobby']            = { MadLib.JokerLists.Effect.Card, MadLib.JokerLists.Destructive.Card },
-            ['legend_lollipop']         = { -- see if you can just have this scan through all food jokers?
+            ['j_rgmc_jegg_jarton']             = { MadLib.JokerLists.Generative.Joker, MadLib.JokerLists.Probability },
+            ['j_rgmc_taking_bacteria_john']    = { MadLib.JokerLists.Generative.Card, MadLib.JokerLists.Probability },
+            ['j_rgmc_legend_foreman']          = { MadLib.JokerLists.Mult.Multiply, MadLib.JokerLists.Scaling.Mult },
+            ['j_rgmc_legend_bobby']            = { MadLib.JokerLists.Effect.Card, MadLib.JokerLists.Destructive.Card },
+            ['j_rgmc_legend_lollipop']         = { -- see if you can just have this scan through all food jokers?
                 MadLib.JokerLists.Chips.Add,
                 MadLib.JokerLists.Chips.Multiply,
                 MadLib.JokerLists.Chips.Exponent,
@@ -154,22 +154,22 @@ return {
         },
         PointValues = {
             Editions = {
-                ['iridescent']  = 9,
-                ['infernal']    = 10,
-                ['chrome']      = 7,
-                ['disco']       = 13,
+                ['e_rgmc_iridescent']  = 9,
+                ['e_rgmc_infernal']    = 10,
+                ['e_rgmc_chrome']      = 7,
+                ['e_rgmc_disco']       = 13,
             },
             Enhancements = {
-                ['ferrous']     = 5,
-                ['wolfram']     = 7,
-                ['lustrous']    = 9,
-                ['bismuth']     = 9,
+                ['e_rgmc_ferrous']     = 5,
+                ['e_rgmc_wolfram']     = 7,
+                ['e_rgmc_lustrous']    = 9,
+                ['e_rgmc_bismuth']     = 9,
             },
         },
         RankCompat = { },
         RankTypes = { -- do string (id will be appended later)
-            Irregular   = { 'sum', 'infinity', 'x' },
-            Face        = { 'knight' },
+            Irregular   = { 'rgmc_Sum', 'rgmc_Infinity', 'rgmc_x' },
+            Face        = { 'rgmc_Knight' },
         },
         RarityValues = {
             ['rgmc_gimmick'] = {
@@ -192,17 +192,30 @@ return {
             Boosters = {
             },
             Editions = {
-                ['iridescent']  = 1,
-                ['infernal']    = 1,
-                ['chrome']      = 1,
-                ['disco']       = 1,
+                ['e_rgmc_iridescent']  = 1,
+                ['e_rgmc_infernal']    = 1,
+                ['e_rgmc_chrome']      = 1,
+                ['e_rgmc_disco']       = 1,
             },
             Enhancements = {
-                ['ferrous']     = 2,
-                ['wolfram']     = 2,
-                ['lustrous']    = 1,
-                ['bismuth']     = 1,
+                ['m_rgmc_ferrous']     = 2,
+                ['m_rgmc_wolfram']     = 2,
+                ['m_rgmc_lustrous']    = 1,
+                ['m_rgmc_bismuth']     = 1,
             }
+        },
+        SuitConversions = {
+            LightAndDark = {
+                ['rgmc_goblets']    = 'rgmc_towers',
+                ['rgmc_blooms']     = 'rgmc_daggers',
+                ['rgmc_daggers']    = 'rgmc_blooms',
+                ['rgmc_towers']     = 'rgmc_goblets'
+            },
+        },
+        SuitTypes = {
+            ['Light']       = { 'rgmc_goblets', 'rgmc_blooms' },
+            ['Dark']        = { 'rgmc_towers', 'rgmc_daggers' },
+            ['Special']     = { 'rgmc_voids', 'rgmc_lanterns' }
         },
     },
     init = function(c)
@@ -211,14 +224,14 @@ return {
         local UnStable = SMODS.find_mod("Unstable")
 
         -- transfers custom hand types - spectrum depends on mods added (goes by madlib's spectrum priority)
-        local Pyramid       = p..'pyramid'
+        local Pyramid       = pr..'pyramid'
         local Spectrum      = MadLib.SpectrumId..'Spectrum'
         local joker_poker_hands = {
-            ['bolstered_joker']     = { Pyramid }, -- also includes flush pyramid, spectrum pyramid
-            ['fortified_joker']     = { Pyramid },
-            ['solar_eclipse']       = { Spectrum },
-            ['lunar_eclipse']       = { Spectrum },
-            ['formation']           = { Pyramid },
+            ['j_rgmc_bolstered_joker']     = { Pyramid }, -- also includes flush pyramid, spectrum pyramid
+            ['j_rgmc_fortified_joker']     = { Pyramid },
+            ['j_rgmc_solar_eclipse']       = { Spectrum },
+            ['j_rgmc_lunar_eclipse']       = { Spectrum },
+            ['j_rgmc_formation']           = { Pyramid },
         }
 
         -- transfer custom suits without having to use the mod id prefix 100 times
@@ -229,17 +242,17 @@ return {
         local Voids     = pr..'voids'
         local Lanterns  = pr..'lanterns'
         local joker_suits = {
-            ['smeared']             = { Goblets, Towers, Blooms, Daggers },
-            ['pretentious_joker']   = { Goblets },
-            ['deceitful_joker']     = { Towers },
-            ['voracious_joker']     = { Blooms },
-            ['arrogant_joker']      = { Daggers },
-            ['plentiful_ametrine']  = { Goblets },
-            ['toughened_shungite']  = { Towers },
-            ['vibrant_tourmaline']  = { Blooms },
-            ['obsidian_blade']      = { Daggers },
-            ['legend_foreman']      = { Goblets },
-            ['legend_bobby']        = { Towers },
+            ['j_smeared']                   = { Goblets, Towers, Blooms, Daggers },
+            ['j_rgmc_pretentious_joker']    = { Goblets },
+            ['j_rgmc_deceitful_joker']      = { Towers },
+            ['j_rgmc_voracious_joker']      = { Blooms },
+            ['j_rgmc_arrogant_joker']       = { Daggers },
+            ['j_rgmc_plentiful_ametrine']   = { Goblets },
+            ['j_rgmc_toughened_shungite']   = { Towers },
+            ['j_rgmc_vibrant_tourmaline']   = { Blooms },
+            ['j_rgmc_obsidian_blade']       = { Daggers },
+            ['j_rgmc_legend_foreman']       = { Goblets },
+            ['j_rgmc_legend_bobby']         = { Towers },
         }
 
         -- ditto, but with joker ranks (uses unstable id for conflicting ranks if unstable is added)
@@ -257,80 +270,70 @@ return {
         local n15       = pr..'15'
         local n16       = pr..'16'
         local n32       = pr..'32'
-        local Knight    = pr..'knight'
-        local Sum       = pr..'sum'
+        local Knight    = pr..'Knight'
+        local Sum       = pr..'Sum'
+
+        
 
         local joker_ranks = {
-            ['joker_squared']       = { '4', '9', n16, n25 },
-            ['pentagon']            = { 'Ace', '1', '5', n12 },
-            ['ball_breaker']        = { 'Ace', '2', '3', '5', '8', n13, n21},
-            ['cavalier']            = { Knight },
-            ['sigma_joker']         = { Sum },
-            ['shovel_joker']        = { Knight },
-            ['legend_rio']          = { 'Ace', 'King', 'Queen' },
-            ['joker_in_binary']     = { n0, n1 },
-            ['balutro']             = { n1, '2', '5', n11, n12, n15, n21, n25 },
-            ['microfiche']          = { nHalf },
+            ['j_rgmc_joker_squared']       = { '4', '9', n16, n25 },
+            ['j_rgmc_pentagon']            = { 'Ace', '1', '5', n12 },
+            ['j_rgmc_ball_breaker']        = { 'Ace', '2', '3', '5', '8', n13, n21},
+            ['j_rgmc_cavalier']            = { Knight },
+            ['j_rgmc_sigma_joker']         = { Sum },
+            ['j_rgmc_shovel_joker']        = { Knight },
+            ['j_rgmc_legend_rio']          = { 'Ace', 'King', 'Queen' },
+            ['j_rgmc_joker_in_binary']     = { n0, n1 },
+            ['j_rgmc_balutro']             = { n1, '2', '5', n11, n12, n15, n21, n25 },
+            ['j_rgmc_microfiche']          = { nHalf },
         }
 
         -- Add the new ranks to the Jokers
         local vanilla_rank_mods = {
-            ['odd_todd']        = { n15 },
-            ['even_steven']     = { n14, n16 },
+            ['j_odd_todd']        = { n15 },
+            ['j_even_steven']     = { n14, n16 },
         }
 
         local vanilla_suit_mods = {
-            ['smeared']         = { Goblets, Towers, Blooms, Daggers },
+            ['j_smeared']         = { Goblets, Towers, Blooms, Daggers },
         }
 
         -- In case UnStable is NOT installed.
         if not UnStable then
-            MadLib.merge_into_list(c.RankCompat, {
-                '0', '0.5', '1', '11', '12', '13', '21', '25'
-            })
+            MadLib.loop_func({ '0', '0.5', '1', '11', '12', '13', '21', '25' }, function(v)
+                c.content.RankCompat[v] = c.prefix .. '_' .. v
+            end)
 
             MadLib.merge_into_list(vanilla_rank_mods, {
-                ['fibonacci']       = { n1, n13, n21 },
-                ['odd_todd']        = { n1, n11, n13, n21, n25},
-                ['even_steven']     = { n12 },
+                ['j_fibonacci']       = { n1, n13, n21 },
+                ['j_odd_todd']        = { n1, n11, n13, n21, n25},
+                ['j_even_steven']     = { n12 },
             })
         end
+
+        MadLib.loop_func({ '14', '15', '16', '32', 'Knight', 'Sum', 'x', 'Infinity' }, function(v)
+            c.content.RankCompat[v] = c.prefix .. '_' .. v
+        end) 
 
         --[[
             CRYPTID CROSSMOD
         ]]
         if SMODS.find_mod("Cryptid") then
             local cryptid_crossmod = { -- add cry_
-                ['thad']        = { MadLib.JokerLists.Effect.Joker }, -- force trigger =/= retrigger
-                ['danvas']      = { MadLib.JokerLists.Effect.Joker },
+                ['j_rgmc_cry_thad']        = { MadLib.JokerLists.Effect.Joker }, -- force trigger =/= retrigger
+                ['j_rgmc_cry_danvas']      = { MadLib.JokerLists.Effect.Joker },
             }
 
             local cryptid_crossmod_ranks = {
-                ['weefib']      = vanilla_rank_mods['fibonacci'],   -- just copy the fibonacci numbers!
-                ['primus']      = { n13, n21 }  -- add more prime numbers
+                ['j_cry_weefib']      = vanilla_rank_mods['fibonacci'],   -- just copy the fibonacci numbers!
+                ['j_cry_primus']      = { n13, n21 }  -- add more prime numbers
             }
         end
 
-        table.insert(MadLib.SuitTypes.Light, Goblets)
-        table.insert(MadLib.SuitTypes.Dark, Towers)
-        table.insert(MadLib.SuitTypes.Light, Blooms)
-        table.insert(MadLib.SuitTypes.Dark, Daggers)
-
-        local light_dark_conversions = {
-            Goblets     = Towers,
-            Towers      = Goblets,
-            Blooms      = Daggers,
-            Daggers     = Blooms
-        }
-
-        for k,v in pairs(light_dark_conversions) do
-            MadLib.SuitConversions[k] = v
-        end
-
-        MadLib.loop_table_func(joker_poker_hands, function(k,v) table.insert(c.JokerCategories[k], MadLib.JokerLists.HandType[v]) end)
+        MadLib.loop_table(joker_poker_hands, function(k,v) table.insert(c.content.JokerCategories[k], MadLib.JokerLists.HandType[v]) end)
         MadLib.transfer_to_new_table(joker_suits,c.content.JokerSuits)
         MadLib.transfer_to_new_table(joker_ranks,c.content.JokerRanks)
 
-		return true
+		return c
     end,
 }
