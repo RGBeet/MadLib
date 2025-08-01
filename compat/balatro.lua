@@ -199,8 +199,8 @@ return {
             Editions = {
                 ['e_foil']        = 5,
                 ['e_holo']        = 7,
-                ['e_polychrome']  = 9,
-                ['e_negative']    = 8,
+                ['e_polychrome']  = 8,
+                ['e_negative']    = 9,
             },
             Enhancements = {
                 ['m_bonus']   = 2,

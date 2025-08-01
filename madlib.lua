@@ -501,6 +501,10 @@ function MadLib.compare_ids(v1,v2,id)
     return id1 ~= nil and id1 == id2
 end
 
+function MadLib.get_id(v1,id)
+    return v1.ids and v1.ids[id or 'default']
+end
+
 --[[
     FOR LOOP FUNCTIONS
     Just a fancy way of doing for-loops in one line!
@@ -1314,63 +1318,6 @@ function MadLib.get_values_from_key(list,check,func)
     end
     return nil
 end
-
--- [Return BOOL] Does a random using a set of parameters.
--- Requires a card or "denom", but also takes custom numerator.
-function MadLib.calculate_roll(params)
-    if not params then return false end
-
-    local card = params.card or nil
-
-    local denom = params.denom or card and (card.ability.odds or (card.ability.extra and card.ability.extra.odds) or (card.ability.immutable and card.ability.immutable.odds)) or 2
-    local numer = (params.card and MadLib.base_prob(card)) or params.numer or G.GAME.probabilities.normal or 0
-    local exp   = params.exp or 1
-
-    --print('prob is ' .. tostring(G.GAME.probabilities.normal))
-
-    if params.card then
-        print('base card type shit is ' .. tostring(MadLib.base_prob(card)))
-    end
-
-    --print('numer is ' .. tostring(numer))
-
-    --tell('Denom is ' .. tostring(denom))
-    --tell('Card Denom is ' .. tostring(card and (card.ability.odds or card.ability.extra.odds or card.ability.immutable.odds)))
-
-    local roll, ceiling = pseudorandom(pseudoseed(params.seed or 'rgmc')), (numer ^ exp) / denom
-    local final
-
-    if params.card then -- Uses a card
-        if Cryptid then
-            numer = params.numer or (G.GAME and G.GAME.probabilities.normal or 1) * params.card.ability.cry_prob
-            --numer = cry_prob(card.ability.cry_prob, card.ability.extra.odds, card.ability.cry_rigged)
-            -- If no denominator is dictated, looks for card odds or drops a 1 in 2.
-            ceiling = (numer ^ exp) / denom
-            final = params.card.ability.cry_rigged or roll < ceiling
-        else
-            final = roll < ceiling
-        end
-    else
-        final = roll < ceiling
-    end
-    --tell('Numerator is ' .. tostring(numer) .. ", Denominator is " .. tostring(denom) .. '.')
-    --tell('Roll was ' .. tostring(roll) .. '.')
-    --tell('Ceiling was ' .. tostring(ceiling) .. '.')
-    tell(tostring(numer) .. ' in ' .. tostring(denom) .. ', ' ..
-        tostring(roll) .. ' < ' .. tostring(ceiling) .. ' = ' .. tostring(final) .. '.')
-
-    return final
-end
-
--- [Return BOOL] Does a random based on card and seed (if provided!)
-function MadLib.calculate_card_odds(c, s)
-    return MadLib.calculate_roll({
-        card = c,
-        seed = s or 'madlib'
-    })
-end
-
-
 --[[
     SCORE MANIPULATION
     Usually done after scoring cards and jokers, but can hypothetically be done
@@ -1429,6 +1376,10 @@ function MadLib.do_e_score(exp, times)
         message = "^" .. tostring(amt),
         colour = G.C.PURPLE
     }
+end
+
+function MadLib.get_moved_index(index,cells,list_length)
+    return (index - 1 + cells) % list_length + 1
 end
 
 -- Adapted from Entropy(?) code - flips a list of cards and modifies them
@@ -2500,17 +2451,6 @@ end
 -- Easy way to return a localized name
 function MadLib.localize_name_text(s,k)
     return localize { type = 'name_text', set = s, key = k }
-end
-
--- Gets base probability - different for Cryptid.
-function MadLib.base_prob(card)
-    return card and (cry_prob
-        and cry_prob(card.ability.cry_prob, card.ability.extra and card.ability.extra.odds or 1, card.ability.cry_rigged)
-        or (G.GAME.probabilities.normal or 1))
-end
-
-function MadLib.base_prob_tag(self)
-    return (G.GAME.probabilities.normal or 1)
 end
 
 --[[

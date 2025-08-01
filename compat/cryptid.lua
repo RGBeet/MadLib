@@ -221,10 +221,10 @@ return {
         },
         PointValues = {
             Editions = {
-                ['e_cry_glitched']        = 10,
-                ['e_cry_mosaic']          = 9,
+                ['e_cry_glitched']        = 11,
+                ['e_cry_mosaic']          = 8,
                 ['e_cry_oversaturated']   = 12,
-                ['e_cry_fragile']         = 11,
+                ['e_cry_fragile']         = 10,
                 ['e_cry_golden']          = 8,
                 ['e_cry_blurred']         = 7,
                 ['e_cry_noisy']           = 9,
