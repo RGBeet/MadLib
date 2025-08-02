@@ -233,7 +233,7 @@ MadLib = {
         },
         ExpScore = {
             key = 'a_powscore',
-            add = 'escore_mod',
+            add = 'Escore_mod',
             set = 'e_score',
             colour = G.C.PURPLE,
             sign = "^",
@@ -245,6 +245,13 @@ MadLib = {
             colour = G.C.GREEN,
             sign = "+^",
         },
+        HandSize = {
+            key = 'h_size',
+            add = 'h_size',
+            set = 'h_size',
+            colour = G.C.ORANGE,
+            sign = "+",
+        },
     },
     ScoreKeySets = { -- Translates
         ['mult' ]       = 'AddMult',
@@ -253,6 +260,7 @@ MadLib = {
         ['x_chips']     = 'MultiChips',
         ['e_mult']      = 'ExpMult',
         ['e_chips']     = 'ExpChips',
+        ['h_size']      = 'HandSize',
     },
     -- Madcap includes cards that convert suits into their "counterparts". If there
     -- are more than two counterparts, randomize!
@@ -1397,7 +1405,7 @@ function MadLib.flip_cards(card_list, func, before, after)
                     if c.flip then c:flip() end
                     -- do sound if there
                     return true
-                end, 0.5, "after")
+                end, 2.0, "after")
             end
         end
     elseif before then
@@ -1410,7 +1418,7 @@ function MadLib.flip_cards(card_list, func, before, after)
                 MadLib.simple_event(function()
                     if func then func(c) end
                     return true
-                end, 0.5, "after")
+                end, 2.0, "after")
             end
         end
     else
@@ -1425,7 +1433,7 @@ function MadLib.flip_cards(card_list, func, before, after)
                     -- do sound if there
                     if after then after(c) end
                     return true
-                end, 0.5, "after")
+                end, 2.0, "after")
             end
         end
     elseif after then
@@ -1442,7 +1450,7 @@ function MadLib.flip_card(c, func, before, after)
             if before then before(c) end
             if c.flip then c:flip() end
             return true
-        end, 0.5, "after")
+        end, 2.0, "after")
     elseif before then
         before(c)
     end
@@ -1451,7 +1459,7 @@ function MadLib.flip_card(c, func, before, after)
         MadLib.simple_event(function()
             if func then func(c) end
             return true
-        end, 0.5, "after")
+        end, 2.0, "after")
     else
         func(c)
     end
@@ -1461,7 +1469,7 @@ function MadLib.flip_card(c, func, before, after)
             if c.flip then c:flip() end
             if after then after(c) end
             return true
-        end, 0.5, "after")
+        end, 2.0, "after")
     elseif after then
         after(c)
     end

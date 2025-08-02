@@ -180,7 +180,8 @@ target = 'functions/state_events.lua'
 pattern = 'local hand = (G.GAME.hands[text])'
 position = 'after'
 match_indent = true
-payload = 'total_chip_score = G.GAME.chips'
+payload = '''total_chip_score = G.GAME.chips
+SMODS.calculate_context({ rgmc_before_scoring = true })'''
 
 
 
