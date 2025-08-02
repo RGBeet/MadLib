@@ -1608,6 +1608,14 @@ function MadLib.get_most_played_hand()
 	return chosen_hand
 end
 
+function MadLib.get_consumeable_usage(_set)
+	if not G.GAME or type(G.GAME.consumeable_usage) ~= 'table' then return 0  end
+	
+    return MadLib.loop_func(G.GAME.consumeable_usage, function(v)
+        return v.set and v.set == _set
+    end)
+end
+
 -- Used to check position in list, returns as integer?
 function MadLib.get_position_in_list(obj,list)
     if not (obj and list) then return -1 end -- uh oh!
