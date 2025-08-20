@@ -764,10 +764,6 @@ function MadLib.ease_score(new_score)
     })
 end
 
-
-local scie = SMODS.calculate_individual_effect
-
-
 function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
     local ret = scie(effect, scored_card, key, amount, from_edition)
 
@@ -878,7 +874,31 @@ function MadLib.xor(a,b)
     return (a and not b) or (not a and b)
 end
 
--- Round number to X decimals.
+-- Quick way to ensure the table will actually work as intended.
+-- Otherwise, it could crash the game!
+local function not_proper_table(table)
+    return table == nil or type(table) ~= 'table'
+end
+
+-- Same as above, but for functions (or funcs for short).
+local function not_proper_func(func)
+    return func == nil or type(func) ~= 'function'
+end
+
+local function not_proper_number(n)
+    return n == nil or type(n) ~= 'number'
+end
+
+-- Rounds to 
+
+--[[function MadLib.round(number, digit_position)
+    local precision = (10 ^ (digit_position or 0))
+    number = number + (precision / 2)
+    return math.floor(number / precision) * precision
+end]]
+
+
+
 function MadLib.round(value, decimals)
     local factor = 10 ^ (math.floor(decimals or 2))
     return math.floor(value * factor + 0.5) / factor
@@ -1374,10 +1394,10 @@ function MadLib.simple_event(_f, _d, _t, _b)
         return false 
     end
     MadLib.event({
-        trigger     = _t, -- or "immediate",
-        delay       = _d, -- or 0.08,
+        trigger     = _t or "immediate",
+        delay       = _d or 0.08,
         func        = _f,
-        blockable   = _b -- or false
+        blockable   = _b or false
     })
     return true
 end
@@ -1492,8 +1512,8 @@ function MadLib.is_composite(n)
     return false
 end
 
-function MadLib.check_pattern_rank(_func, _card)
-    return _card and _func and _func(math.floor(_card.base.nominal) or false) or false
+function MadLib.random_element(table,seed)
+
 end
 
 --[[
@@ -2654,12 +2674,9 @@ function MadLib.dupe_cards(cards,func)
         n:set_seal(v.seal)
         if func then func(v, n) end -- in case you want to do some funky stuff
         table.insert(dupes, n)
-    end)
-    return dupes
-end
+    end
 
-function MadLib.can_use_planet()
-    return true
+    return dupes
 end
 
 -- Returns card info as a table - easier than
@@ -2802,9 +2819,9 @@ function MadLib.randomize_playing_cards(targets, do_animation, args)
         return false 
     end
     Madcap.loop_func(targets, function(v,i)
-        local enhanced  = v:has_enhancement() and args.do_enhancements
-        local editioned = v.edition and args.do_editions
-        local sealed    = v.seal and args.do_seals
+        local enhanced  = v:has_enhancement() or args.do_enhancements
+        local editioned = v:has_enhancement() or args.do_editions
+        local sealed    = v:has_enhancement() or args.do_seals
 
         -- new rank
         -- new suit
@@ -2904,65 +2921,6 @@ function MadLib.check_add_list_entry(_list,_entry)
     end
     return false
 end
-
-function MadLib.get_xor_matches(main_list, compare_list)
-    return MadLib.list_matches_all(main_list, function(v1)
-		return not MadLib.list_matches_one(compare_list, function(v2)
-			return v2 ~= v1
-		end)
-	end)
-end
-
--- Returns a list of all unscoring cards in G.play
-function MadLib.get_unscored_cards(context)
-    if not context or type(context) ~= 'table' or (context.full_hand and context.scoring_hand) then return {} end
-    return MadLib.get_list_matches(context.full_hand, function(v)
-        return list_matches_all(context.scoring_hand, function(v2) return v ~= v2 end)
-    end)
-end
-
-function MadLib.apply_seals(cards,seal)
-    MadLib.loop_func(cards, function(v)
-        MadLib.event({
-            func = function()
-                play_sound('tarot1')
-                v:juice_up(0.3, 0.5)
-                return true
-            end
-        })
-        MadLib.event({
-            trigger = 'after',
-            delay = 0.1,
-            func = function()
-                v:set_seal(seal, nil, true)
-                return true
-            end
-        })
-        delay(0.5)
-        MadLib.simple_event(function()
-            G.hand:unhighlight_all()
-            return true
-        end,0.2,'after')
-    end)
-end
-
--- TODO: Move subhands to Madcap?
-function MadLib.base_cm_mod(hand,poker_info,data)
-    if not hand then return nil end
-    -- For use with Madcap and Pacdam.
-    return hand, poker_info, data
-end
-
-if PTSaka then -- ptsaka
-    MadLib.get_full_score = function(hand_chips, mult)
-        return PTASaka.arrow(G.GAME.payasaka_exponential_count,hand_chips,mult)
-    end
-else -- no ptsaka
-    MadLib.get_full_score = function(hand_chips, mult)
-        return hand_chips * mult
-    end
-end
-
 
 -- File loading based on Cryptid mod lmao
 local errors = {}
