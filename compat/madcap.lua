@@ -104,7 +104,7 @@ return {
             ['j_rgmc_made_of_honor']       = { MadLib.JokerLists.Generative.Card },
             ['j_rgmc_jestrogen']           = { MadLib.JokerLists.Probability, MadLib.JokerLists.Effect.Card },
 
-            ['j_rgmc_pogladontasaurus']    = { MadLib.JokerLists.Effect.Card, MadLib.JokerLists.Rank['j_rgmc_4'] },
+            ['j_rgmc_pogladontasaurus']    = { MadLib.JokerLists.Effect.Card, MadLib.JokerLists.Rank['4'] },
             ['j_rgmc_sanguine']            = { MadLib.JokerLists.Mult.Multiply },
             ['j_rgmc_stonebound']          = { MadLib.JokerLists.Chips.Add },
             ['j_rgmc_metallurgist']        = { MadLib.JokerLists.Retrigger.Cards },
@@ -168,7 +168,7 @@ return {
         },
         RankCompat = { },
         RankTypes = { -- do string (id will be appended later)
-            Irregular   = { 'rgmc_Sum', 'rgmc_Infinity', 'rgmc_x' },
+            Irregular   = { 'rgmc_Sum', 'rgmc_Infinity', 'rgmc_X' },
             Face        = { 'rgmc_Knight' },
         },
         RarityValues = {
@@ -273,7 +273,7 @@ return {
         local Knight    = pr..'Knight'
         local Sum       = pr..'Sum'
 
-        
+
 
         local joker_ranks = {
             ['j_rgmc_joker_squared']       = { '4', '9', n16, n25 },
