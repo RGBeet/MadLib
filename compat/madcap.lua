@@ -209,7 +209,19 @@ return {
                 ['rgmc_goblets']    = 'rgmc_towers',
                 ['rgmc_blooms']     = 'rgmc_daggers',
                 ['rgmc_daggers']    = 'rgmc_blooms',
-                ['rgmc_towers']     = 'rgmc_goblets'
+                ['rgmc_towers']     = 'rgmc_goblets',
+                ['rgmc_voids']      = 'rgmc_lanterns',
+                ['rgmc_lanterns']   = 'rgmc_voids'
+            },
+            BaseAndModded = {
+                ['rgmc_goblets']    = 'Hearts',
+                ['rgmc_blooms']     = 'Diamonds',
+                ['rgmc_daggers']    = 'Clubs',
+                ['rgmc_towers']     = 'Spades',
+                ['Hearts']          = 'rgmc_goblets',
+                ['Diamonds']        = 'rgmc_blooms',
+                ['Clubs']           = 'rgmc_daggers',
+                ['Spades']          = 'rgmc_towers',
             },
         },
         SuitTypes = {

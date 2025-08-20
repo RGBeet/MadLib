@@ -766,7 +766,7 @@ end
 
 local scie = SMODS.calculate_individual_effect
 
-
+--[[
 function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
     local ret = scie(effect, scored_card, key, amount, from_edition)
 
@@ -787,10 +787,9 @@ function SMODS.calculate_individual_effect(effect, scored_card, key, amount, fro
         end
         return true
     end
-
     return ret
 end
-
+]]
 if Talisman then
     scie = SMODS.calculate_individual_effect
 
@@ -1111,18 +1110,16 @@ MadLib.SpectrumId = (Bunco and 'bunc_')
 
 -- Get the light/dark counterpart of the suit.
 function MadLib.suit_get_counterpart_lightdark(suit)
-    local conv = MadLib.SuitConversions.LightAndDark[suit]
+    local conv = pseudorandom_element(MadLib.SuitConversions.LightAndDark[suit], pseudoseed('madlib_lightdark'))
+    print(MadLib.SuitConversions.LightAndDark)
     return conv
-        and (type(conv) ~= table and conv or pseudorandom_element(conv,pseudoseed('madlib_counterpart')))
-        or nil
 end
 
 -- Get the modded/base counterpart of the suit.
 function MadLib.suit_get_counterpart_basemodded(suit)
-    local conv = MadLib.SuitConversions.BaseAndModded[suit]
+    local conv = pseudorandom_element(MadLib.SuitConversions.BaseAndModded[suit], pseudoseed('madlib_basemodded'))
+    print(MadLib.SuitConversions.BaseAndModded)
     return conv
-        and (type(conv) ~= table and conv or pseudorandom_element(conv,pseudoseed('madlib_counterpart')))
-        or nil
 end
 
 -- Turns a number into an ordinal (e.g. 4 -> 4th).
@@ -3026,7 +3023,8 @@ local load_data = function(folder)
                     MadLib.loop_table(content.SuitConversions, function(key,list)
                         MadLib.SuitConversions[key] = MadLib.SuitConversions[key] or {}
                         MadLib.loop_table(list, function(k,v)
-                            MadLib.SuitConversions[key][k] = v
+                            MadLib.SuitConversions[key][k] = MadLib.SuitConversions[key][k] or {}
+                            table.insert(MadLib.SuitConversions[key][k],v)
                         end)
                     end)
                 end
