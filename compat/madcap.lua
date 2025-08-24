@@ -2,11 +2,12 @@ return {
     modid   = 'rgmadcap',
     prefix  = 'rgmc',
     content = {
+        AbstractSuits = { 'rgmc_aesthetic' }
         BanLists = {
             SuperBlinds = {
-                'bl_rgmc_chaos_boss1',
-                'bl_rgmc_chaos_boss2',
-                'bl_rgmc_chaos_boss3',
+                --'bl_rgmc_chaos_boss1',
+                --'bl_rgmc_chaos_boss2',
+                --'bl_rgmc_chaos_boss3',
             },
             Overpowered = {
 
@@ -24,7 +25,6 @@ return {
             ['j_rgmc_squeezy_cheeze']      = { MadLib.JokerLists.Chips.Multiply, MadLib.JokerLists.Food },
             ['j_rgmc_joker_squared']       = { MadLib.JokerLists.Mult.Add },
             ['j_rgmc_spectator']           = { MadLib.JokerLists.Mult.Add },
-
             ['j_rgmc_lady_liberty']        = { MadLib.JokerLists.Effect.Card },
             ['j_rgmc_neighborhood_watch']  = { MadLib.JokerLists.Money.Add, MadLib.JokerLists.RankType.Random, MadLib.JokerLists.SuitType.Random },
             ['j_rgmc_penrose_stairs']      = { MadLib.JokerLists.Probability, MadLib.JokerLists.Effect.Card },

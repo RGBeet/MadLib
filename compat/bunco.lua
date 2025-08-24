@@ -10,14 +10,14 @@ return {
         },
         SuitConversions = {
             LightAndDark = {
-                ['bunc_Fleurons']    = 'bunc_Halberds',
-                ['bunc_Halberds']    = 'bunc_Fleurons',
+                ['bunc_Fleurons']   = 'bunc_Halberds',
+                ['bunc_Halberds']   = 'bunc_Fleurons',
             },
             BaseAndModded = {
-                ['bunc_Fleurons']    = 'bunc_Diamonds',
-                ['bunc_Halberds']    = 'bunc_Clubs',
-                ['bunc_Diamonds']    = 'bunc_Fleurons',
-                ['bunc_Clubs']       = 'bunc_Halberds',
+                ['bunc_Fleurons']   = 'Diamonds',
+                ['bunc_Halberds']   = 'Clubs',
+                ['Diamonds']        = 'bunc_Fleurons',
+                ['Clubs']           = 'bunc_Halberds',
             },
         },
     },

@@ -7,6 +7,7 @@ SMODS.Atlas({
 })
 
 MadLib = {
+    AbstractSuits       = {},
     Prefixes = {
         Boosters        = 'p_',
         Vouchers        = 'v_',
@@ -1110,6 +1111,7 @@ MadLib.SpectrumId = (Bunco and 'bunc_')
 
 -- Get the light/dark counterpart of the suit.
 function MadLib.suit_get_counterpart_lightdark(suit)
+    if not MadLib.SuitConversions.LightAndDark[suit] then return suit end
     local conv = pseudorandom_element(MadLib.SuitConversions.LightAndDark[suit], pseudoseed('madlib_lightdark'))
     print(MadLib.SuitConversions.LightAndDark)
     return conv
@@ -1117,6 +1119,7 @@ end
 
 -- Get the modded/base counterpart of the suit.
 function MadLib.suit_get_counterpart_basemodded(suit)
+    if not MadLib.SuitConversions.BaseAndModded[suit] then return suit end
     local conv = pseudorandom_element(MadLib.SuitConversions.BaseAndModded[suit], pseudoseed('madlib_basemodded'))
     print(MadLib.SuitConversions.BaseAndModded)
     return conv
@@ -2308,13 +2311,38 @@ function MadLib.matches_min_rarity(joker,val,greater)
         or (v1 and v1 > v2 or false)   -- just greater than
 end
 
-
 -- Returns a list of Jokers in the specified cardarea (G.jokers)
 -- which exceed (or equal) the specified requirement
 function MadLib.get_jokers_matching_min_rarity(group, rarity, greater_than)
 	return MadLib.get_list_matches(group or G.jokers.cards, function(v)
         return MadLib.matches_min_rarity(v, rarity, greater_than or false)
 	end)
+end
+
+function MadLib.get_jokers_matching_rarity(rarity, group)
+    group = group or G.jokers.cards
+    if not (group and rarities) then return {} end
+    local jokers = {}
+
+    MadLib.loop_func(group, function(j)
+        if j.config.center.rarity == v then table.insert(jokers,j) end
+    end)
+    return jokers
+end
+
+function MadLib.get_jokers_matching_rarities(rarities, group)
+    group = group or G.jokers.cards
+    if not (group and rarities) then return {} end
+    local jokers = {}
+    MadLib.loop_func(group, function(j)
+        if MadLib.list_matches_one(rarities, function(v)
+            return j.config.center.rarity == v
+        end) then
+            table.insert(jokers,j)
+        end
+    end)
+    --print(#jokers)
+    return jokers
 end
 
 --[[
@@ -2959,6 +2987,51 @@ else -- no ptsaka
     end
 end
 
+function MadLib.chalcard(rank,suit)
+    return { r = rank, s = suit}
+end
+
+function MadLib.challenge_rank_add(deck, rank, quantity)
+    local suit_map = {}
+    MadLib.loop_func(deck, function(m) if m.s and not suit_map[m.s] then suit_map[m.s] = true end end)
+    MadLib.loop_table(suit_map, function(k)
+        MadLib.number_func(quantity or 1, function()
+            table.insert(deck, MadLib.chalcard(rank, k))
+        end)
+    end)
+    return deck
+end
+
+function MadLib.read_list(list,prefix)
+    tell('TABLE READING' .. (prefix and (' - ' .. prefix) or '') .. ':')
+    MadLib.loop_func(list, function(v)
+        print(v)
+    end)
+    tell('END READING')
+    return list
+end
+
+function MadLib.get_base_challenge_deck()
+    local deck = {}
+    MadLib.loop_func({
+        'C','D','H','S'
+    }, function(s)
+        MadLib.loop_func({ '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A' }, function(r)
+            table.insert(deck, MadLib.chalcard{r,s})
+        end)
+    end)
+    return deck
+end
+
+function MadLib.challenge_deck_add(deck,cards)
+    MadLib.loop_func(cards, function(v) table.insert(deck,v) end)
+    return deck
+end
+
+function MadLib.define_get_currency_sell_ui (card)
+    return {n=G.UIT.T, config={text = localize('$'),colour = G.C.WHITE, scale = 0.4, shadow = true}}
+end
+
 
 -- File loading based on Cryptid mod lmao
 local errors = {}
@@ -3061,6 +3134,10 @@ local load_data = function(folder)
                             print('The id for Rank ' .. tostring(k) .. ' is now ' .. tostring(v) .. '.' )
                         end
                     end)
+                end
+                -- a table containing keyed lists
+                if content.AbstractSuits then
+                    MadLib.loop_func(content.AbstractSuits, function(v) table.insert(MadLib.AbstractSuits, v) end)
                 end
             end
 		end

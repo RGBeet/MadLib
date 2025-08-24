@@ -208,3 +208,15 @@ position = 'at'
 payload = '''math.floor(MadLib.get_full_score(hand_chips,mult))'''
 match_indent = true
 times = 10
+
+# get the sell ui thingy idk man
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.T, config={text = localize('$'),colour = G.C.WHITE, scale = 0.4, shadow = true}},'''
+position = 'at'
+payload = '''MadLib.define_get_currency_sell_ui(card),'''
+match_indent = true
+times = 1
+
+
