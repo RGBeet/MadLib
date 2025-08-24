@@ -2,7 +2,7 @@ return {
     modid   = 'rgmadcap',
     prefix  = 'rgmc',
     content = {
-        AbstractSuits = { 'rgmc_aesthetic' }
+        AbstractSuits = { 'rgmc_aesthetic' },
         BanLists = {
             SuperBlinds = {
                 --'bl_rgmc_chaos_boss1',
