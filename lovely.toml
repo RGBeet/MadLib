@@ -219,4 +219,61 @@ payload = '''MadLib.define_get_currency_sell_ui(card),'''
 match_indent = true
 times = 1
 
+# Does the hand pass the check?!
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = "if not G.GAME.blind:debuff_hand(G.play.cards, poker_hands, text) then"
+position = 'at'
+payload = '''if
+    not G.GAME.blind:debuff_hand(G.play.cards, poker_hands, text)
+    and MadLib.hand_passes_check(G.play.cards, poker_hands, text)
+then'''
+match_indent = true
+times = 1
 
+# Exclude cards?!
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = '''results.top = nil'''
+position = 'after'
+payload = '''
+    -- remove poker hands
+    if G.GAME.modifiers.poker_hand_blacklist then
+        MadLib.loop_func(G.GAME.modifiers.poker_hand_blacklist, function(v)
+        results[k] = nil
+    end
+end)'''
+match_indent = true
+
+# Add alt throw hand value
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = '''if G.GAME.blind and G.boss_throw_hand and self.STATE == self.STATES.SELECTING_HAND then'''
+position = 'at'
+payload = '''if G.GAME.blind and (G.boss_throw_hand or G.throw_hand) and self.STATE == self.STATES.SELECTING_HAND then'''
+match_indent = true
+
+# Add to cardarea
+[[patches]]
+[patches.pattern]
+target = 'cardarea.lua'
+pattern = '''G.boss_throw_hand = nil'''
+position = 'after'
+payload = '''G.throw_hand = nil'''
+match_indent = true
+
+# Checks if hand passes the check
+[[patches]]
+[patches.pattern]
+target = 'cardarea.lua'
+pattern = '''else
+
+        end'''
+position = 'at'
+payload = '''else
+            G.throw_hand = (not MadLib.hand_passes_check(G.hand.highlighted, poker_hands, text)) or nil
+        end'''
+match_indent = true

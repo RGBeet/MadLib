@@ -164,10 +164,10 @@ MadLib = {
     -- Contains detailed information about rarities - used for cross-modding stuff
     RarityValues = {},
     RarityConversions = { -- Vanilla rarity values, cause sometimes they use numbers?
-        ['Common']      = '1',
-        ['Uncommon']    = '2',
-        ['Rare']        = '3',
-        ['Legendary']   = '4'
+        ['Common']      = 1,
+        ['Uncommon']    = 2,
+        ['Rare']        = 3,
+        ['Legendary']   = 4,
     },
     ScoreKeys = {
         AddMult = {
@@ -726,11 +726,6 @@ function MadLib.build_onto_val(val, check, func, bypass_check)
     local i=0
     repeat val = func(val,i) until not check(i)
     return val
-end
-
-
-for k,v in pairs(SMODS.Ranks) do
-    MadLib.RankKeyId[v.id] = v.key
 end
 
 function MadLib.get_value_from_id(_id)
@@ -2276,7 +2271,7 @@ end
 
 -- returns a table from a string
 function MadLib.get_higher_rarity(val)
-    local rarity = MadLib.RarityValues[val] or MadLib.RarityValues[RarityConversions[val]]
+    local rarity = MadLib.RarityValues[val] or MadLib.RarityValues[MadLib.RarityConversions[val]]
     if not rarity then return -1 end
 
     local value = rarity.value
@@ -2286,6 +2281,7 @@ function MadLib.get_higher_rarity(val)
     table.sort(sorted_table, function(a,b)
         return MadLib.RarityValues[a].value < MadLib.RarityValues[b].value
     end)
+
     for i=1,#rarities do
         if rarities[i].value > rarity.value then
             for k,v in MadLib.RarityValues do
@@ -3032,6 +3028,21 @@ function MadLib.define_get_currency_sell_ui (card)
     return {n=G.UIT.T, config={text = localize('$'),colour = G.C.WHITE, scale = 0.4, shadow = true}}
 end
 
+function MadLib.hand_passes_check(cards, hands, text)
+    if not cards then return true end
+
+    if G.GAME.modifiers.min_hand_size ~= nil and G.GAME.modifiers.min_hand_size > #cards then
+        tell('Too small')
+        return false
+    end
+
+    if G.GAME.modifiers.max_hand_size ~= nil and G.GAME.modifiers.max_hand_size < #cards then
+        tell('Too big')
+        return false
+    end
+
+    return true
+end
 
 -- File loading based on Cryptid mod lmao
 local errors = {}
