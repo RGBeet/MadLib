@@ -1091,7 +1091,7 @@ end
     Handles Spectrum, Bunco, and Paperback stuff
 ]]
 local Bunco     = next(SMODS.find_mod('Bunco'))
-local Paperback = next(SMODS.find_mod('Paperback'))
+local Paperback = next(SMODS.find_mod('paperback'))
 local RGMadcap  = next(SMODS.find_mod('RGMadcap'))
 local Framework = next(SMODS.find_mod('SpectrumFramework'))
 
