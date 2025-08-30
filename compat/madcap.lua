@@ -233,7 +233,7 @@ return {
     init = function(c)
         -- simple prefixes
         local pr = c.prefix..'_'
-        local UnStable = SMODS.find_mod("Unstable")
+        local UnStable = next(SMODS.find_mod("Unstable"))
 
         -- transfers custom hand types - spectrum depends on mods added (goes by madlib's spectrum priority)
         local Pyramid       = pr..'pyramid'
@@ -278,14 +278,40 @@ return {
         local n21       = pu..'21'
         local n25       = pu..'25'
 
-        local n14       = pr..'14'
-        local n15       = pr..'15'
         local n16       = pr..'16'
+        local n24       = pr..'24'
         local n32       = pr..'32'
+        local n34       = pr..'34'
+        local n52       = pr..'52'
+        local n55       = pr..'55'
+        local n64       = pr..'64'
+        local n128       = pr..'128'
+
         local Knight    = pr..'Knight'
         local Sum       = pr..'Sum'
+        local Phi    = pr..'Phi'
 
+        if not UnStable then
+            MadLib.loop_func({ n1, n11, n13, n21, n25 }, function(v) 
+                table.insert(MadLib.RankTypes.Odd, v)
+            end)
+            MadLib.loop_func({ n12 }, function(v) 
+                table.insert(MadLib.RankTypes.Even, v)
+            end)
+            MadLib.loop_func({ n0, n1, n13, n21 }, function(v) 
+                table.insert(MadLib.RankTypes.Fibonacci, v)
+            end)
+        end
 
+        MadLib.loop_func({ n55 }, function(v) 
+            table.insert(MadLib.RankTypes.Odd, v)
+        end)
+        MadLib.loop_func({ n16, n24, n32, n34, n52, n64, n128 }, function(v) 
+            table.insert(MadLib.RankTypes.Even, v)
+        end)
+        MadLib.loop_func({ n34, n55, Phi }, function(v) 
+            table.insert(MadLib.RankTypes.Fibonacci, v)
+        end)
 
         local joker_ranks = {
             ['j_rgmc_joker_squared']       = { '4', '9', n16, n25 },
@@ -296,14 +322,15 @@ return {
             ['j_rgmc_shovel_joker']        = { Knight },
             ['j_rgmc_legend_rio']          = { 'Ace', 'King', 'Queen' },
             ['j_rgmc_joker_in_binary']     = { n0, n1 },
-            ['j_rgmc_balutro']             = { n1, '2', '5', n11, n12, n15, n21, n25 },
+            ['j_rgmc_balutro']             = { n1, '2', '5', n11, n12, n21, n25, n52, n55 },
             ['j_rgmc_microfiche']          = { nHalf },
         }
 
         -- Add the new ranks to the Jokers
         local vanilla_rank_mods = {
-            ['j_odd_todd']        = { n15 },
-            ['j_even_steven']     = { n14, n16 },
+            ['j_odd_todd']          = { n55 },
+            ['j_even_steven']       = { n16, n24, n32, n34, n52, n64, n128 },
+            ['j_fibonacci']         = { n34, n55, Phi },
         }
 
         local vanilla_suit_mods = {
@@ -316,7 +343,7 @@ return {
                 c.content.RankCompat[v] = c.prefix .. '_' .. v
             end)
 
-            MadLib.merge_into_list(vanilla_rank_mods, {
+            MadLib.merge_lists(vanilla_rank_mods, {
                 ['j_fibonacci']       = { n1, n13, n21 },
                 ['j_odd_todd']        = { n1, n11, n13, n21, n25},
                 ['j_even_steven']     = { n12 },
