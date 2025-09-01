@@ -1912,6 +1912,13 @@ function MadLib.get_editioned_cards(group, key)
         end)
 end
 
+function MadLib.get_generic_end_of_round(context)
+    return context.end_of_round
+        and not context.repetition
+        and not context.game_over
+        and not context.blueprint
+end
+
 function MadLib.get_table_entries(group)
     return MadLib.loop_func_table(group, function() return true end)
 end
