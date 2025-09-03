@@ -1095,6 +1095,11 @@ local Paperback = next(SMODS.find_mod('paperback'))
 local RGMadcap  = next(SMODS.find_mod('RGMadcap'))
 local Framework = next(SMODS.find_mod('SpectrumFramework'))
 
+print('POKER HANDS BE LIKE')
+MadLib.loop_table(SMODS.PokerHands, function(k,v)
+	print(k)
+end)
+
 MadLib.SpectrumId = (Bunco and 'bunc_')
     or (Paperback and 'paprback_')
     or (Framework and 'spectrum_') -- would really reccomend at least installing this
@@ -1674,6 +1679,11 @@ function MadLib.flip_card(c, func, before, after)
     return true
 end
 
+-- Returns target destination
+function MadLib.edit_card_destination(card,from,to)
+    return to
+end
+
 -- Easy way of tetrating. Credit to More Fluff.
 function MadLib.fake_tetrate(score,amt)
     return score ^ (score ^ amt - 1)
@@ -1761,6 +1771,25 @@ end
 
 function MadLib.get_num_ranks(cards)
     return MadLib.loop_table(MadLib.get_ranks_from_cards(cards), function(v) return true end)
+end
+
+function MadLib.get_flipped_table(original_table)
+    local new_table = {}
+    for key, value in pairs(original_table) do
+        -- Check if the value is already a key in the new table
+        -- This handles cases where multiple original keys map to the same value
+        if new_table[value] then
+            -- If the value is already a key, store the original key(s) in a sub-table
+            if type(new_table[value]) == "table" then
+                table.insert(new_table[value], key)
+            else
+                new_table[value] = {new_table[value], key}
+            end
+        else
+            new_table[value] = key
+        end
+    end
+    return new_table
 end
 
 -- Shuffles the cards, then gets returns a list of cards.
@@ -2500,25 +2529,28 @@ function MadLib.check_numbered_rank(k)
         prime   = w and MadLib.is_prime(tn),
         fib     = w and MadLib.is_fibonacci(tn),
         square  = w and MadLib.is_perfect_square(tn),
+        triangular = w and MadLib.is_triangular(tn),
     }
 end
 
 local rank_patterns = { -- temp list to merge into RankTypes
-    ['Odd']         = {},
+    ['Odd']         = {'Ace'},
     ['Even']        = {},
-    ['Prime']       = {},
-    ['Fibonacci']   = {},
-    ['Square']      = {},
+    ['Prime']       = {'Ace'},
+    ['Fibonacci']   = {'Ace'},
+    ['Square']      = {'Ace'},
+    ['Triangular']  = {'Ace'}
 }
 local function process_ranks(n,val)
     print('Loading the Number ' .. ' "' .. tostring(n.rank) .. '"...')
-    if n.even      then table.insert(rank_patterns['Even'], val)         end
-    if n.odd       then table.insert(rank_patterns['Odd'], val)          end
-    if n.prime     then table.insert(rank_patterns['Prime'], val)        end
-    if n.fib       then table.insert(rank_patterns['Fibonacci'], val)    end
-    if n.square    then table.insert(rank_patterns['Square'], val)       end
+    if n.even       then table.insert(rank_patterns['Even'], val)         end
+    if n.odd        then table.insert(rank_patterns['Odd'], val)          end
+    if n.prime      then table.insert(rank_patterns['Prime'], val)        end
+    if n.fib        then table.insert(rank_patterns['Fibonacci'], val)    end
+    if n.square     then table.insert(rank_patterns['Square'], val)       end
+    if n.triangular then table.insert(rank_patterns['Triangular'], val)   end
 end
-for i=2,9 do process_ranks(MadLib.check_numbered_rank(tostring(i)), tostring(i)) end
+for i=2,10 do process_ranks(MadLib.check_numbered_rank(tostring(i)), tostring(i)) end
 print(rank_patterns)
 for k,_ in pairs(MadLib.RankIds) do process_ranks(MadLib.check_numbered_rank(k), tostring(i)) end
 MadLib.merge_tables(MadLib.RankTypes,rank_patterns)

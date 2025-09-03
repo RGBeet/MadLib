@@ -277,3 +277,12 @@ payload = '''else
             G.throw_hand = (not MadLib.hand_passes_check(G.hand.highlighted, poker_hands, text)) or nil
         end'''
 match_indent = true
+
+# Allow editing of destination
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = "local drawn = nil"
+position = "after"
+payload = '''to = MadLib.edit_card_destination(card,from,to)'''
+match_indent = true
