@@ -392,16 +392,24 @@ then
 	end
 
 	SMODS.Sound({
-		key = "emult",
-		path = "ExponentialMult.wav",
-	})
-	SMODS.Sound({
-		key = "echips",
-		path = "ExponentialChips.wav",
-	})
-	SMODS.Sound({
 		key = "xchip",
-		path = "MultiplicativeChips.wav",
+		path = "xchip.wav",
+	})
+	SMODS.Sound({
+		key = "xscore",
+		path = "xscore.ogg",
+	})
+	SMODS.Sound({
+		key = "emult",
+		path = "emult.ogg",
+	})
+	SMODS.Sound({
+		key = "echip",
+		path = "echip.ogg",
+	})
+	SMODS.Sound({
+		key = "escore",
+		path = "escore.ogg",
 	})
 
     local smods_xchips = false
@@ -416,9 +424,8 @@ then
 	local scie = SMODS.calculate_individual_effect
 	function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
 		local ret = scie(effect, scored_card, key, amount, from_edition)
-		if ret then
-			return ret
-		end
+		if ret then return ret end
+
 		if (key == "e_chips" or key == "echips" or key == "Echip_mod") and amount ~= 1 then
 			if effect.card then
 				juice_card(effect.card)
@@ -452,6 +459,7 @@ then
 			end
 			return true
 		end
+        
 		if (key == "e_mult" or key == "emult" or key == "Emult_mod") and amount ~= 1 then
 			if effect.card then
 				juice_card(effect.card)
@@ -737,11 +745,6 @@ function MadLib.get_card_value(_card)
     return value and value.key or nil
 end
 
---[[Add Score-based stats to SMODS (WIP!)
-for _, v in ipairs({'x_score', 'e_score', 'ee_score', 'eee_score', 'hyper_score', 'Xscore_mod', 'Escore_mod', 'EEscore_mod', 'EEEscore_mod', 'hyperscore_mod'}) do
-    table.insert(SMODS.calculation_keys, v)
-end]]
-
 -- Initalized for further editing by other mods.
 function mod_total_score(_score)
     return _score
@@ -761,105 +764,115 @@ end
 
 
 local scie = SMODS.calculate_individual_effect
-
---[[
 function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
     local ret = scie(effect, scored_card, key, amount, from_edition)
 
-    if (key == 'x_score' or key == 'xscore' or key == 'Xscore_mod') and amount ~= 1 then
+    --[[
+    if (key == 'score' or key == 'score_mod') then
+        total_chip_score = mod_total_score(total_chip_score + amount)
+        MadLib.ease_score(total_chip_score)
         if effect.card then juice_card(effect.card) end
+        return true
+    end
+    
+    if (key == 'x_score' or key == 'xscore' or key == 'xscore_mod') and amount ~= 1 then
         total_chip_score = mod_total_score(total_chip_score * amount)
         MadLib.ease_score(total_chip_score)
-        if not effect.remove_default_message then
-            if from_edition then
-                card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "X"..amount, colour =  G.C.EDITION, edition = true})
-            elseif key ~= 'Xscore_mod' then
-                if effect.xscore_message then
-                    card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.xscore_message)
-                else
-                    card_eval_status_text(scored_card or effect.card or effect.focus, 'x_score', amount, percent)
-                end
-            end
-        end
+        if effect.card then juice_card(effect.card) end
         return true
     end
-    return ret
-end
-]]
-if Talisman then
-    scie = SMODS.calculate_individual_effect
 
-    if (key == 'e_score' or key == 'escore' or key == 'Escore_mod') and amount ~= 1 then
-        if effect.card then juice_card(effect.card) end
+    if (key == 'e_score' or key == 'escore' or key == 'escore_mod') then
         total_chip_score = mod_total_score(total_chip_score ^ amount)
         MadLib.ease_score(total_chip_score)
-        if not effect.remove_default_message then
-            if from_edition then
-                card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "^"..amount, colour =  G.C.EDITION, edition = true})
-            elseif key ~= 'Escore_mod' then
-                if effect.escore_message then
-                    card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.escore_message)
-                else
-                    card_eval_status_text(scored_card or effect.card or effect.focus, 'e_score', amount, percent)
-                end
-            end
-        end
-        return true
-    end
-
-    if (key == 'ee_score' or key == 'eescore' or key == 'EEscore_mod') and amount ~= 1 then
         if effect.card then juice_card(effect.card) end
-        total_chip_score = mod_total_score(total_chip_score:arrow(2, amount))
-        MadLib.ease_score(total_chip_score)
-        if not effect.remove_default_message then
-            if from_edition then
-                card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "^^"..amount, colour =  G.C.EDITION, edition = true})
-            elseif key ~= 'EEscore_mod' then
-                if effect.eechip_message then
-                    card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.eescore_message)
-                else
-                    card_eval_status_text(scored_card or effect.card or effect.focus, 'ee_score', amount, percent)
-                end
-            end
-        end
         return true
     end
+    ]]
+    return ret
+end
 
-    if (key == 'eee_score' or key == 'eeescore' or key == 'EEEscore_mod') and amount ~= 1 then
-        if effect.card then juice_card(effect.card) end
-        total_chip_score = mod_total_score(total_chip_score:arrow(3, amount))
-        MadLib.ease_score(total_chip_score)
-        if not effect.remove_default_message then
-            if from_edition then
-                card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "^^^"..amount, colour =  G.C.EDITION, edition = true})
-            elseif key ~= 'EEEscore_mod' then
-                if effect.eeescore_message then
-                    card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.eeescore_message)
-                else
-                    card_eval_status_text(scored_card or effect.card or effect.focus, 'eee_chips', amount, percent)
-                end
-            end
-        end
-        return true
-    end
+local require_exponentials = true
+if require_exponentials then
+    -- Add calculation keys
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "e_chips"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "e_mult"
 
-    if (key == 'hyper_score' or key == 'hyperscore' or key == 'hyperscore_mod') and type(amount) == 'table' then
-        if effect.card then juice_card(effect.card) end
-        total_chip_score = mod_total_score(total_chip_score:arrow(amount[1], amount[2]))
-        MadLib.ease_score(total_chip_score)
-        if not effect.remove_default_message then
-            if from_edition then
-                card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = (amount[1] > 5 and ('{' .. amount[1] .. '}') or string.rep('^', amount[1])) .. amount[2], colour =  G.C.EDITION, edition = true})
-            elseif key ~= 'hyperscore_mod' then
-                if effect.hyperscore_message then
-                    card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.hyperscore_message)
+        local calculate_individual_effect_hook_exp = SMODS.calculate_individual_effect
+        function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
+
+            if (key == 'e_mult') and amount ~= 1 and not Talisman then
+                if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
+                mult = mod_mult(mult ^ amount)
+                update_hand_text({ delay = 0 }, { chips = hand_chips, mult = mult })
+                if not effect.remove_default_message then
+                    if from_edition then
+                        card_eval_status_text(scored_card, 'jokers', nil, percent, nil,
+                            { message = ('^%s Mult'):format(number_format(amount)), colour = G.C.DARK_EDITION, edition = true })
+                    else
+                        if effect.emult_message then
+                            card_eval_status_text(
+                                effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra',
+                                nil,
+                                percent, nil, effect.emult_message)
+                        else
+                            card_eval_status_text(
+                                effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra',
+                                nil,
+                                percent, nil,
+                                {
+                                    message = ('^%s Mult'):format(number_format(amount)),
+                                    sound = "madlib_emult",
+                                    colour = G.C.DARK_EDITION
+                                })
+                        end
+                    end
+                end
+                return true
+            end
+
+            -- Exponential Chips
+            if (key == 'e_chips') and amount ~= 1 and not Talisman then
+            if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
+            hand_chips = mod_chips(hand_chips ^ amount)
+            update_hand_text({ delay = 0 }, { chips = hand_chips, mult = mult })
+            if not effect.remove_default_message then
+                if from_edition then
+                    card_eval_status_text(scored_card, 'jokers', nil, percent, nil,
+                        { message = ('^%s Chips'):format(number_format(amount)), colour = G.C.DARK_EDITION, edition = true })
                 else
-                    card_eval_status_text(scored_card or effect.card or effect.focus, 'hyper_score', amount, percent)
+                    if effect.echip_message then
+                        card_eval_status_text(
+                            effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra',
+                            nil,
+                            percent, nil, effect.echip_message)
+                    else
+                        card_eval_status_text(
+                            effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra',
+                            nil,
+                            percent, nil,
+                            {
+                                message = ('^%s Chips'):format(number_format(amount)),
+                                sound = "madlib_echips",
+                                colour = G.C.DARK_EDITION
+                            })
+                    end
                 end
             end
+            return true
         end
-        return true
+
+	    local ret = calculate_individual_effect_hook_exp(effect, scored_card, key, amount, from_edition)
+        return ret
     end
+end
+
+local calculate_individual_effect_hook = SMODS.calculate_individual_effect
+
+function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
+
+
+
 end
 
 -- Returns a number between the value and its specified minimums and maximums
@@ -2594,6 +2607,7 @@ function MadLib.get_simple_score_data(t,card,val)
             card    = card
         }),
     }
+
     ret[t.add]      = lenient_bignum(val)
     ret['colour']   = t.colour
     return ret
