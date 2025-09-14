@@ -36,7 +36,7 @@ elseif eval_type == 'e_chips' then
 	config.type = 'fade'
 	config.scale = 0.7
 elseif eval_type == 'score' then
-	sound = 'madlib.xscore'
+	sound = 'madlib_xscore'
 	amt = amt
 	text = '^' .. amt
 	colour = G.C.PURPLE
@@ -56,25 +56,6 @@ elseif eval_type == 'e_score' then
 	colour = G.C.PURPLE
 	config.type = 'fade'
 	config.scale = 0.7
-'''
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = "functions/state_events.lua"
-pattern = "if effects[ii].message then"
-position = "before"
-payload = '''
-if effects[ii].x_score then
-	mod_percent = true
-    total_chip_score = total_chip_score * effects[ii].x_score
-	card_eval_status_text(G.hand.cards[i], 'x_score', effects[ii].x_chips, percent)
-end
-if effects[ii].e_score then
-	mod_percent = true
-    total_chip_score = total_chip_score ^ effects[ii].e_score
-	card_eval_status_text(G.hand.cards[i], 'e_score', effects[ii].e_chips, percent)
-end
 '''
 match_indent = true
 
@@ -109,24 +90,6 @@ emult 	= G.C.EMULT,
 echips = G.C.ECHIPS,
 escore	= G.C.ESCORE,
 '''
-
-[[patches]]
-[patches.pattern]
-target = 'functions/common_events.lua'
-pattern = '''-- TARGET: main scoring on played cards'''
-position = 'after'
-payload = '''
-	local e_mult = card:ml_get_emult()
-	if e_mult > 0 then
-		ret.playing_card.e_mult = e_mult
-	end
-	
-    local e_chips = card:ml_get_echips()
-	if e_chips > 0 then
-		ret.playing_card.e_chips = e_chips
-	end
-'''
-match_indent = true
 
 # Making a hook function
 [[patches]]

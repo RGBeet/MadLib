@@ -186,28 +186,28 @@ MadLib = {
         },
         MultiMult = {
             key = 'a_xmult',
-            add = 'Xmult_mod',
+            add = 'xmult_mod',
             set = 'x_mult',
             colour = G.C.MULT,
             sign = "X",
         },
         MultiChips = {
             key = 'a_xchips',
-            add = 'Xchip_mod',
+            add = 'xchip_mod',
             set = 'x_chips',
             colour = G.C.CHIPS,
             sign = "X",
         },
         ExpMult = {
             key = 'a_powmult',
-            add = 'Emult_mod',
+            add = 'emult_mod',
             set = 'e_mult',
             colour = G.C.MULT,
             sign = "^",
         },
         ExpChips = {
             key = 'e_powchips',
-            add = 'Echips_mod',
+            add = 'echip_mod',
             set = 'e_chips',
             colour = G.C.CHIPS,
             sign = "^",
@@ -228,14 +228,14 @@ MadLib = {
         },
         MultiScore = {
             key = 'a_xscore',
-            add = 'Xscore_mod',
+            add = 'xscore_mod',
             set = 'x_score',
             colour = G.C.PURPLE,
             sign = "X",
         },
         ExpScore = {
             key = 'a_powscore',
-            add = 'Escore_mod',
+            add = 'escore_mod',
             set = 'e_score',
             colour = G.C.PURPLE,
             sign = "^",
@@ -370,11 +370,7 @@ if Talisman then
 end
 
 -- If Talisman is NOT installed, don't worry!
-if
-    SMODS and SMODS.Mods
-    and (not SMODS.Mods.Talisman or not SMODS.Mods.Talisman.can_load)
-    and (not SMODS.Mods.Cryptlib)
-then
+if not Talisman then
 	function to_number(a)
 		return a
 	end
@@ -393,7 +389,7 @@ then
 
 	SMODS.Sound({
 		key = "xchip",
-		path = "xchip.wav",
+		path = "xchip.ogg",
 	})
 	SMODS.Sound({
 		key = "xscore",
@@ -417,81 +413,6 @@ then
 		if v == "x_chips" then
 			smods_xchips = true
 			break
-		end
-	end
-
-    -- Adds emult, echip
-	local scie = SMODS.calculate_individual_effect
-	function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
-		local ret = scie(effect, scored_card, key, amount, from_edition)
-		if ret then return ret end
-
-		if (key == "e_chips" or key == "echips" or key == "Echip_mod") and amount ~= 1 then
-			if effect.card then
-				juice_card(effect.card)
-			end
-			hand_chips = mod_chips(hand_chips ^ amount)
-			update_hand_text({ delay = 0 }, { chips = hand_chips, mult = mult })
-			if not effect.remove_default_message then
-				if from_edition then
-					card_eval_status_text(
-						scored_card,
-						"jokers",
-						nil,
-						percent,
-						nil,
-						{ message = "^" .. amount, colour = G.C.EDITION, edition = true }
-					)
-				elseif key ~= "Echip_mod" then
-					if effect.echip_message then
-						card_eval_status_text(
-							scored_card or effect.card or effect.focus,
-							"extra",
-							nil,
-							percent,
-							nil,
-							effect.echip_message
-						)
-					else
-						card_eval_status_text(scored_card or effect.card or effect.focus, "e_chips", amount, percent)
-					end
-				end
-			end
-			return true
-		end
-        
-		if (key == "e_mult" or key == "emult" or key == "Emult_mod") and amount ~= 1 then
-			if effect.card then
-				juice_card(effect.card)
-			end
-			mult = mod_mult(mult ^ amount)
-			update_hand_text({ delay = 0 }, { chips = hand_chips, mult = mult })
-			if not effect.remove_default_message then
-				if from_edition then
-					card_eval_status_text(
-						scored_card,
-						"jokers",
-						nil,
-						percent,
-						nil,
-						{ message = "^" .. amount .. " " .. localize("k_mult"), colour = G.C.EDITION, edition = true }
-					)
-				elseif key ~= "Emult_mod" then
-					if effect.emult_message then
-						card_eval_status_text(
-							scored_card or effect.card or effect.focus,
-							"extra",
-							nil,
-							percent,
-							nil,
-							effect.emult_message
-						)
-					else
-						card_eval_status_text(scored_card or effect.card or effect.focus, "e_mult", amount, percent)
-					end
-				end
-			end
-			return true
 		end
 	end
 end
@@ -762,46 +683,25 @@ function MadLib.ease_score(new_score)
     })
 end
 
-
-local scie = SMODS.calculate_individual_effect
-function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
-    local ret = scie(effect, scored_card, key, amount, from_edition)
-
-    --[[
-    if (key == 'score' or key == 'score_mod') then
-        total_chip_score = mod_total_score(total_chip_score + amount)
-        MadLib.ease_score(total_chip_score)
-        if effect.card then juice_card(effect.card) end
-        return true
-    end
-    
-    if (key == 'x_score' or key == 'xscore' or key == 'xscore_mod') and amount ~= 1 then
-        total_chip_score = mod_total_score(total_chip_score * amount)
-        MadLib.ease_score(total_chip_score)
-        if effect.card then juice_card(effect.card) end
-        return true
-    end
-
-    if (key == 'e_score' or key == 'escore' or key == 'escore_mod') then
-        total_chip_score = mod_total_score(total_chip_score ^ amount)
-        MadLib.ease_score(total_chip_score)
-        if effect.card then juice_card(effect.card) end
-        return true
-    end
-    ]]
-    return ret
-end
-
 local require_exponentials = true
 if require_exponentials then
     -- Add calculation keys
     SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "e_chips"
     SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "e_mult"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "echips"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "emult"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "echips_mod"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "emult_mod"
+
 
         local calculate_individual_effect_hook_exp = SMODS.calculate_individual_effect
         function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
-
-            if (key == 'e_mult') and amount ~= 1 and not Talisman then
+            tell('key is...')
+            tell(key)
+            if 
+                (key == 'e_mult' or key == 'emult' or key == 'emult_mod') 
+                and amount ~= 1 
+            then
                 if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
                 mult = mod_mult(mult ^ amount)
                 update_hand_text({ delay = 0 }, { chips = hand_chips, mult = mult })
@@ -832,7 +732,10 @@ if require_exponentials then
             end
 
             -- Exponential Chips
-            if (key == 'e_chips') and amount ~= 1 and not Talisman then
+            if 
+                (key == 'e_chips' or key == 'echips' or key == 'echip_mod') 
+                and amount ~= 1 
+            then
             if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
             hand_chips = mod_chips(hand_chips ^ amount)
             update_hand_text({ delay = 0 }, { chips = hand_chips, mult = mult })
@@ -870,9 +773,9 @@ end
 local calculate_individual_effect_hook = SMODS.calculate_individual_effect
 
 function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
+    local ret = calculate_individual_effect_hook(effect, scored_card, key, amount, from_edition)
 
-
-
+    return ret
 end
 
 -- Returns a number between the value and its specified minimums and maximums
@@ -1105,7 +1008,6 @@ end
 ]]
 local Bunco     = next(SMODS.find_mod('Bunco'))
 local Paperback = next(SMODS.find_mod('paperback'))
-local RGMadcap  = next(SMODS.find_mod('RGMadcap'))
 local Framework = next(SMODS.find_mod('SpectrumFramework'))
 
 print('POKER HANDS BE LIKE')
@@ -1114,9 +1016,11 @@ MadLib.loop_table(SMODS.PokerHands, function(k,v)
 end)
 
 MadLib.SpectrumId = (Bunco and 'bunc_')
-    or (Paperback and 'paprback_')
+    or (Paperback and 'paperback_')
     or (Framework and 'spectrum_') -- would really reccomend at least installing this
-    or nil
+    or 'na'
+
+tell('Madlib Spectrum is ' .. MadLib.SpectrumId)
 
 --[[
     suit
@@ -2098,32 +2002,24 @@ function Card:get_config()
 	return (self.config or {}).center or {}
 end
 
--- Checks where the odds are stores.
-function Card:get_odds()
-    return (type(self.config.extra) == 'table' and self.config.extra.odds)
-        or (type(self.config.extra) == 'number' and self.config.extra)
-        or nil
+function Card:ml_get_score()
+    return SMODS.multiplicative_stacking((self.ability.score or 1), (not self.ability.extra_enhancement and self.ability.perma_score) or 0)
 end
 
-function Card:get_score_x_bonus()
-    if self.debuff then return 0 end
-    if self.ability.set == 'Joker' then return 0 end
-    if (SMODS.multiplicative_stacking(self.ability.x_score or 1, self.ability.perma_x_score or 0) or 0) <= 1 then return 0 end
-    return SMODS.multiplicative_stacking(self.ability.x_score or 1, self.ability.perma_x_score or 0)
+function Card:ml_get_xscore()
+    return SMODS.multiplicative_stacking((self.ability.x_score or 1), (not self.ability.extra_enhancement and self.ability.perma_x_score) or 0)
 end
 
-function Card:get_score_e_bonus()
-    if self.debuff then return 0 end
-    if self.ability.set == 'Joker' then return 0 end
-    if (self.ability.e_score or 0) <= 1 then return 0 end
-    return self.ability.e_score
+function Card:ml_get_emult()
+    return SMODS.multiplicative_stacking((self.ability.e_mult or 1), (not self.ability.extra_enhancement and self.ability.perma_e_mult) or 0)
 end
 
-function Card:get_chip_ee_bonus()
-    if self.debuff then return 0 end
-    if self.ability.set == 'Joker' then return 0 end
-    if (self.ability.ee_chips or 0) <= 1 then return 0 end
-    return self.ability.ee_chips
+function Card:ml_get_echips()
+    return SMODS.multiplicative_stacking((self.ability.e_chips or 1), (not self.ability.extra_enhancement and self.ability.perma_e_chips) or 0)
+end
+
+function Card:ml_get_score()
+    return SMODS.multiplicative_stacking((self.ability.e_score or 1), (not self.ability.extra_enhancement and self.ability.perma_e_score) or 0)
 end
 
 -- Swaps settings with another card
@@ -2597,18 +2493,9 @@ function MadLib.get_simple_score_data(t,card,val)
         print(card)
         return false     
     end
-    local value = val or card.ability.extra[t.set]
-
-    local ret = {
-        message = localize({
-            type    = "variable",
-            key     = t.key,
-            vars    = { number_format(lenient_bignum(to_big(value))) },
-            card    = card
-        }),
-    }
-
-    ret[t.add]      = lenient_bignum(val)
+    local ret = {}
+    --tell('ret['..t.add..'] = '..tostring(lenient_bignum(val)))
+    ret[t.add]      = lenient_bignum( val or card.ability.extra[t.set])
     ret['colour']   = t.colour
     return ret
 end
