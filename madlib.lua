@@ -686,18 +686,65 @@ end
 local require_exponentials = true
 if require_exponentials then
     -- Add calculation keys
-    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "e_chips"
-    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "e_mult"
-    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "echips"
+
     SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "emult"
-    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "echips_mod"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "e_mult"
     SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "emult_mod"
+
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "echips"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "e_chips"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "echips_mod"
+
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "score"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "score_mod"
+
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "xscore"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "x_score"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "xscore_mod"
+
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "escore"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "e_score"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "escore_mod"
 
 
         local calculate_individual_effect_hook_exp = SMODS.calculate_individual_effect
         function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
-            tell('key is...')
-            tell(key)
+            --tell('key is...')
+            --tell(key)
+
+            if 
+                (key == 'xchips' or key == 'x_chips' or key == 'xchip_mod') 
+                and amount ~= 1 
+            then
+                if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
+                hand_chips = mod_chips(hand_chips * amount)
+                update_hand_text({ delay = 0 }, { chips = hand_chips, mult = mult })
+                if not effect.remove_default_message then
+                    if from_edition then
+                        card_eval_status_text(scored_card, 'jokers', nil, percent, nil,
+                            { message = ('X%s Chips'):format(number_format(amount)), colour = G.C.BLUE, edition = true })
+                    else
+                        if effect.xscore_message then
+                            card_eval_status_text(
+                                effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra',
+                                nil,
+                                percent, nil, effect.score_message)
+                        else
+                            card_eval_status_text(
+                                effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra',
+                                nil,
+                                percent, nil,
+                                {
+                                    message = ('X%s Chips'):format(number_format(amount)),
+                                    sound = "madlib_xchip",
+                                    colour = G.C.BLUE
+                                })
+                        end
+                    end
+                end
+                return true
+            end
+
             if 
                 (key == 'e_mult' or key == 'emult' or key == 'emult_mod') 
                 and amount ~= 1 
@@ -774,7 +821,104 @@ local calculate_individual_effect_hook = SMODS.calculate_individual_effect
 
 function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
     local ret = calculate_individual_effect_hook(effect, scored_card, key, amount, from_edition)
+        if 
+            (key == 'score' or key == 'score_mod') 
+            and amount ~= 0 
+        then
+            if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
+            total_chip_score = mod_total_score(total_chip_score + amount)
+			G.HUD:get_UIE_by_ID('chip_UI_count'):juice_up(0.3, 0.3)
+            if not effect.remove_default_message then
+                if from_edition then
+                    card_eval_status_text(scored_card, 'jokers', nil, percent, nil,
+                        { message = ('+%s Score'):format(number_format(amount)), colour = G.C.PURPLE, edition = true })
+                else
+                    if effect.score_message then
+                            card_eval_status_text(
+                                effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra',
+                                nil,
+                                percent, nil, effect.score_message)
+                        else
+                            card_eval_status_text(
+                                effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra',
+                                nil,
+                                percent, nil,
+                        {
+                            message = ('+%s Score'):format(number_format(amount)),
+                            sound = "madlib_xscore",
+                            colour = G.C.PURPLE
+                        })
+                    end
+                end
+            end
+            return true
+        end
 
+            if 
+                (key == 'xscore' or key == 'x_score' or key == 'xscore_mod') 
+                and amount ~= 1 
+            then
+                if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
+                total_chip_score = mod_total_score(total_chip_score * amount)
+				G.HUD:get_UIE_by_ID('chip_UI_count'):juice_up(0.6, 0.6)
+                if not effect.remove_default_message then
+                    if from_edition then
+                        card_eval_status_text(scored_card, 'jokers', nil, percent, nil,
+                            { message = ('X%s Score'):format(number_format(amount)), colour = G.C.PURPLE, edition = true })
+                    else
+                        if effect.xscore_message then
+                            card_eval_status_text(
+                                effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra',
+                                nil,
+                                percent, nil, effect.score_message)
+                        else
+                            card_eval_status_text(
+                                effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra',
+                                nil,
+                                percent, nil,
+                                {
+                                    message = ('X%s Score'):format(number_format(amount)),
+                                    sound = "madlib_xscore",
+                                    colour = G.C.PURPLE
+                                })
+                        end
+                    end
+                end
+                return true
+            end
+
+            if 
+                (key == 'escore' or key == 'e_score' or key == 'escore_mod') 
+                and amount ~= 1 
+            then
+                if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
+                total_chip_score = mod_total_score(total_chip_score ^ amount)
+				G.HUD:get_UIE_by_ID('chip_UI_count'):juice_up(0.9, 0.9)
+                if not effect.remove_default_message then
+                    if from_edition then
+                        card_eval_status_text(scored_card, 'jokers', nil, percent, nil,
+                            { message = ('^%s Score'):format(number_format(amount)), colour = G.C.PURPLE, edition = true })
+                    else
+                        if effect.escore_message then
+                            card_eval_status_text(
+                                effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra',
+                                nil,
+                                percent, nil, effect.score_message)
+                        else
+                            card_eval_status_text(
+                                effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra',
+                                nil,
+                                percent, nil,
+                                {
+                                    message = ('^%s Score'):format(number_format(amount)),
+                                    sound = "madlib_escore",
+                                    colour = G.C.DARK_EDITION
+                                })
+                        end
+                    end
+                end
+                return true
+            end
     return ret
 end
 
