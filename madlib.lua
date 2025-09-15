@@ -668,6 +668,7 @@ end
 
 -- Initalized for further editing by other mods.
 function mod_total_score(_score)
+    tell('Total score is ' .. tostring(_score) .. '.' )
     return _score
 end
 
@@ -755,7 +756,11 @@ if require_exponentials then
                 if not effect.remove_default_message then
                     if from_edition then
                         card_eval_status_text(scored_card, 'jokers', nil, percent, nil,
-                            { message = ('^%s Mult'):format(number_format(amount)), colour = G.C.DARK_EDITION, edition = true })
+                            { 
+                                message = ('^%s Mult'):format(number_format(amount)),
+                                sound = "madlib_emult",
+                                colour = G.C.DARK_EDITION, edition = true 
+                            })
                     else
                         if effect.emult_message then
                             card_eval_status_text(
@@ -789,7 +794,12 @@ if require_exponentials then
             if not effect.remove_default_message then
                 if from_edition then
                     card_eval_status_text(scored_card, 'jokers', nil, percent, nil,
-                        { message = ('^%s Chips'):format(number_format(amount)), colour = G.C.DARK_EDITION, edition = true })
+                        { 
+                            message = ('^%s Chips'):format(number_format(amount)), 
+                            sound = "madlib_echips",
+                            colour = G.C.DARK_EDITION, 
+                            edition = true 
+                        })
                 else
                     if effect.echip_message then
                         card_eval_status_text(
@@ -823,15 +833,27 @@ function SMODS.calculate_individual_effect(effect, scored_card, key, amount, fro
     local ret = calculate_individual_effect_hook(effect, scored_card, key, amount, from_edition)
         if 
             (key == 'score' or key == 'score_mod') 
-            and amount ~= 0 
+            and amount ~= 0
+            and G.GAME.chips > 0
         then
             if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
-            total_chip_score = mod_total_score(total_chip_score + amount)
-			G.HUD:get_UIE_by_ID('chip_UI_count'):juice_up(0.3, 0.3)
+            total_score = mod_total_score(total_score + amount)
+            local ts = total_score
+            MadLib.event({
+                func = function()
+                    G.GAME.chips = ts
+				    G.HUD:get_UIE_by_ID('chip_UI_count'):juice_up(0.2, 0.2)
+                    return true
+                end
+            })
             if not effect.remove_default_message then
                 if from_edition then
                     card_eval_status_text(scored_card, 'jokers', nil, percent, nil,
-                        { message = ('+%s Score'):format(number_format(amount)), colour = G.C.PURPLE, edition = true })
+                    { 
+                        message = ('+%s Score'):format(number_format(amount)), 
+                        sound = "madlib_xscore",
+                        colour = G.C.PURPLE, edition = true 
+                    })
                 else
                     if effect.score_message then
                             card_eval_status_text(
@@ -856,15 +878,27 @@ function SMODS.calculate_individual_effect(effect, scored_card, key, amount, fro
 
             if 
                 (key == 'xscore' or key == 'x_score' or key == 'xscore_mod') 
-                and amount ~= 1 
+                and amount ~= 1
+                and total_score > 0
             then
                 if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
-                total_chip_score = mod_total_score(total_chip_score * amount)
-				G.HUD:get_UIE_by_ID('chip_UI_count'):juice_up(0.6, 0.6)
+                total_score = mod_total_score(total_score * amount)
+                local ts = total_score
+                MadLib.event({
+                    func = function()
+                        G.GAME.chips = ts
+                        G.HUD:get_UIE_by_ID('chip_UI_count'):juice_up(0.4, 0.4)
+                        return true
+                    end
+                })
                 if not effect.remove_default_message then
                     if from_edition then
                         card_eval_status_text(scored_card, 'jokers', nil, percent, nil,
-                            { message = ('X%s Score'):format(number_format(amount)), colour = G.C.PURPLE, edition = true })
+                        {
+                            message = ('X%s Score'):format(number_format(amount)),
+                            sound = "madlib_xscore",
+                            colour = G.C.PURPLE
+                        })
                     else
                         if effect.xscore_message then
                             card_eval_status_text(
@@ -889,15 +923,27 @@ function SMODS.calculate_individual_effect(effect, scored_card, key, amount, fro
 
             if 
                 (key == 'escore' or key == 'e_score' or key == 'escore_mod') 
-                and amount ~= 1 
+                and amount ~= 1
+                and total_score > 0
             then
                 if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
-                total_chip_score = mod_total_score(total_chip_score ^ amount)
-				G.HUD:get_UIE_by_ID('chip_UI_count'):juice_up(0.9, 0.9)
+                total_score = mod_total_score(total_score ^ amount)
+                local ts = total_score
+                MadLib.event({
+                    func = function()
+                        G.GAME.chips = ts
+                        G.HUD:get_UIE_by_ID('chip_UI_count'):juice_up(0.6, 0.6)
+                        return true
+                    end
+                })
                 if not effect.remove_default_message then
                     if from_edition then
                         card_eval_status_text(scored_card, 'jokers', nil, percent, nil,
-                            { message = ('^%s Score'):format(number_format(amount)), colour = G.C.PURPLE, edition = true })
+                        {
+                            message = ('^%s Score'):format(number_format(amount)),
+                            sound = "madlib_escore",
+                            colour = G.C.DARK_EDITION
+                        })
                     else
                         if effect.escore_message then
                             card_eval_status_text(
@@ -1624,30 +1670,6 @@ function MadLib.value_loop_func(val,times,func)
     local new_val = deep_copy(val)
     for i=1,times do val = func(val) end
     return new_val
-end
-
-MadLib.Sounds = {
-    e_score = 'foil2'
-
-}
--- Exponentiates(?) the score X times, then returns a message.
-function MadLib.do_e_score(exp, times)
-    local amt = to_big(exp)
-
-    if times and times > 1 then
-        for i = 2, times do amt = to_big(exp) ^ amt end
-    end
-        MadLib.simple_event(function()
-            G.GAME.chips = to_big(G.GAME.chips) ^ to_big(amt)
-            G.HUD:get_UIE_by_ID('chip_UI_count'):juice_up(0.7, 0.7)
-            play_sound(MadLib.Sounds.e_score)
-            return true
-        end, 0.4, 'after')
-
-    return {
-        message = "^" .. tostring(amt),
-        colour = G.C.PURPLE
-    }
 end
 
 function MadLib.get_moved_index(index,cells,list_length)
@@ -2639,7 +2661,7 @@ function MadLib.get_simple_score_data(t,card,val)
     end
     local ret = {}
     --tell('ret['..t.add..'] = '..tostring(lenient_bignum(val)))
-    ret[t.add]      = lenient_bignum( val or card.ability.extra[t.set])
+    ret[t.add]      = lenient_bignum( val or (card.ability.extra or card.ability or {})[t.set])
     ret['colour']   = t.colour
     return ret
 end
