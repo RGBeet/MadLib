@@ -56,7 +56,7 @@ if x_score > 0 then
 	ret.playing_card.x_score = x_score
 end
 	
-local e_score = card:ml_get_xscore()
+local e_score = card:ml_get_escore()
 if e_score > 0 then
 	ret.playing_card.e_score = e_score
 end

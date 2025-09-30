@@ -297,7 +297,6 @@ return {
         }
     },
     init = function(c)
-        
 		return c
     end,
 }

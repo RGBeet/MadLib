@@ -169,6 +169,8 @@ MadLib = {
         ['Rare']        = 3,
         ['Legendary']   = 4,
     },
+    SpecificRanks = {},
+    SpecificSuits = {},
     ScoreKeys = {
         AddMult = {
             key = 'a_mult',
@@ -296,7 +298,6 @@ MadLib = {
         Seals           = {},
         Vouchers        = {},
     },
-    RankKeyId = {}
 }
 MLIB = MadLib -- shorter ref
 
@@ -658,7 +659,9 @@ function MadLib.build_onto_val(val, check, func, bypass_check)
 end
 
 function MadLib.get_value_from_id(_id)
-    return SMODS.Ranks[MadLib.RankKeyId[_id]] or nil
+    local rank_key = MadLib.RankIds[_id]
+    print(rank_key)
+    return SMODS.Ranks[rank_key] or nil
 end
 
 function MadLib.get_card_value(_card)
@@ -696,8 +699,9 @@ if require_exponentials then
     SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "e_chips"
     SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "echips_mod"
 
-    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "score"
-    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "score_mod"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "ascore"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "a_score"
+    SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "ascore_mod"
 
     SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "xscore"
     SMODS.other_calculation_keys[#SMODS.other_calculation_keys + 1] = "x_score"
@@ -832,10 +836,10 @@ local calculate_individual_effect_hook = SMODS.calculate_individual_effect
 function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
     local ret = calculate_individual_effect_hook(effect, scored_card, key, amount, from_edition)
         if 
-            (key == 'score' or key == 'score_mod') 
+            (key == 'a_score' or key == 'ascore' or key == 'score_mod')
             and amount ~= 0
-            and G.GAME.chips > 0
         then
+            tell('Add score moment')
             if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
             total_score = mod_total_score(total_score + amount)
             local ts = total_score
@@ -2184,7 +2188,7 @@ function Card:ml_get_echips()
     return SMODS.multiplicative_stacking((self.ability.e_chips or 1), (not self.ability.extra_enhancement and self.ability.perma_e_chips) or 0)
 end
 
-function Card:ml_get_score()
+function Card:ml_get_escore()
     return SMODS.multiplicative_stacking((self.ability.e_score or 1), (not self.ability.extra_enhancement and self.ability.perma_e_score) or 0)
 end
 
@@ -2450,6 +2454,65 @@ function MadLib.get_jokers_matching_rarities(rarities, group)
     end)
     --print(#jokers)
     return jokers
+end
+
+-- Foolproof way to compare numbers with Talisman
+if not Talisman then
+    function MadLib.compare_numbers(a,b,and_equals)
+        return (and_equals and a >= b) or (a > b)
+    end
+else
+    function MadLib.compare_numbers(a,b,and_equals)
+        local v1 = type(a) == 'number' and to_big(a)
+        local v2 = type(b) == 'number' and to_big(b)
+        return (v1 and v2) and ((and_equals and v1 >= v2) or (v1 > v2)) or false
+    end
+end
+
+function MadLib.add_to_hand_sum(card, count_irregulars)
+    if not SMODS.has_no_rank(v) and not ((not count_irregulars) and v:rank_in_list(MadLib.RankTypes.Irregular)) then
+        local rank = SMODS.Ranks[v.base.value]
+        return rank.nominal
+    end
+end
+
+function MadLib.get_hand_sum(hand, count_irregulars)
+	local total = 0
+	MadLib.loop_func(hand, function(v)
+        total = total + (MadLib.add_to_hand_sum(v, count_irregulars) or 0)
+    end)
+	return total
+end
+
+function MadLib.force_poker_hand(poker_hand)
+	if not results[poker_hand][1] then
+        for _, v in ipairs(G.handlist) do
+            if results[v][1] then
+                results[poker_hand] = results[v]
+                break
+            end
+        end
+    end
+end
+
+function MadLib.swap(list, i, j)
+    if not (list and list[i] and list[j]) then return end
+    list[i], list[j] = list[j], list[i]
+end
+
+-- Easier way to handle the removal of descaling Jokers
+function MadLib.goodbye_card(card)
+    MadLib.simple_event(function()
+        play_sound("tarot1")
+        card.T.r = -0.2
+        card:juice_up(0.3, 0.4)
+        card.states.drag.is = true
+        card.children.center.pinch.x = true
+        MadLib.simple_event(function()
+            card:remove()
+            return true
+        end, 0.3, 'after', false)
+    end,0.0)
 end
 
 --[[
@@ -2853,6 +2916,7 @@ end
     CARD CREATION
 ]]
 
+--[[
 local create_card_ref = create_card
 function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
     -- original
@@ -2879,7 +2943,7 @@ function create_card(_type, area, legendary, _rarity, skip_materialize, soulable
 
     return card
 end
-
+]]
 function MadLib.get_random_card(set, area, seed)
 	return create_card(set, area, nil, nil, nil, nil, nil, seed or 'rgmc_rng')
 end
@@ -3268,3 +3332,4 @@ print(errors)
 for f, e in ipairs(errors) do
     tell_stat("Error loading file",e)
 end
+

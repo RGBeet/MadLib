@@ -10,8 +10,9 @@ target = "card.lua"
 pattern = "x_mult = center.config.Xmult or 1,"
 position = "after"
 payload = '''
-x_score = center.config.Xscore or 0,
-e_score = center.config.Escore or 0,
+a_score = center.config.Ascore or 0,
+x_score = center.config.Xscore or 1,
+e_score = center.config.Escore or 1,
 '''
 match_indent = true
 
@@ -35,7 +36,7 @@ elseif eval_type == 'e_chips' then
 	colour = G.C.DARK_EDITION
 	config.type = 'fade'
 	config.scale = 0.7
-elseif eval_type == 'score' then
+elseif eval_type == 'a_score' then
 	sound = 'madlib_xscore'
 	amt = amt
 	text = '^' .. amt
@@ -188,3 +189,17 @@ pattern = "local drawn = nil"
 position = "after"
 payload = '''to = MadLib.edit_card_destination(card,from,to)'''
 match_indent = true
+
+# Specific Suit editing
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+pattern = '''if SMODS.has_no_suit(self) then
+            return false
+        end'''
+position = "after"
+payload = '''if self.config.center.specific_suit then
+            return self.config.center.specific_suit == suit
+        end'''
+match_indent = true
+times = 2
