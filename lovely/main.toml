@@ -203,3 +203,13 @@ payload = '''if self.config.center.specific_suit then
         end'''
 match_indent = true
 times = 2
+
+# Specific Suit editing
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
+pattern = '''return {n=G.UIT.ROOT, config = {align = "cm", padding = 0.03, colour = G.C.UI.TRANSPARENT_DARK}, nodes={'''
+position = "before"
+payload = '''
+contents = MadLib.edit_uibox_contents(contents, scale)'''
+match_indent = true

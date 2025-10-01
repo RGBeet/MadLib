@@ -598,6 +598,10 @@ function MadLib.get_first_list_match(list,func)
     return nil
 end
 
+function MadLib.edit_uibox_contents(contents)
+    return contents
+end
+
 -- Returns the first list match (or nothing, if there are no matches).
 function MadLib.get_first_match_info(list,check,func)
     if not_proper_table(list) or not_proper_func(check) or not_proper_func(func) then return nil end
@@ -2484,8 +2488,8 @@ function MadLib.get_hand_sum(hand, count_irregulars)
 	return total
 end
 
-function MadLib.force_poker_hand(poker_hand)
-	if not results[poker_hand][1] then
+function MadLib.force_poker_hand(results, poker_hand)
+	if not (results[poker_hand] and results[poker_hand][1]) then
         for _, v in ipairs(G.handlist) do
             if results[v][1] then
                 results[poker_hand] = results[v]
@@ -3332,4 +3336,3 @@ print(errors)
 for f, e in ipairs(errors) do
     tell_stat("Error loading file",e)
 end
-
