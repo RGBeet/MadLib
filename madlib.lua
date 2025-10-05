@@ -1815,13 +1815,48 @@ function MadLib.get_ranks_from_cards(cards, fake_values)
 end
 
 -- [Return List] Returns a list of suits that the card group has - uses TRUE suits
-function MadLib.get_suits_from_cards(cards)
+function MadLib.get_suits_from_cards(cards, bypass_debuff, flush_calc)
     if not_proper_table(cards) then return nil end
-    local suit_map = {}
-    for _,v in pairs(cards) do
-        suit_map[v.base.suit] = (suit_map[v.base.suit] or 0) + 1
-    end
-    return suit_map
+  -- Set each suit's count to 0
+  local suits = {}
+
+  MadLib.loop_table(SMODS.Suits, function(k,_) suits[k] = 0 end)
+
+  for k, _ in pairs(SMODS.Suits) do
+    suits[k] = 0
+  end
+
+    MadLib.loop_func(cards, function(v)
+        if not SMODS.has_any_suit(v) then
+            for k, v2 in pairs(suits) do
+                if v:is_suit(k, bypass_debuff, flush_calc) and v2 == 0 then
+                    suits[k] = suits[k] + 1
+                    return
+                end
+            end
+        end
+    end)
+
+    MadLib.loop_func(cards, function(v)
+        if SMODS.has_any_suit(v) then
+            for k, v2 in pairs(suits) do
+                if v:is_suit(k, bypass_debuff, flush_calc) and v2 == 0 then
+                    suits[k] = suits[k] + 1
+                    return
+                end
+            end
+        end
+    end)
+
+    return suits
+end
+
+function MadLib.get_suit_count(cards, bypass_debuff, flush_calc)
+    local suits = MadLib.get_suits_from_cards(cards, bypass_debuff, flush_calc)
+    local num_suits = 0
+
+    for _, v in pairs(suits) do if v > 0 then num_suits = num_suits + 1 end; end
+    return num_suits
 end
 
 -- Picks a rank from the group either by picking a card and returning its rank
@@ -2230,6 +2265,16 @@ function Card:swap_settings(target,params)
 
 		return true
     end)
+end
+
+local ease_anteref = ease_ante
+function ease_ante(mod)
+    if mod ~= 0 then
+        SMODS.calculate_context({ new_ante = true })
+    end
+
+    local ref = ease_anteref(mod)
+    return ref
 end
 
 -- Copies the settings of another card.

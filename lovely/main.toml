@@ -69,15 +69,6 @@ position = 'after'
 match_indent = true
 payload = 'total_chip_score = G.GAME.chips'
 
-[[patches]]
-[patches.pattern]
-target = 'functions/state_events.lua'
-pattern = 'local hand = (G.GAME.hands[text])'
-position = 'after'
-match_indent = true
-payload = '''total_chip_score = G.GAME.chips
-SMODS.calculate_context({ rgmc_before_scoring = true })'''
-
 # Add new colors
 [[patches]]
 [patches.pattern]
