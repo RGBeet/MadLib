@@ -6,6 +6,8 @@ SMODS.Atlas({
     py = 34
 })
 
+G.C.WENGE = HEX('645452')
+
 MadLib = {
     AbstractSuits       = {},
     Prefixes = {
@@ -246,7 +248,7 @@ MadLib = {
             key = 'a_pow',
             add = 'pow',
             set = 'pow',
-            colour = G.C.POW,
+            colour = G.C.POW or G.C.GREEN,
             sign = "+",
         },
         HandSize = {
@@ -350,4 +352,9 @@ end
 
 function not_proper_number(n)
     return n == nil or type(n) ~= 'number'
+end
+
+MadLib.mod_loaded = function(var)
+    if not var then return false end
+    return (SMODS.Mods[var] and SMODS.Mods[var].can_load) and true or false
 end
