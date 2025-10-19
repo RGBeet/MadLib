@@ -954,3 +954,10 @@ function MadLib.dupe_cards(cards,func)
     end)
     return dupes
 end
+
+function MadLib.loop_joker_effect(joker, func)
+    if not joker then return end
+    local list = SMODS.find_card(joker)
+    if not (list and #list > 0) then return end
+    MadLib.loop_func(list, func)
+end

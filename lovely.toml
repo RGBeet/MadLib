@@ -1,0 +1,31 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 1000
+
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = 'elseif options.ignore_showdown_check then'
+position = 'at'
+match_indent = true
+payload = '''elseif (type(options) == 'boolean' and options) or (options or {}).ignore_showdown_check then'''
+
+# Moved to a hook
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''if (area == G.shop_jokers) or (area == G.pack_cards) then 
+            local eternal_perishable_poll = pseudorandom((area == G.pack_cards and 'packetper' or 'etperpoll')..G.GAME.round_resets.ante)
+            if G.GAME.modifiers.enable_eternals_in_shop and eternal_perishable_poll > 0.7 and not SMODS.Stickers["eternal"].should_apply then
+                card:set_eternal(true)
+            elseif G.GAME.modifiers.enable_perishables_in_shop and ((eternal_perishable_poll > 0.4) and (eternal_perishable_poll <= 0.7)) and not SMODS.Stickers["perishable"].should_apply then
+                card:set_perishable(true)
+            end
+            if G.GAME.modifiers.enable_rentals_in_shop and pseudorandom((area == G.pack_cards and 'packssjr' or 'ssjr')..G.GAME.round_resets.ante) > 0.7 and not SMODS.Stickers["rental"].should_apply then
+                card:set_rental(true)
+            end
+        end'''
+position = "at"
+payload =  ""
+match_indent = true
