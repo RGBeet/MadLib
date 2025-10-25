@@ -37,9 +37,11 @@ end
 function MadLib.get_ranks_from_cards(cards, fake_values)
     if not_proper_table(cards) then return nil end
     local rank_map = {}
-    for _,v in pairs(cards) do
+    MadLib.loop_func(cards, function(v)
         local r = fake_values and v:get_id() or v.base.value
-        rank_map[r] = (rank_map[r] or 0) + 1 end
+        if not r then return end
+        rank_map[r] = (rank_map[r] or 0) + 1
+    end)
     return rank_map
 end
 

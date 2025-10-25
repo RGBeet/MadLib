@@ -137,3 +137,13 @@ for i = 1, #G.GAME.tags do
 	G.GAME.tags[i]:apply_to_run({type = 'ml_before_scoring'})
 	delay(0.2)
 end'''
+
+
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/utils.lua"]'''
+pattern = "local scale = G.GAME.modifiers.scaling"
+position = 'at'
+payload = "local scale = G.GAME.modifiers.scaling or 1"
+match_indent = true

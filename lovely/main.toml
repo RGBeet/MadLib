@@ -89,8 +89,7 @@ escore	= G.C.ESCORE,
 target = "functions/state_events.lua"
 pattern = """        hand_chips = mod_chips(G.GAME.hands[text].chips)"""
 position = "after"
-payload = '''local chipmult_mod = MadLib.base_cm_mod(G.play.cards,{text,disp_text,poker_hands,scoring_hand,non_loc_disp_text}, hand_chips, mult)
-total_score = G.GAME.chips'''
+payload = '''total_score = G.GAME.chips'''
 match_indent = true
 
 # This also accounts for Paya's Terrible Addons, which does something similar.
@@ -204,3 +203,47 @@ position = "before"
 payload = '''
 contents = MadLib.edit_uibox_contents(contents, scale)'''
 match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = 'if (id > 0 and rank and rank.face) or next(find_joker("Pareidolia")) then'
+position = "at"
+payload = 'if (id > 0 and rank and rank.face) or MadLib.get_pareidolia(self) then'
+match_indent = true
+
+# Sell a card multiple times?
+[[patches]]
+[patches.pattern]
+target = 'functions/button_callbacks.lua'
+pattern = '''card:sell_card()
+    SMODS.calculate_context({selling_card = true, card = card})'''
+position = "at"
+payload = '''card:sell_card()
+for i=1, card:get_quantity_value() do
+	SMODS.calculate_context({selling_card = true, card = card}))
+end'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if (self.ability.set == 'Planet' or (self.ability.set == 'Booster' and self.ability.name:find('Celestial'))) and #find_joker('Astronomer') > 0 then self.cost = 0 end"
+position = "at"
+payload = "if self:ml_is_free() then self.cost = 0 end"
+match_indent = true
+
+
+[[patches]]
+[patches.pattern]
+target = "state_events.lua"
+pattern = '''mult = mod_mult(G.GAME.hands[text].mult)
+        hand_chips = mod_chips(G.GAME.hands[text].chips)'''
+position = "after"
+payload = '''MadLib.calculate_mult({
+}
+MadLib.calculate_chips({
+}
+'''
+match_indent = true
+

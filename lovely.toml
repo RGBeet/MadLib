@@ -11,6 +11,15 @@ position = 'at'
 match_indent = true
 payload = '''elseif (type(options) == 'boolean' and options) or (options or {}).ignore_showdown_check then'''
 
+
+[[patches]]
+[patches.pattern]
+target = 'blind.lua'
+pattern = "self.disabled = true"
+position = 'after'
+match_indent = true
+payload = '''SMODS.calculate_context({ blind_disabled = true })'''
+
 # Moved to a hook
 [[patches]]
 [patches.pattern]

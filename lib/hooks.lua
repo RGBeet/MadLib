@@ -46,7 +46,6 @@ function MadLib.set_shop_stickers(card)
     return card
 end
 
--- Revise how the
 local old_create_card = create_card
 function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
 	local card = old_create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
@@ -58,4 +57,14 @@ function create_card(_type, area, legendary, _rarity, skip_materialize, soulable
     end
 
 	return card
+end
+
+
+local card_shuffle_ref = CardArea.shuffle
+function CardArea:shuffle(_seed)
+	SMODS.calculate_context({ ml_pre_shuffle = true, ml_shuffling_area = self })
+
+	card_shuffle_ref(self, _seed)
+
+	SMODS.calculate_context({ ml_post_shuffle = true, ml_shuffling_area = self })
 end

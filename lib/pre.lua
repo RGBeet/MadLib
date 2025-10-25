@@ -283,6 +283,19 @@ MadLib = {
         Good        = {}, -- good effects
         Destructive = {}, -- sticker destroys host card or other cards
     },
+    StickerGroups = {
+        ['1']       = {
+            'eternal',
+            'perishable'
+        },
+        ['2']       = {
+            'rental'
+        },
+        ['3'] = {},
+        ['4'] = {},
+        ['5'] = {},
+        ['6'] = {}
+    },
     -- Contains info about minor characteristics of suits
     SuitTypes = {
         Base    = { 'Hearts', 'Diamonds', 'Spades', 'Clubs' }, -- do NOT change this!

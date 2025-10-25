@@ -132,7 +132,7 @@ function MadLib.calculate_mult(value, args)
     return value
 end
 
-if Cryptid then
+if Cryptid and Cryptid.ascend then
     local calculate_chips_ref = MadLib.calculate_chips
     function MadLib.calculate_chips(value, args)
         return Cryptid.ascend(calculate_chips_ref(value,args))
@@ -627,7 +627,7 @@ function MadLib.force_poker_hand(results, poker_hand)
     end
 end
 
-function MadLib.add_to_hand_sum(card, count_irregulars)
+function MadLib.add_to_hand_sum(v, count_irregulars)
     if not SMODS.has_no_rank(v) and not ((not count_irregulars) and v:rank_in_list(MadLib.RankTypes.Irregular)) then
         local rank = SMODS.Ranks[v.base.value]
         return rank.nominal
@@ -859,7 +859,11 @@ end
 
 -- manipulates chip and mult values
 function MadLib.manipulate_chips_mult(ch,mu)
-    G.HUD:get_UIE_by_ID('chip_UI_count'):juice_up(0.5, 0.5)
+    if G.HUD:get_UIE_by_ID('chip_UI_count') then
+        G.HUD:get_UIE_by_ID('chip_UI_count'):juice_up(0.5, 0.5)
+    else
+       print('Mamma mia! Where is the chips mult?')
+    end
     hand_chips  = ch or hand_chips
     mult        = mu or mult
 end
@@ -960,4 +964,37 @@ function MadLib.loop_joker_effect(joker, func)
     local list = SMODS.find_card(joker)
     if not (list and #list > 0) then return end
     MadLib.loop_func(list, func)
+end
+
+function MadLib.get_card_count(cards, func)
+    local original, modified = 0
+
+    MadLib.loop_func(cards, function(v, i)
+        if not func(v, i) then return end
+        original = original + 1
+        modified = modified + v:get_quantity_value()
+    end)
+
+    return modified, original ~= modified
+end
+
+function Card:get_quantity_value()
+    return 1
+end
+
+function Card:can_score_card()
+    return self:get_quantity_value() >= 1
+end
+
+-- Checks if Pareidolia should proc for the card
+function MadLib.get_pareidolia(card)
+    return card and next(find_joker("Pareidolia"))
+end
+
+function Card:ml_is_free()
+    -- Astronomer logic
+    if (self.ability.set == 'Planet'  or (self.ability.set == 'Booster' and self.ability.name:find('Celestial'))) then
+        if #find_joker('Astronomer') > 0 and self:get_quantity_value() > 0 then return true end
+    end
+    return false
 end
