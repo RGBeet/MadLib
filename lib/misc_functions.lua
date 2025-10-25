@@ -967,7 +967,7 @@ function MadLib.loop_joker_effect(joker, func)
 end
 
 function MadLib.get_card_count(cards, func)
-    local original, modified = 0
+    local original, modified = 0, 0
 
     MadLib.loop_func(cards, function(v, i)
         if not func(v, i) then return end
