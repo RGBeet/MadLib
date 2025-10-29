@@ -138,12 +138,18 @@ for i = 1, #G.GAME.tags do
 	delay(0.2)
 end'''
 
-
-
 [[patches]]
 [patches.pattern]
 target = '''=[SMODS _ "src/utils.lua"]'''
 pattern = "local scale = G.GAME.modifiers.scaling"
 position = 'at'
 payload = "local scale = G.GAME.modifiers.scaling or 1"
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''                (options or {}).ignore_showdown_check'''
+position = "at"
+payload = '''(type(options) == "boolean" and (options == true)) or type(options) == "table" and (options and options.ignore_showdown_check) or false'''
 match_indent = true

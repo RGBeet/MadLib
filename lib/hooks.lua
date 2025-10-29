@@ -68,3 +68,9 @@ function CardArea:shuffle(_seed)
 
 	SMODS.calculate_context({ ml_post_shuffle = true, ml_shuffling_area = self })
 end
+
+local card_sell_ref = Card.sell_card
+function Card:sell_card()
+    self.ability.sold = true
+    return card_sell_ref(self)
+end

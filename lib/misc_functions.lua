@@ -998,3 +998,7 @@ function Card:ml_is_free()
     end
     return false
 end
+
+function Card:is_sold()
+    return self.ability.sold
+end
