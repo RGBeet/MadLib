@@ -185,6 +185,7 @@ end
 function MadLib.create_anim_atlas(key, path, frms, px, py)
     local atlas = MadLib.create_atlas(key, path, px, py)
     atlas['frames'] = frms or 21
+    atlas['atlas_table'] = 'ANIMATION_ATLAS'
     return atlas
 end
 

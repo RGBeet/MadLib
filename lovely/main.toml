@@ -248,3 +248,38 @@ MadLib.calculate_chips({
 '''
 match_indent = true
 
+# Allows multiple type of shops.
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''if card.ability.set == 'Booster' and not nosave and G.STATE == G.STATES.SHOP then'''
+position = "at"
+payload =  '''if card.ability.set == 'Booster' and not nosave and MadLib.get_shop_state() then'''
+overwrite = true
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "cardarea.lua"
+pattern = '''local state = G.TAROT_INTERRUPT or G.STATE'''
+position = "after"
+payload =  '''state = state > 200 and G.STATES.SMODS_BOOSTER_OPENED or state'''
+match_indent = false
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS _ "src/overrides.lua"]'
+pattern = '''if not initial and G.STATE ~= G.STATES.SMODS_BOOSTER_OPENED and G.STATE ~= G.STATES.SHOP and not G.SETTINGS.paused or G.TAROT_INTERRUPT then'''
+position = "at"
+payload =  '''if not initial and G.STATE ~= MadLib.get_card_setting_ability(self) and not G.SETTINGS.paused or G.TAROT_INTERRUPT then'''
+overwrite = true
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS _ "src/util.lua"]'
+pattern = '''from_shop = (G.STATE == G.STATES.SHOP or G.STATE == G.STATES.SMODS_BOOSTER_OPENED or G.STATE == G.STATES.SMODS_REDEEM_VOUCHER) or nil,'''
+position = "at"
+payload =  '''from_shop = (MadLib.get_shop_state() or G.STATE == G.STATES.SMODS_BOOSTER_OPENED or G.STATE == G.STATES.SMODS_REDEEM_VOUCHER) or nil,'''
+overwrite = true
+match_indent = true

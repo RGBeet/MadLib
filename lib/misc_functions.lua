@@ -1002,3 +1002,87 @@ end
 function Card:is_sold()
     return self.ability.sold
 end
+
+function MadLib.get_shop_state()
+    return G.STATE == G.STATES.SHOP
+end
+
+function MadLib.get_hide_hand_area()
+    return G.STATE == G.STATES.SMODS_BOOSTER_OPENED
+end
+
+function MadLib.get_card_setting_ability()
+    return G.STATES.SMODS_BOOSTER_OPENED and G.STATE ~= G.STATES.SHOP
+end
+
+function MadLib.update_check_state(g,dt)
+end
+
+function MadLib.edit_shop_data(g,dt)
+end
+
+local unpack = table.unpack or unpack
+function MadLib.find_in_table(tbl, targetKey, targetValue, visited, path)
+    visited = visited or {}
+    path = path or {}
+
+    if visited[tbl] then return nil end
+    visited[tbl] = true
+
+    for key, value in pairs(tbl) do
+        -- Make a shallow copy of the path
+        local newPath = {}
+        for i = 1, #path do
+            newPath[i] = path[i]
+        end
+        newPath[#newPath + 1] = key
+
+        if key == targetKey and value == targetValue then
+            return newPath
+        end
+
+        if type(value) == "table" then
+            local result = MadLib.find_in_table(value, targetKey, targetValue, visited, newPath)
+            if result then
+                return result
+            end
+        end
+    end
+    return nil
+end
+
+function MadLib.find_key_in_table(tbl, targetKey, visited, path)
+    visited = visited or {}
+    path = path or {}
+
+    if visited[tbl] then return nil end
+    visited[tbl] = true
+
+    for key, value in pairs(tbl) do
+        -- Copy the current path
+        local newPath = {}
+        for i = 1, #path do
+            newPath[i] = path[i]
+        end
+        newPath[#newPath + 1] = key
+
+        -- Found the key
+        if key == targetKey then
+            return newPath
+        end
+
+        -- Recurse safely
+        if type(value) == "table" then
+            local result = MadLib.find_key_in_table(value, targetKey, visited, newPath)
+            if result then
+                return result
+            end
+        end
+    end
+
+    return nil
+end
+
+function MadLib.hide_hand_ui()
+    return state == G.STATES.SMODS_BOOSTER_OPENED
+end
