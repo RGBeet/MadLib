@@ -1,0 +1,61 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 5000
+
+# Adds 
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''-- TARGET: main scoring on played cards'''
+position = 'after'
+payload = '''ret = MadLib.add_card_variables(ret, card)'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''if specific_vars and specific_vars.bonus_p_dollars then'''
+position = 'before'
+payload = '''
+if specific_vars and specific_vars.bonus_e_chips then
+	localize{type = 'other', key = 'card_extra_e_chips', nodes = desc_nodes, vars = {specific_vars.bonus_e_chips}}
+end
+if specific_vars and specific_vars.bonus_e_mult then
+	localize{type = 'other', key = 'card_extra_e_mult', nodes = desc_nodes, vars = {specific_vars.bonus_e_mult}}
+end
+if specific_vars and specific_vars.bonus_score then
+	localize{type = 'other', key = 'card_extra_score', nodes = desc_nodes, vars = {specific_vars.bonus_score}}
+end
+if specific_vars and specific_vars.bonus_x_score then
+	localize{type = 'other', key = 'card_extra_x_score', nodes = desc_nodes, vars = {specific_vars.bonus_x_score}}
+end
+if specific_vars and specific_vars.bonus_e_score then
+	localize{type = 'other', key = 'card_extra_e_score', nodes = desc_nodes, vars = {specific_vars.bonus_e_score}}
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/utils.lua"]'''
+pattern = '''if specific_vars and specific_vars.bonus_repetitions then'''
+position = 'before'
+payload = '''
+if specific_vars and specific_vars.bonus_e_chips then
+	localize{type = 'other', key = 'card_extra_e_chips', nodes = desc_nodes, vars = {specific_vars.bonus_e_chips}}
+end
+if specific_vars and specific_vars.bonus_e_mult then
+	localize{type = 'other', key = 'card_extra_e_mult', nodes = desc_nodes, vars = {specific_vars.bonus_e_mult}}
+end
+if specific_vars and specific_vars.bonus_score then
+	localize{type = 'other', key = 'card_extra_score', nodes = desc_nodes, vars = {specific_vars.bonus_score}}
+end
+if specific_vars and specific_vars.bonus_x_score then
+	localize{type = 'other', key = 'card_extra_x_score', nodes = desc_nodes, vars = {specific_vars.bonus_x_score}}
+end
+if specific_vars and specific_vars.bonus_e_score then
+	localize{type = 'other', key = 'card_extra_e_score', nodes = desc_nodes, vars = {specific_vars.bonus_e_score}}
+end
+'''
+match_indent = true

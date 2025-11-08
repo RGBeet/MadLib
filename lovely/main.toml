@@ -3,71 +3,15 @@ version = "1.0.0"
 dump_lua = true
 priority = -1000
 
-# WIP - adding x_score and e_score
+# get the sell ui thingy idk man
 [[patches]]
 [patches.pattern]
-target = "card.lua"
-pattern = "x_mult = center.config.Xmult or 1,"
-position = "after"
-payload = '''
-a_score = center.config.Ascore or 0,
-x_score = center.config.Xscore or 1,
-e_score = center.config.Escore or 1,
-'''
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.T, config={text = localize('$'),colour = G.C.WHITE, scale = 0.4, shadow = true}},'''
+position = 'at'
+payload = '''MadLib.define_get_currency_sell_ui(card),'''
 match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = "functions/common_events.lua"
-pattern = "elseif eval_type == 'dollars' then"
-position = "before"
-payload = '''
-elseif eval_type == 'e_mult' then
-	sound = 'madlib_emult'
-	amt = amt
-	text = '^' .. amt
-	colour = G.C.DARK_EDITION
-	config.type = 'fade'
-	config.scale = 0.7
-elseif eval_type == 'e_chips' then
-	sound = 'madlib_echip'
-	amt = amt
-	text = '^' .. amt
-	colour = G.C.DARK_EDITION
-	config.type = 'fade'
-	config.scale = 0.7
-elseif eval_type == 'a_score' then
-	sound = 'madlib_xscore'
-	amt = amt
-	text = '^' .. amt
-	colour = G.C.PURPLE
-	config.type = 'fade'
-	config.scale = 0.7
-elseif eval_type == 'x_score' then
-	sound = 'madlib_xscore'
-	amt = amt
-	text = 'X' .. amt
-	colour = G.C.PURPLE
-	config.type = 'fade'
-	config.scale = 0.7
-elseif eval_type == 'e_score' then
-	sound = 'madlib_escore'
-	amt = amt
-	text = '^' .. amt
-	colour = G.C.PURPLE
-	config.type = 'fade'
-	config.scale = 0.7
-'''
-match_indent = true
-
-# Add a way to gain total chip score easily (for xscore?)
-[[patches]]
-[patches.pattern]
-target = 'functions/state_events.lua'
-pattern = 'function evaluate_play_main(text, disp_text, poker_hands, scoring_hand, non_loc_disp_text, percent, percent_delta)'
-position = 'after'
-match_indent = true
-payload = 'total_chip_score = G.GAME.chips'
+times = 1
 
 # Add new colors
 [[patches]]
@@ -82,63 +26,6 @@ emult 	= G.C.EMULT,
 echips = G.C.ECHIPS,
 escore	= G.C.ESCORE,
 '''
-
-# Making a hook function
-[[patches]]
-[patches.pattern]
-target = "functions/state_events.lua"
-pattern = """        hand_chips = mod_chips(G.GAME.hands[text].chips)"""
-position = "after"
-payload = '''total_score = G.GAME.chips'''
-match_indent = true
-
-# This also accounts for Paya's Terrible Addons, which does something similar.
-[[patches]]
-[patches.regex]
-target = 'functions/state_events.lua'
-pattern = '''math\.floor\(hand_chips\*mult\)'''
-position = 'at'
-payload = '''math.floor(MadLib.get_full_score(hand_chips,mult))'''
-match_indent = true
-times = 10
-
-# get the sell ui thingy idk man
-[[patches]]
-[patches.pattern]
-target = "functions/UI_definitions.lua"
-pattern = '''{n=G.UIT.T, config={text = localize('$'),colour = G.C.WHITE, scale = 0.4, shadow = true}},'''
-position = 'at'
-payload = '''MadLib.define_get_currency_sell_ui(card),'''
-match_indent = true
-times = 1
-
-# Does the hand pass the check?!
-[[patches]]
-[patches.pattern]
-target = 'functions/state_events.lua'
-pattern = "if not G.GAME.blind:debuff_hand(G.play.cards, poker_hands, text) then"
-position = 'at'
-payload = '''if
-    not G.GAME.blind:debuff_hand(G.play.cards, poker_hands, text)
-    and MadLib.hand_passes_check(G.play.cards, poker_hands, text)
-then'''
-match_indent = true
-times = 1
-
-# Exclude cards?!
-[[patches]]
-[patches.pattern]
-target = 'functions/state_events.lua'
-pattern = '''results.top = nil'''
-position = 'after'
-payload = '''
-    -- remove poker hands
-    if G.GAME.modifiers.poker_hand_blacklist then
-        MadLib.loop_func(G.GAME.modifiers.poker_hand_blacklist, function(v)
-        results[k] = nil
-    end
-end)'''
-match_indent = true
 
 # Add alt throw hand value
 [[patches]]
@@ -232,20 +119,6 @@ target = "card.lua"
 pattern = "if (self.ability.set == 'Planet' or (self.ability.set == 'Booster' and self.ability.name:find('Celestial'))) and #find_joker('Astronomer') > 0 then self.cost = 0 end"
 position = "at"
 payload = "if self:ml_is_free() then self.cost = 0 end"
-match_indent = true
-
-
-[[patches]]
-[patches.pattern]
-target = "state_events.lua"
-pattern = '''mult = mod_mult(G.GAME.hands[text].mult)
-        hand_chips = mod_chips(G.GAME.hands[text].chips)'''
-position = "after"
-payload = '''MadLib.calculate_mult({
-}
-MadLib.calculate_chips({
-}
-'''
 match_indent = true
 
 # Allows multiple type of shops.

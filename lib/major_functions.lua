@@ -213,3 +213,73 @@ function MadLib.base_cm_mod(hand,poker_info,data)
     -- For use with Madcap and Pacdam.
     return hand, poker_info, data
 end
+
+-- Using this variable so I can hook onto it
+-- If you have Talisman it shouldn't need to do xchips/emult/echips
+function MadLib.add_card_variables(ret, card)
+    local score = card:ml_get_score()
+    if score > 0 then ret.playing_card.score = score end
+        
+    local x_score = card:ml_get_xscore()
+    if x_score > 0 then ret.playing_card.x_score = x_score end
+        
+    local e_score = card:ml_get_escore()
+    if e_score > 0 then ret.playing_card.e_score = e_score end
+
+    return ret
+end
+if not Talisman then
+    local add_card_variables_ref = MadLib.add_card_variables
+    function MadLib.add_card_variables(ret, card)
+        local new_ret = add_card_variables_ref(ret, card)
+        local e_mult = card:ml_get_emult()
+        if e_mult > 0 then ret.playing_card.e_mult = e_mult end
+
+        local e_chips = card:ml_get_echips()
+        if e_chips > 0 then ret.playing_card.e_chips = e_chips end
+        return new_ret
+    end
+end
+
+-- Returns whether N1 is greater than N2. Works with or without Talisman.
+MadLib.compare_numbers = Talisman and function(n1,n2)
+    return (to_big(n1) < to_big(n2) and -1)
+        or (to_big(n1) > to_big(n2) and 1)
+        or 0 -- they equal eachother
+end or function(n1,n2)
+    return (n1 < n2 and -1)
+        or (n1 > n2 and 1)
+        or 0 -- they equal eachother
+end
+
+MadLib.add = Talisman and function(n1,n2)
+    return to_big(lenient_bignum(n1) + lenient_bignum(n2))
+end or function(n1,n2)
+    return n1 + n2
+end
+
+MadLib.subtract = Talisman and function(n1,n2)
+    return to_big(lenient_bignum(n1) + lenient_bignum(n2))
+end or function(n1,n2)
+    return n1 + n2
+end
+
+MadLib.multiply = Talisman and function(n1,n2)
+    return to_big(lenient_bignum(n1) * lenient_bignum(n2))
+end or function(n1,n2)
+    return n1 * n2
+end
+
+MadLib.divide = Talisman and function(n1,n2)
+    if to_big(n2) == 0 then return to_big(0) end
+    return to_big(lenient_bignum(n1) / lenient_bignum(n2))
+end or function(n1,n2)
+    if n2 == 0 then return 0 end
+    return n1 / n2
+end
+
+MadLib.exponent = Talisman and function(n1,n2)
+    return to_big(lenient_bignum(n1) ^ lenient_bignum(n2))
+end or function(n1,n2)
+    return n1 ^ n2
+end

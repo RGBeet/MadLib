@@ -1,0 +1,63 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = -1000
+
+# Add a way to gain total chip score easily (for
+
+# WIP - adding x_score and e_score
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "x_mult = center.config.Xmult or 1,"
+position = "after"
+payload = '''
+a_score = center.config.Ascore or 0,
+x_score = center.config.Xscore or 1,
+e_score = center.config.Escore or 1,
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "elseif eval_type == 'dollars' then"
+position = "before"
+payload = '''
+elseif eval_type == 'e_mult' then
+	sound = 'madlib_emult'
+	amt = amt
+	text = '^' .. amt
+	colour = G.C.DARK_EDITION
+	config.type = 'fade'
+	config.scale = 0.7
+elseif eval_type == 'e_chips' then
+	sound = 'madlib_echip'
+	amt = amt
+	text = '^' .. amt
+	colour = G.C.DARK_EDITION
+	config.type = 'fade'
+	config.scale = 0.7
+elseif eval_type == 'a_score' then
+	sound = 'madlib_xscore'
+	amt = amt
+	text = '^' .. amt
+	colour = G.C.PURPLE
+	config.type = 'fade'
+	config.scale = 0.7
+elseif eval_type == 'x_score' then
+	sound = 'madlib_xscore'
+	amt = amt
+	text = 'X' .. amt
+	colour = G.C.PURPLE
+	config.type = 'fade'
+	config.scale = 0.7
+elseif eval_type == 'e_score' then
+	sound = 'madlib_escore'
+	amt = amt
+	text = '^' .. amt
+	colour = G.C.PURPLE
+	config.type = 'fade'
+	config.scale = 0.7
+'''
+match_indent = true

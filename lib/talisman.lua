@@ -17,10 +17,6 @@ if Talisman then
     end
 else
 
-    function MadLib.compare_numbers(a,b,and_equals)
-        return (and_equals and a >= b) or (a > b)
-    end
-
 	function to_number(a)
 		return a
 	end

@@ -1,0 +1,75 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = -1000
+
+
+# Add a way to gain total chip score easily (for xscore?)
+[[patches]]
+[patches.pattern]
+target = 'functions/state_eventss.lua'
+pattern = 'function evaluate_play_main(text, disp_text, poker_hands, scoring_hand, non_loc_disp_text, percent, percent_delta)'
+position = 'after'
+match_indent = true
+payload = 'total_chip_score = G.GAME.chips'
+
+# Making a hook function
+[[patches]]
+[patches.pattern]
+target = "functions/state_eventss.lua"
+pattern = """        hand_chips = mod_chips(G.GAME.hands[text].chips)"""
+position = "after"
+payload = '''total_score = G.GAME.chips'''
+match_indent = true
+
+# This also accounts for Paya's Terrible Addons, which does something similar.
+[[patches]]
+[patches.regex]
+target = 'functions/state_eventss.lua'
+pattern = '''math\.floor\(hand_chips\*mult\)'''
+position = 'at'
+payload = '''math.floor(MadLib.get_full_score(hand_chips,mult))'''
+match_indent = true
+times = 10
+
+# Does the hand pass the check?!
+[[patches]]
+[patches.pattern]
+target = 'functions/state_eventss.lua'
+pattern = "if not G.GAME.blind:debuff_hand(G.play.cards, poker_hands, text) then"
+position = 'at'
+payload = '''if
+    not G.GAME.blind:debuff_hand(G.play.cards, poker_hands, text)
+    and MadLib.hand_passes_check(G.play.cards, poker_hands, text)
+then'''
+match_indent = true
+times = 1
+
+
+[[patches]]
+[patches.pattern]
+target = "state_eventss.lua"
+pattern = '''mult = mod_mult(G.GAME.hands[text].mult)
+        hand_chips = mod_chips(G.GAME.hands[text].chips)'''
+position = "after"
+payload = '''MadLib.calculate_mult({
+}
+MadLib.calculate_chips({
+}
+'''
+match_indent = true
+
+# Exclude cards?! (DOES NOT WORK?!)
+[[patches]]
+[patches.pattern]
+target = 'functions/state_eventss.lua'
+pattern = '''results.top = nil'''
+position = 'after'
+payload = '''
+    -- remove poker hands
+    if G.GAME.modifiers.poker_hand_blacklist then
+        MadLib.loop_func(G.GAME.modifiers.poker_hand_blacklist, function(v)
+        results[k] = nil
+    end
+end)'''
+match_indent = true

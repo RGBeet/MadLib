@@ -15,6 +15,7 @@ local files = {
     'score',                -- ???
     'spectrum',             -- ???
     'talisman',             -- ???
+    'joker_display',        -- ???
     'weighted_selection',   -- ???
     'load_content',         -- ???
 }

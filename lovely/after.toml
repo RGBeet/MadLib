@@ -5,66 +5,6 @@ priority = 10000
 
 [[patches]]
 [patches.pattern]
-target = 'functions/state_events.lua'
-pattern = '''G.E_MANAGER:add_event(Event({
-      trigger = 'ease',
-      blocking = false,
-      ref_table = G.GAME,
-      ref_value = 'chips',
-      ease_to = G.GAME.chips + math.floor(MadLib.get_full_score(hand_chips,mult)),
-      delay =  0.5,
-      func = (function(t) return math.floor(t) end)
-    }))'''
-position = 'at'
-payload = '''G.E_MANAGER:add_event(Event({
-	trigger = 'ease',
-    blocking = false,
-    ref_table = G.GAME,
-    ref_value = 'chips',
-    ease_to = total_score + math.floor(MadLib.get_full_score(hand_chips,mult)),
-    delay =  0.5,
-    func = function(t) 
-	  G.GAME.chips = total_score    
-	  return math.floor(t) 
-	end
-  }))'''
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = 'functions/common_events.lua'
-pattern = '''-- TARGET: main scoring on played cards'''
-position = 'after'
-payload = '''
-local e_mult = card:ml_get_emult()
-if e_mult > 0 then
-	ret.playing_card.e_mult = e_mult
-end
-
-local e_chips = card:ml_get_echips()
-if e_chips > 0 then
-	ret.playing_card.e_chips = e_chips
-end
-
-local score = card:ml_get_score()
-if score > 0 then
-	ret.playing_card.score = score
-end
-	
-local x_score = card:ml_get_xscore()
-if x_score > 0 then
-	ret.playing_card.x_score = x_score
-end
-	
-local e_score = card:ml_get_escore()
-if e_score > 0 then
-	ret.playing_card.e_score = e_score
-end
-'''
-match_indent = true
-
-[[patches]]
-[patches.pattern]
 target = 'card.lua'
 pattern = '''bonus_chips = bonus_chips ~= 0 and bonus_chips or nil,'''
 position = 'after'
@@ -74,54 +14,6 @@ bonus_e_chips   = (self.ability.perma_e_chips and self.ability.perma_e_chips ~= 
 bonus_score     = (self.ability.perma_score and self.ability.perma_score ~= 0) and (self.ability.perma_score) or nil,
 bonus_x_score   = (self.ability.perma_x_score and self.ability.perma_x_score ~= 0) and (self.ability.perma_x_score + 1) or nil,
 bonus_e_score   = (self.ability.perma_e_score and self.ability.perma_e_score ~= 0) and (self.ability.perma_e_score + 1) or nil,
-'''
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = 'functions/common_events.lua'
-pattern = '''if specific_vars and specific_vars.bonus_p_dollars then'''
-position = 'before'
-payload = '''
-if specific_vars and specific_vars.bonus_e_chips then
-	localize{type = 'other', key = 'card_extra_e_chips', nodes = desc_nodes, vars = {specific_vars.bonus_e_chips}}
-end
-if specific_vars and specific_vars.bonus_e_mult then
-	localize{type = 'other', key = 'card_extra_e_mult', nodes = desc_nodes, vars = {specific_vars.bonus_e_mult}}
-end
-if specific_vars and specific_vars.bonus_score then
-	localize{type = 'other', key = 'card_extra_score', nodes = desc_nodes, vars = {specific_vars.bonus_score}}
-end
-if specific_vars and specific_vars.bonus_x_score then
-	localize{type = 'other', key = 'card_extra_x_score', nodes = desc_nodes, vars = {specific_vars.bonus_x_score}}
-end
-if specific_vars and specific_vars.bonus_e_score then
-	localize{type = 'other', key = 'card_extra_e_score', nodes = desc_nodes, vars = {specific_vars.bonus_e_score}}
-end
-'''
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = '''=[SMODS _ "src/utils.lua"]'''
-pattern = '''if specific_vars and specific_vars.bonus_repetitions then'''
-position = 'before'
-payload = '''
-if specific_vars and specific_vars.bonus_e_chips then
-	localize{type = 'other', key = 'card_extra_e_chips', nodes = desc_nodes, vars = {specific_vars.bonus_e_chips}}
-end
-if specific_vars and specific_vars.bonus_e_mult then
-	localize{type = 'other', key = 'card_extra_e_mult', nodes = desc_nodes, vars = {specific_vars.bonus_e_mult}}
-end
-if specific_vars and specific_vars.bonus_score then
-	localize{type = 'other', key = 'card_extra_score', nodes = desc_nodes, vars = {specific_vars.bonus_score}}
-end
-if specific_vars and specific_vars.bonus_x_score then
-	localize{type = 'other', key = 'card_extra_x_score', nodes = desc_nodes, vars = {specific_vars.bonus_x_score}}
-end
-if specific_vars and specific_vars.bonus_e_score then
-	localize{type = 'other', key = 'card_extra_e_score', nodes = desc_nodes, vars = {specific_vars.bonus_e_score}}
-end
 '''
 match_indent = true
 
