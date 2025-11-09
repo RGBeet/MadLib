@@ -16,7 +16,7 @@ if score_enabled then
         if (key == 'a_score' or key == 'ascore' or key == 'score_mod') and amount ~= 0 then
             tell('Add score moment')
             if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
-            total_score = mod_total_score(total_score + amount)
+            total_score = total_score and mod_total_score(total_score + amount) or amount
             local ts = total_score
             MadLib.event({
                 func = function()
@@ -53,7 +53,7 @@ if score_enabled then
                 end
             end
             return true
-        elseif (key == 'xscore' or key == 'x_score' or key == 'xscore_mod') and amount ~= 1 and total_score > 0 then
+        elseif (key == 'xscore' or key == 'x_score' or key == 'xscore_mod') and amount ~= 1 and (total_score and total_score > 0) then
             if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
             total_score = mod_total_score(total_score * amount)
             local ts = total_score

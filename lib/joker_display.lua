@@ -16,3 +16,8 @@ function MadLib.JokerDisplay.get_stacked_probabilities(card, key, count)
     local percentage = 1 - ((denominator - numerator) / denominator)^count
     return MadLib.round(denominator * percentage,2), MadLib.round(denominator, 2)
 end
+
+function MadLib.JokerDisplay.calculate_card_position(cards, i)
+    local sorted_cards = JokerDisplay.sort_cards(cards)
+    return sorted_cards and sorted_cards[i]
+end

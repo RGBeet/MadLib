@@ -242,9 +242,16 @@ if not Talisman then
 end
 
 -- Returns whether N1 is greater than N2. Works with or without Talisman.
+
+MadLib.big_fix = function(n)
+    return (type(n) == 'table') and n or to_big(n)  
+end
+
 MadLib.compare_numbers = Talisman and function(n1,n2)
-    return (to_big(n1) < to_big(n2) and -1)
-        or (to_big(n1) > to_big(n2) and 1)
+    n1 = MadLib.big_fix(n1)
+    n2 = MadLib.big_fix(n2)
+    return (n1 < n2 and -1)
+        or (n1 > n2 and 1)
         or 0 -- they equal eachother
 end or function(n1,n2)
     return (n1 < n2 and -1)
@@ -253,26 +260,34 @@ end or function(n1,n2)
 end
 
 MadLib.add = Talisman and function(n1,n2)
-    return to_big(lenient_bignum(n1) + lenient_bignum(n2))
+    n1 = MadLib.big_fix(n1)
+    n2 = MadLib.big_fix(n2)
+    return n1 + n2
 end or function(n1,n2)
     return n1 + n2
 end
 
 MadLib.subtract = Talisman and function(n1,n2)
-    return to_big(lenient_bignum(n1) + lenient_bignum(n2))
+    n1 = MadLib.big_fix(n1)
+    n2 = MadLib.big_fix(n2)
+    return n1 - n2
 end or function(n1,n2)
-    return n1 + n2
+    return n1 - n2
 end
 
 MadLib.multiply = Talisman and function(n1,n2)
-    return to_big(lenient_bignum(n1) * lenient_bignum(n2))
+    n1 = MadLib.big_fix(n1)
+    n2 = MadLib.big_fix(n2)
+    return n1 * n2
 end or function(n1,n2)
     return n1 * n2
 end
 
 MadLib.divide = Talisman and function(n1,n2)
-    if to_big(n2) == 0 then return to_big(0) end
-    return to_big(lenient_bignum(n1) / lenient_bignum(n2))
+    n1      = MadLib.big_fix(n1)
+    n2      = MadLib.big_fix(n2)
+    local z = to_big(0)
+    return (n2 == z and nil) or to_big(n1/n2)
 end or function(n1,n2)
     if n2 == 0 then return 0 end
     return n1 / n2

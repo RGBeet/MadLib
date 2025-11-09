@@ -580,11 +580,11 @@ function MadLib.banana_remove(card, msg)
 end
 
 function MadLib.food_joker_logic(card,func)
-    card.ability.extra.rounds_remaining = card.ability.extra.rounds_remaining
-        and lenient_bignum(to_big(card.ability.extra.rounds_remaining) - 1)
-        or 1
+    card.ability.extra.rounds = card.ability.extra.rounds
+        and lenient_bignum(to_big(card.ability.extra.rounds) - 1)
+        or 0
 
-    return to_big(card.ability.extra.rounds_remaining) > to_big(0) and
+    return to_big(card.ability.extra.rounds) > to_big(0) and
         { message = { localize("rgmc_minus_round") }, colour = G.C.FILTER, }
     or MadLib.banana_remove(card,"k_eaten_ex")
 end
