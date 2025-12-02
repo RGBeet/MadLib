@@ -417,7 +417,7 @@ function MadLib.is_finisher_ante(ante)
 end
 
 -- [Return Object] Gets the most played poker hand
-function MadLib.get_most_played_hand()
+function MadLib.get_most_played_hand(count_all)
 	-- defaults to high card
 	if not G.GAME or not G.GAME.current_round then return 'High Card' end
 	local chosen_hand 	= 'High Card'
@@ -425,7 +425,8 @@ function MadLib.get_most_played_hand()
 	local most_played, cur_order = -1, -1
 	for k, v in pairs(G.GAME.hands) do
 		if
-			v.played > most_played
+            (not (count_all and not v.enabled))
+			or v.played > most_played
 			or (v.played == most_played and cur_order > v.order)
 		then
 			most_played = v.played
