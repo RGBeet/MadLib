@@ -117,7 +117,7 @@ if require_exponentials then
                 else
                     card_eval_status_text( effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {
                         message = ('X%s Chips'):format(number_format(amount)),
-                        sound = "madlib_xchip",
+                        sound = Talisman and "talisman_xchip" or "madlib_xchip",
                         colour = G.C.BLUE
                     })
                 end
@@ -132,7 +132,7 @@ if require_exponentials then
             if from_edition then
                 card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {
                     message = ('^%s Mult'):format(number_format(amount)),
-                    sound = "madlib_emult",
+                    sound = Talisman and "talisman_emult" or "madlib_emult",
                     colour = G.C.DARK_EDITION, edition = true
                 })
             else
@@ -141,7 +141,7 @@ if require_exponentials then
                 else
                     card_eval_status_text(effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {
                         message = ('^%s Mult'):format(number_format(amount)),
-                        sound = "madlib_emult",
+                        sound = Talisman and "talisman_emult" or "madlib_emult",
                         colour = G.C.DARK_EDITION
                     })
                 end
@@ -158,7 +158,7 @@ if require_exponentials then
             if from_edition then
                 card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {
                     message = ('^%s Chips'):format(number_format(amount)),
-                    sound = "madlib_echips",
+                    sound = Talisman and "talisman_echips" or "madlib_echips",
                     colour = G.C.DARK_EDITION,
                     edition = true
                 })
@@ -169,7 +169,7 @@ if require_exponentials then
                     card_eval_status_text(effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra',
                             nil, percent, nil, {
                                 message = ('^%s Chips'):format(number_format(amount)),
-                                sound = "madlib_echips",
+                                sound = Talisman and "talisman_echips" or "madlib_echips",
                                 colour = G.C.DARK_EDITION
                             })
                     end

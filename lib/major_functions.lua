@@ -250,13 +250,25 @@ end
 MadLib.compare_numbers = Talisman and function(n1,n2)
     n1 = MadLib.big_fix(n1)
     n2 = MadLib.big_fix(n2)
-    return (n1 < n2 and -1)
-        or (n1 > n2 and 1)
-        or 0 -- they equal eachother
+    if          n1 < n2 then return -1
+    elseif      n1 > n2 then return 1 end
+    return 0
 end or function(n1,n2)
-    return (n1 < n2 and -1)
-        or (n1 > n2 and 1)
-        or 0 -- they equal eachother
+    if          n1 < n2 then return -1
+    elseif      n1 > n2 then return 1 end
+    return 0
+end
+
+MadLib.is_positive_number = function(n1)
+    return MadLib.compare_numbers(n1, 0) > 0
+end
+
+MadLib.is_negative_number = function(n1)
+    return MadLib.compare_numbers(n1, 0) < 0
+end
+
+MadLib.is_zero = function(n1)
+    return MadLib.compare_numbers(n1, 0) == 0
 end
 
 MadLib.add = Talisman and function(n1,n2)

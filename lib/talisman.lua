@@ -4,19 +4,12 @@ end
 
 -- Talisman compatability
 if Talisman then
-    function MadLib.compare_numbers(a,b,and_equals)
-        local v1 = type(a) == 'number' and to_big(a)
-        local v2 = type(b) == 'number' and to_big(b)
-        return (v1 and v2) and ((and_equals and v1 >= v2) or (v1 > v2)) or false
-    end
-
     local animation_enabled_ref = MadLib.is_animation_enabled
     function MadLib.is_animation_enabled()
         return Talisman.config_file.disable_anims
             and animation_enabled_ref()
     end
 else
-
 	function to_number(a)
 		return a
 	end

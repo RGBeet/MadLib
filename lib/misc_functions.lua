@@ -565,13 +565,6 @@ function MadLib.banana_remove(card, msg)
         return nil
     end
     MadLib.simple_event(function()
-		card.T.r = -0.2
-        card:juice_up(0.3, 0.4)
-        card.states.drag.is = true
-        card.children.center.pinch.x = true
-        return true
-	end)
-    MadLib.simple_event(function()
         G.jokers:remove_card(card)
         card:remove()
         card = nil
