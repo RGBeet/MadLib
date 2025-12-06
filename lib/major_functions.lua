@@ -310,3 +310,31 @@ MadLib.exponent = Talisman and function(n1,n2)
 end or function(n1,n2)
     return n1 ^ n2
 end
+
+MadLib.minimum = Talisman and function(...)
+    local list = ...
+    if #list < 1 then return nil end
+    local current = list[1]
+    for i=2, #list do
+        if MadLib.compare_numbers(list[i], current) < 0 then
+            current = list[i]
+        end
+    end
+    return current
+end or function(...)
+    return math.min(...)
+end
+
+MadLib.maximum = Talisman and function(...)
+    local list = ...
+    if #list < 1 then return nil end
+    local current = list[1]
+    for i=2, #list do
+        if MadLib.compare_numbers(list[i], current) > 0 then
+            current = list[i]
+        end
+    end
+    return current
+end or function(...)
+    return math.min(...)
+end

@@ -1080,3 +1080,22 @@ end
 function MadLib.hide_hand_ui()
     return state == G.STATES.SMODS_BOOSTER_OPENED
 end
+
+function MadLib.get_suit_count(hand, bypass_debuff, flush_calc)
+    local num_suits = 0
+    MadLib.loop_table(MadLib.get_suits_from_cards(hand, bypass_debuff, flush_calc), function(k,v)
+        if v < 1 then return end
+        num_suits = num_suits+1
+    end)
+    return num_suits
+end
+
+function MadLib.list_has_string(list,string)
+    if not (list and string) then return false end
+    for _, value in ipairs(list) do
+        if value == string then
+            return true
+        end
+    end
+    return false
+end
