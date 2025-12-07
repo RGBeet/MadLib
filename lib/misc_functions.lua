@@ -1099,3 +1099,14 @@ function MadLib.list_has_string(list,string)
     end
     return false
 end
+
+function MadLib.get_num_enhancements(cards)
+    local enhancement_table = {}
+    local num = 0
+    MadLib.loop_func(cards, function(v) 
+        if enhancement_table[v.config.center] then return end 
+        enhancement_table[v.config.center] = true
+        num = num + 1
+    end)
+    return num
+end
