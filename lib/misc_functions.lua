@@ -1100,7 +1100,7 @@ function MadLib.list_has_string(list,string)
     return false
 end
 
-function MadLib.get_num_enhancements(cards)
+function MadLib.get_unique_enhancements(cards)
     local enhancement_table = {}
     local num = 0
     MadLib.loop_func(cards, function(v) 
