@@ -575,10 +575,10 @@ end
 
 function MadLib.food_joker_logic(card,func)
     card.ability.extra.rounds = card.ability.extra.rounds
-        and lenient_bignum(to_big(card.ability.extra.rounds) - 1)
+        and MadLib.subtract(card.ability.extra.rounds, 1)
         or 0
 
-    return to_big(card.ability.extra.rounds) > to_big(0) and
+    return MadLib.is_positive_number(card.ability.extra.rounds) and
         { message = { localize("rgmc_minus_round") }, colour = G.C.FILTER, }
     or MadLib.banana_remove(card,"k_eaten_ex")
 end
@@ -1109,4 +1109,26 @@ function MadLib.get_unique_enhancements(cards)
         num = num + 1
     end)
     return num
+end
+
+function MadLib.is_broke(offset)
+    return not MadLib.is_positive_number(MadLib.subtract(MadLib.add(G.GAME.dollars, offset or 0), G.GAME.bankrupt_at))
+end
+
+function MadLib.get_level_color(lvl)
+    return MadLib.compare_numbers(lvl, 2) < 0 
+        and G.C.BLACK
+        or G.C.HAND_LEVELS[to_number(math.min(7, lvl))]
+end
+
+function MadLib.score_on_fire()
+    return card.ability.extra.animate and MadLib.compare_numbers(G.ARGS.score_intensity.earned_score, G.ARGS.score_intensity.required_score) > 0 and MadLib.is_positive_number(G.ARGS.score_intensity.required_score)
+end
+
+function MadLib.score_beats_blind(add_score)
+    return MadLib.compare_numbers(MadLib.add(G.GAME.chips, add_score), (G.GAME.blind.chips)) >= 0
+end
+
+function MadLib.get_calc_bonus(a)
+    return MadLib.is_positive_number(a) and lenient_bignum(a)
 end

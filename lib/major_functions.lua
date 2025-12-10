@@ -247,11 +247,18 @@ MadLib.big_fix = function(n)
     return (type(n) == 'table') and n or to_big(n)  
 end
 
+MadLib.big_fix_and = function(n1, n2)
+    if type(lenient_bignum(n1)) ~= type(lenient_bignum(n2)) then
+        return MadLib.big_fix(n1), MadLib.big_fix(n2)
+    end
+    return n1, n2
+end
+
 MadLib.compare_numbers = Talisman and function(n1,n2)
-    n1 = MadLib.big_fix(n1)
-    n2 = MadLib.big_fix(n2)
-    if          n1 < n2 then return -1
-    elseif      n1 > n2 then return 1 end
+    local cn1 = MadLib.big_fix(n1)
+    local cn2 = MadLib.big_fix(n2)
+    if          cn1 < cn2 then return -1
+    elseif      cn1 > cn2 then return 1 end
     return 0
 end or function(n1,n2)
     if          n1 < n2 then return -1
@@ -272,41 +279,42 @@ MadLib.is_zero = function(n1)
 end
 
 MadLib.add = Talisman and function(n1,n2)
-    n1 = MadLib.big_fix(n1)
-    n2 = MadLib.big_fix(n2)
-    return n1 + n2
+    local cn1, cn2 = MadLib.big_fix_and(n1, n2)
+    return cn1 + cn2
 end or function(n1,n2)
     return n1 + n2
 end
 
 MadLib.subtract = Talisman and function(n1,n2)
-    n1 = MadLib.big_fix(n1)
-    n2 = MadLib.big_fix(n2)
-    return n1 - n2
+    local cn1, cn2 = MadLib.big_fix_and(n1, n2)
+    return cn1 - cn2
 end or function(n1,n2)
     return n1 - n2
 end
 
 MadLib.multiply = Talisman and function(n1,n2)
-    n1 = MadLib.big_fix(n1)
-    n2 = MadLib.big_fix(n2)
-    return n1 * n2
+    local cn1, cn2 = MadLib.big_fix_and(n1, n2)
+    return cn1 * cn2
 end or function(n1,n2)
     return n1 * n2
 end
 
+MadLib.get_negative = function(n)
+    return MadLib.multiply(n, -1)
+end
+
 MadLib.divide = Talisman and function(n1,n2)
-    n1      = MadLib.big_fix(n1)
-    n2      = MadLib.big_fix(n2)
+    local cn1, cn2 = MadLib.big_fix_and(n1, n2)
     local z = to_big(0)
-    return (n2 == z and nil) or to_big(n1/n2)
+    return (n2 == z and nil) or to_big(cn1 / cn2)
 end or function(n1,n2)
     if n2 == 0 then return 0 end
     return n1 / n2
 end
 
 MadLib.exponent = Talisman and function(n1,n2)
-    return to_big(lenient_bignum(n1) ^ lenient_bignum(n2))
+    local cn1, cn2 = MadLib.big_fix_and(n1, n2)
+    return cn1 ^ cn2
 end or function(n1,n2)
     return n1 ^ n2
 end
