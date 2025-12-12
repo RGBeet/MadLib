@@ -1115,6 +1115,10 @@ function MadLib.is_broke(offset)
     return not MadLib.is_positive_number(MadLib.subtract(MadLib.add(G.GAME.dollars, offset or 0), G.GAME.bankrupt_at))
 end
 
+function MadLib.can_afford(offset)
+    return MadLib.compare_numbers(offset, MadLib.subtract(G.GAME.dollars, G.GAME.bankrupt_at)) <= 0
+end
+
 function MadLib.get_level_color(lvl)
     return MadLib.compare_numbers(lvl, 2) < 0 
         and G.C.BLACK
