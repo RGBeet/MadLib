@@ -19,19 +19,6 @@ match_indent = true
 
 [[patches]]
 [patches.pattern]
-target = 'functions/state_events.lua'
-pattern = '''--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
-        --Joker Effects'''
-position = 'before'
-match_indent = true
-payload = '''total_chip_score = G.GAME.chips
-for i = 1, #G.GAME.tags do
-	G.GAME.tags[i]:apply_to_run({type = 'ml_before_scoring'})
-	delay(0.2)
-end'''
-
-[[patches]]
-[patches.pattern]
 target = '''=[SMODS _ "src/utils.lua"]'''
 pattern = "local scale = G.GAME.modifiers.scaling"
 position = 'at'
@@ -44,4 +31,13 @@ target = 'functions/common_events.lua'
 pattern = '''                (options or {}).ignore_showdown_check'''
 position = "at"
 payload = '''(type(options) == "boolean" and (options == true)) or type(options) == "table" and (options and options.ignore_showdown_check) or false'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = """        hand_chips = mod_chips(G.GAME.hands[text].chips)"""
+position = "after"
+payload = '''MadLib.base_cm_mod(G.play.cards, {text,disp_text,poker_hands,scoring_hand,non_loc_disp_text}, hand_chips, mult, already_ran)'''
+overwrite = true
 match_indent = true

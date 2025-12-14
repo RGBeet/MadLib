@@ -31,20 +31,12 @@ else
 		path = "xchip.ogg",
 	})
 	SMODS.Sound({
-		key = "xscore",
-		path = "xscore.ogg",
-	})
-	SMODS.Sound({
 		key = "emult",
 		path = "emult.ogg",
 	})
 	SMODS.Sound({
 		key = "echip",
 		path = "echip.ogg",
-	})
-	SMODS.Sound({
-		key = "escore",
-		path = "escore.ogg",
 	})
 
     local smods_xchips = false
@@ -55,3 +47,12 @@ else
 		end
 	end
 end
+
+SMODS.Sound({
+	key = "xscore",
+	path = "xscore.ogg",
+})
+SMODS.Sound({
+	key = "escore",
+	path = "escore.ogg",
+})

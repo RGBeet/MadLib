@@ -1,0 +1,65 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 10000
+
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = 'function evaluate_play_main(text, disp_text, poker_hands, scoring_hand, non_loc_disp_text, percent, percent_delta)'
+position = 'after'
+match_indent = true
+payload = '''     total_score = mod_total_score(G.GAME.chips)'''
+
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = '''ease_to = G.GAME.chips + math.floor( SMODS.calculate_round_score() ),'''
+position = 'at'
+payload = '''ease_to = total_score,'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = '''G.E_MANAGER:add_event(Event({
+      trigger = 'ease',
+      blocking = false,
+      ref_table = G.GAME,
+      ref_value = 'chips',
+      ease_to = total_score,
+      delay =  0.5,
+      func = (function(t) return math.floor(t) end)
+    }))'''
+position = 'before'
+payload = '''total_score = MadLib.get_final_score(total_score)'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = '''--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+        --Joker Effects'''
+position = 'before'
+match_indent = true
+payload = '''
+for i = 1, #G.GAME.tags do
+	G.GAME.tags[i]:apply_to_run({type = 'ml_before_scoring'})
+	delay(0.2)
+end'''
+
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''G.E_MANAGER:add_event(Event({
+      trigger = 'ease',
+      blocking = true,
+      ref_table = G.GAME.current_round.current_hand,
+      ref_value = 'chip_total',
+      ease_to = 0,
+      delay =  0.5,
+      func = (function(t) return math.floor(t) end)
+    }))'''
+position = "before"
+payload = "MadLib.do_post_scoring_stuff()"
+match_indent = true

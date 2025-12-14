@@ -1116,7 +1116,7 @@ function MadLib.is_broke(offset)
 end
 
 function MadLib.can_afford(offset)
-    return MadLib.compare_numbers(offset, MadLib.subtract(G.GAME.dollars, G.GAME.bankrupt_at)) <= 0
+    return MadLib.compare_numbers(MadLib.subtract(G.GAME.dollars, G.GAME.bankrupt_at), offset) >= 0
 end
 
 function MadLib.get_level_color(lvl)
@@ -1135,4 +1135,68 @@ end
 
 function MadLib.get_calc_bonus(a)
     return MadLib.is_positive_number(a) and lenient_bignum(a)
+end
+
+function MadLib.post_scoring_event(event)
+    if not G.GAME then return end
+    G.GAME.post_scoring_events = G.GAME.post_scoring_events or {}
+    G.GAME.post_scoring_events[#G.GAME.post_scoring_events+1] = event
+    print('Added to Post Scoring Events! (' .. number_format(#G.GAME.post_scoring_events).. ')')
+    return event
+end
+
+function MadLib.get_chips_text()
+
+end
+
+function MadLib.do_post_scoring_stuff()
+    --print('Attempting to do final scoring stuff... (' .. number_format(G.GAME.post_scoring_events and #G.GAME.post_scoring_events or 0) ..')')
+    print('Total score is ' .. number_format(total_score) .. '.')
+    if G.GAME.post_scoring_events then
+        delay(1.5)
+        print('FINAL STEPS: ' .. #G.GAME.post_scoring_events)
+        MadLib.loop_func(G.GAME.post_scoring_events, function(v,i)
+            if 
+                v.type == 'ease_score'
+                and type(MadLib[v.operator]) == 'function'
+            then
+                local new_score = MadLib[v.operator](total_score, v.amount)
+                print('Score changed! Total score is now ' .. number_format(new_score) .. '.')
+                if type(v.message) == 'table' then
+                    card_eval_status_text(v.message.card, 'extra', nil, v.message.percent, nil, {
+                        message = v.message.text,
+                        sound   = v.message.sound,
+                        colour  = v.message.colour,
+                        trigger = 'after',
+                        delay   = 0.0,
+                    })
+                end
+                MadLib.event({
+                    func = function()
+                        G.GAME.chips        = new_score
+                        G.GAME.chip_text    = number_format(new_score)
+                        local chip_UI       = G.HUD:get_UIE_by_ID('chip_UI_count')
+                        if chip_UI then chip_UI:juice_up() end
+                        print('Score changed! Total score is now ' .. G.GAME.chip_text .. '.')
+                        play_sound('timpani', 1.0, 0.6)
+                        return true 
+                    end,
+                    delay   = 0.0,
+                    trigger = 'after'
+                })
+                delay(1.0)
+                total_score = mod_total_score(new_score)
+            end
+        end)
+        G.GAME.post_scoring_events = nil
+    end
+end
+
+function MadLib.get_final_score(val)
+    local round_score = SMODS.calculate_round_score()
+    print('Total Score: ' .. number_format(total_score))
+    print('Game Chips: ' .. number_format(G.GAME.chips))
+    print('Round Score: ' .. number_format(round_score))
+    print('Final Score: ' .. number_format(MadLib.add(total_score, round_score)))
+    return mod_total_score(MadLib.add(total_score, round_score))
 end

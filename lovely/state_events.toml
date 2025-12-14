@@ -11,7 +11,7 @@ target = 'functions/state_eventss.lua'
 pattern = 'function evaluate_play_main(text, disp_text, poker_hands, scoring_hand, non_loc_disp_text, percent, percent_delta)'
 position = 'after'
 match_indent = true
-payload = 'total_chip_score = G.GAME.chips'
+payload = 'total_score = G.GAME.chips'
 
 # Making a hook function
 [[patches]]

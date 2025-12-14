@@ -61,3 +61,26 @@ elseif eval_type == 'e_score' then
 	config.scale = 0.7
 '''
 match_indent = true
+
+# WIP - adding x_score and e_score
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "x_mult = center.config.Xmult or 1,"
+position = "after"
+payload = '''
+a_score = center.config.Ascore or 0,
+x_score = center.config.Xscore or 1,
+e_score = center.config.Escore or 1,
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "local trigger = 'before'"
+position = "at"
+payload = "local trigger = extra.trigger or 'before'"
+match_indent = true
+
+
