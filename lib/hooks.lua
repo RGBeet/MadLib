@@ -82,3 +82,4 @@ function evaluate_play_main(text, disp_text, poker_hands, scoring_hand, non_loc_
     print("Clear post scoring events")
     return evaluate_play_main_ref(text, disp_text, poker_hands, scoring_hand, non_loc_disp_text, percent, percent_delta)
 end
+

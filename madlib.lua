@@ -1,5 +1,6 @@
 local files = {
     'pre',                  -- ???
+    'draw',
     'loop',                 -- ???
     'lists',                -- ???
     'major_functions',      -- ???

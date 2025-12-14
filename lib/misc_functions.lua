@@ -1151,17 +1151,18 @@ end
 
 function MadLib.do_post_scoring_stuff()
     --print('Attempting to do final scoring stuff... (' .. number_format(G.GAME.post_scoring_events and #G.GAME.post_scoring_events or 0) ..')')
-    print('Total score is ' .. number_format(total_score) .. '.')
+    --print('Total score is ' .. number_format(total_score) .. '.')
+    local text, disp_text, poker_hands, s, non_loc_disp_text = G.FUNCS.get_poker_hand_info(G.play.cards)
     if G.GAME.post_scoring_events then
         delay(1.5)
-        print('FINAL STEPS: ' .. #G.GAME.post_scoring_events)
+        --print('FINAL STEPS: ' .. #G.GAME.post_scoring_events)
         MadLib.loop_func(G.GAME.post_scoring_events, function(v,i)
             if 
                 v.type == 'ease_score'
                 and type(MadLib[v.operator]) == 'function'
             then
                 local new_score = MadLib[v.operator](total_score, v.amount)
-                print('Score changed! Total score is now ' .. number_format(new_score) .. '.')
+                --print('Score changed! Total score is now ' .. number_format(new_score) .. '.')
                 if type(v.message) == 'table' then
                     card_eval_status_text(v.message.card, 'extra', nil, v.message.percent, nil, {
                         message = v.message.text,
@@ -1190,8 +1191,18 @@ function MadLib.do_post_scoring_stuff()
         end)
         G.GAME.post_scoring_events = nil
     end
+    MadLib.loop_func(s, function(v)
+        SMODS.calculate_context({ ml_post_scoring = true, scoring_hand = s, other_card = v }) 
+    end)
+    MadLib.loop_func(G.hand.cards, function(v)
+        SMODS.calculate_context({ ml_post_scoring = true, cardarea = G.play, other_card = v }) 
+    end)
+    MadLib.loop_func(G.play.cards, function(v)
+        SMODS.calculate_context({ ml_post_scoring = true, cardarea = G.hand, other_card = v }) 
+    end)
 end
 
+-- Used to get the final score (before post-scoring shenanigans!)
 function MadLib.get_final_score(val)
     local round_score = SMODS.calculate_round_score()
     print('Total Score: ' .. number_format(total_score))

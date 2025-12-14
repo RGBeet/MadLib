@@ -255,10 +255,23 @@ function MadLib.get_stickered_cards(key)
     local hand          = G.hand and G.hand.cards or {}
     local consumeables  = G.consumeables and G.consumeables.cards or {}
     local stickered = {}
-    MadLib.loop_func({ jokers, hand, consumables }, function(_list)
+    MadLib.loop_func({ jokers, hand, consumeables }, function(_list)
         MadLib.loop_func(_list, function(v)
-            print(v:has_negative_sticker())
-            stickered[#stickered+1] = not key and v:has_negative_sticker() or v.ability[key]
+            if Madcap.Funcs.get_num_stickers(v) < 1 then return end
+            stickered[#stickered+1] = v
+        end)
+    end)
+    return stickered
+end
+
+function MadLib.get_card_stickers()
+    local jokers        = G.jokers and G.jokers.cards or {}
+    local hand          = G.hand and G.hand.cards or {}
+    local consumeables  = G.consumeables and G.consumeables.cards or {}
+    local stickered     = 0
+    MadLib.loop_func({ jokers, hand, consumeables }, function(_list)
+        MadLib.loop_func(_list, function(v)
+            stickered = stickered + Madcap.Funcs.get_num_stickers(v)
         end)
     end)
     return stickered
