@@ -1126,7 +1126,7 @@ function MadLib.get_level_color(lvl)
 end
 
 function MadLib.score_on_fire()
-    return card.ability.extra.animate and MadLib.compare_numbers(G.ARGS.score_intensity.earned_score, G.ARGS.score_intensity.required_score) > 0 and MadLib.is_positive_number(G.ARGS.score_intensity.required_score)
+    return MadLib.compare_numbers(G.ARGS.score_intensity.earned_score, G.ARGS.score_intensity.required_score) > 0 and MadLib.is_positive_number(G.ARGS.score_intensity.required_score)
 end
 
 function MadLib.score_beats_blind(add_score)
@@ -1230,7 +1230,6 @@ function MadLib.do_post_scoring_stuff()
     end
 end
 
--- Used to get the final score (before post-scoring shenanigans!)
 function MadLib.get_final_score(val)
     local round_score = SMODS.calculate_round_score()
     print('Total Score: ' .. number_format(total_score))
