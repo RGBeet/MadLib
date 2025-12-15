@@ -6,8 +6,7 @@ end
 if Talisman then
     local animation_enabled_ref = MadLib.is_animation_enabled
     function MadLib.is_animation_enabled()
-        return Talisman.config_file.disable_anims
-            and animation_enabled_ref()
+        return (not Talisman.config_file.disable_anims) and animation_enabled_ref()
     end
 else
 	function to_number(a)

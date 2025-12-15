@@ -1149,6 +1149,9 @@ function MadLib.get_chips_text()
 
 end
 
+function MadLib.do_special_destroy_effect(card)
+end
+
 function MadLib.do_post_scoring_stuff()
     --print('Attempting to do final scoring stuff... (' .. number_format(G.GAME.post_scoring_events and #G.GAME.post_scoring_events or 0) ..')')
     --print('Total score is ' .. number_format(total_score) .. '.')
@@ -1191,6 +1194,7 @@ function MadLib.do_post_scoring_stuff()
         end)
         G.GAME.post_scoring_events = nil
     end
+    -- Idk man
     MadLib.loop_func(s, function(v)
         SMODS.calculate_context({ ml_post_scoring = true, scoring_hand = s, other_card = v }) 
     end)
@@ -1200,6 +1204,30 @@ function MadLib.do_post_scoring_stuff()
     MadLib.loop_func(G.play.cards, function(v)
         SMODS.calculate_context({ ml_post_scoring = true, cardarea = G.hand, other_card = v }) 
     end)
+
+    -- Some cards get destroyed after scoring truly ends.
+    local cards_destroyed = {}
+    for _,v in ipairs(SMODS.get_card_areas('playing_cards', 'destroying_cards')) do
+        SMODS.calculate_destroying_cards({ 
+            ml_post_scoring = true,
+            full_hand = G.play.cards, 
+            scoring_hand = s,
+            scoring_name = text,
+            poker_hands = poker_hands, 
+            cardarea = v 
+        }, cards_destroyed, v == G.play and s or nil)
+    end
+    
+    if cards_destroyed[1] then
+        SMODS.calculate_context({scoring_hand = s, remove_playing_cards = true, removed = cards_destroyed})
+    end
+
+    for i=1, #cards_destroyed do
+        print("MY NAME JEFF")
+        --MadLib.do_special_destroy_effect(cards_destroyed[i])
+        SMODS.destroy_cards(cards_destroyed[i], nil, nil, false)
+        delay(0.8)
+    end
 end
 
 -- Used to get the final score (before post-scoring shenanigans!)

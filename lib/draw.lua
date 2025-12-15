@@ -146,10 +146,9 @@ function MadLib.animate_images()
     end
 end
 
-local draw_ref = love.draw
-function love.draw()
-    draw_ref()
-    MadLib.animate_images()
+local draw_ref = Game.draw
+function Game:draw()
+    draw_ref(self)
     
     love.graphics.setColor(1, 1, 1, 1) 
     love.graphics.print("ticks:" .. MadLib.ticks, 300, 16)
