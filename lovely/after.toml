@@ -42,6 +42,15 @@ payload = '''MadLib.base_cm_mod(G.play.cards, {text,disp_text,poker_hands,scorin
 overwrite = true
 match_indent = true
 
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''AKYRS.base_cm_mod(G.play.cards, {text,disp_text,poker_hands,scoring_hand,non_loc_disp_text}, hand_chips, mult, already_ran)'''
+position = "at"
+payload = '''-- insert stuff here'''
+overwrite = true
+match_indent = true
+
 #Animate under overlay
 [[patches]]
 [patches.pattern]
@@ -49,5 +58,24 @@ target = "game.lua"
 pattern = "if (self.OVERLAY_MENU) or (not self.F_HIDE_BG) then"
 position = "before"
 payload = '''MadLib.animate_images()'''
+overwrite = true
+match_indent = true
+
+
+
+
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''mult = mod_mult(G.GAME.hands[text].mult)
+        hand_chips = mod_chips(G.GAME.hands[text].chips)
+        MadLib.base_cm_mod(G.play.cards, {text,disp_text,poker_hands,scoring_hand,non_loc_disp_text}, hand_chips, mult, already_ran)'''
+position = "at"
+payload = '''if needs_editing then
+    mult = mod_mult(G.GAME.hands[text].mult)
+    hand_chips = mod_chips(G.GAME.hands[text].chips)
+    MadLib.base_cm_mod(G.play.cards, {text,disp_text,poker_hands,scoring_hand,non_loc_disp_text}, hand_chips, mult, already_ran)
+    needs_editing = nil
+end'''
 overwrite = true
 match_indent = true
