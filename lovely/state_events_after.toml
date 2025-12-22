@@ -3,6 +3,7 @@ version = "1.0.0"
 dump_lua = true
 priority = 10000
 
+# Record the score for +Score/XScore stuff
 [[patches]]
 [patches.pattern]
 target = 'functions/state_events.lua'
@@ -11,6 +12,7 @@ position = 'after'
 match_indent = true
 payload = '''   total_score = mod_total_score(G.GAME.chips); needs_editing = true'''
 
+# Use this value instead of calculate_round_score() upon easing the HUD
 [[patches]]
 [patches.pattern]
 target = 'functions/state_events.lua'
@@ -19,6 +21,7 @@ position = 'at'
 payload = '''ease_to = total_score,'''
 match_indent = true
 
+# calculate_round_score added to MadLib.get_final_score()
 [[patches]]
 [patches.pattern]
 target = 'functions/state_events.lua'
@@ -35,6 +38,7 @@ position = 'before'
 payload = '''total_score = MadLib.get_final_score(total_score)'''
 match_indent = true
 
+# Some tags activate before scoring
 [[patches]]
 [patches.pattern]
 target = 'functions/state_events.lua'
@@ -48,6 +52,7 @@ for i = 1, #G.GAME.tags do
 	delay(0.2)
 end'''
 
+# Add post-scoring shenanigans before chip total
 [[patches]]
 [patches.pattern]
 target = "functions/state_events.lua"

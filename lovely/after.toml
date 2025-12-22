@@ -51,7 +51,7 @@ payload = '''-- insert stuff here'''
 overwrite = true
 match_indent = true
 
-#Animate under overlay
+# Animate under overlay
 [[patches]]
 [patches.pattern]
 target = "game.lua"
@@ -60,9 +60,6 @@ position = "before"
 payload = '''MadLib.animate_images()'''
 overwrite = true
 match_indent = true
-
-
-
 
 [[patches]]
 [patches.pattern]

@@ -1146,7 +1146,6 @@ function MadLib.post_scoring_event(event)
 end
 
 function MadLib.get_chips_text()
-
 end
 
 function MadLib.do_special_destroy_effect(card)
@@ -1165,7 +1164,6 @@ function MadLib.do_post_scoring_stuff()
                 and type(MadLib[v.operator]) == 'function'
             then
                 local new_score = MadLib[v.operator](total_score, v.amount)
-                --print('Score changed! Total score is now ' .. number_format(new_score) .. '.')
                 if type(v.message) == 'table' then
                     card_eval_status_text(v.message.card, 'extra', nil, v.message.percent, nil, {
                         message = v.message.text,
@@ -1181,7 +1179,7 @@ function MadLib.do_post_scoring_stuff()
                         G.GAME.chip_text    = number_format(new_score)
                         local chip_UI       = G.HUD:get_UIE_by_ID('chip_UI_count')
                         if chip_UI then chip_UI:juice_up() end
-                        print('Score changed! Total score is now ' .. G.GAME.chip_text .. '.')
+                        --print('Score changed! Total score is now ' .. G.GAME.chip_text .. '.')
                         play_sound('timpani', 1.0, 0.6)
                         return true 
                     end,
@@ -1237,4 +1235,69 @@ function MadLib.get_final_score(val)
     print('Round Score: ' .. number_format(round_score))
     print('Final Score: ' .. number_format(MadLib.add(total_score, round_score)))
     return mod_total_score(MadLib.add(total_score, round_score))
+end
+
+function MadLib.is_rank(card, id, bypass_rankless, base_id)
+    base_id = base_id or (card and card.base.id)
+    if not base_id then return false end
+    if G.jokers then
+        MadLib.loop_func(G.jokers.cards, function(v)
+            local info = MadLib.RankManipulation[v.config.center.key]
+            if not info then return end
+            base_id = (base_id == info.from_rank) and info.to_rank or base_id
+        end)
+    end
+    if (SMODS.has_no_rank(card) and not bypass_rankless) then return false end
+    --if MadLib.get_quantum_rank_pass(card,id) then return true end
+    return (card and card:get_id() or card.base.id) == id
+end
+
+function MadLib.get_value(card)
+    return card.base.value
+end
+
+function MadLib.get_rank_nominal(rank,no_face)
+    local info = SMODS[rank]
+    return info and (info.nominal + (no_face and 0 or info.face_nominal)) or nil
+end
+
+function MadLib.rank_to_id(key)
+    return SMODS.Ranks[key] and SMODS.Ranks[key].id or nil 
+end
+
+-- Includes all ranks considered Odd by MadLib.
+function MadLib.has_odd_rank(card)
+    return not SMODS.has_no_rank(card)
+        and MadLib.list_matches_one(MadLib.RankTypes.Odd, function(v) 
+            return MadLib.is_rank(card,MadLib.rank_to_id(v))
+        end)
+end
+
+-- Ditto, but with Even ranks.
+function MadLib.has_even_rank(card)
+    return not SMODS.has_no_rank(card)
+        and MadLib.list_matches_one(MadLib.RankTypes.Even, function(v) 
+            return MadLib.is_rank(card,SMODS.Ranks[v].id)
+        end)
+end
+
+-- Ditto, but with Fibonacci ranks.
+function MadLib.has_fib_rank(card)
+    return not SMODS.has_no_rank(card)
+        and MadLib.list_matches_one(MadLib.RankTypes.Fibonacci, function(v) 
+            return MadLib.is_rank(card,SMODS.Ranks[v].id)
+        end)
+end
+
+-- Ditto, but with Base ranks.
+function MadLib.is_base_rank(card)
+    return not SMODS.has_no_rank(card)
+        and MadLib.list_matches_one(MadLib.RankTypes.Base, function(v)
+            return card.base.value == v
+        end)
+end
+
+function MadLib.joker_check_rank(card, joker, default)
+    local source = type(joker.ability.extra) == 'table' and joker.ability.extra or joker.ability
+    return MadLib.is_rank(card, SMODS.Ranks[source.rank or default].id)
 end

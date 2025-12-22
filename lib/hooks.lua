@@ -76,10 +76,19 @@ function Card:sell_card()
 end
 
 local evaluate_play_main_ref = evaluate_play_main
-
 function evaluate_play_main(text, disp_text, poker_hands, scoring_hand, non_loc_disp_text, percent, percent_delta)
     G.GAME.post_scoring_events = nil
     print("Clear post scoring events")
     return evaluate_play_main_ref(text, disp_text, poker_hands, scoring_hand, non_loc_disp_text, percent, percent_delta)
 end
 
+local evaluate_poker_hand_ref = evaluate_poker_hand
+function evaluate_poker_hand(hand)
+    local results = evaluate_poker_hand_ref(hand)
+    if G.GAME.modifiers.poker_hand_blacklist then
+        for _,v in pairs(G.GAME.modifiers.poker_hand_blacklist) do
+            results[v] = {}
+        end
+    end
+    return results
+end

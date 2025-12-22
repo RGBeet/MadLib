@@ -32,7 +32,7 @@ payload = '''math.floor(MadLib.get_full_score(hand_chips,mult))'''
 match_indent = true
 times = 10
 
-# Does the hand pass the check?!
+# Does the hand pass the check - used for Giga Deck
 [[patches]]
 [patches.pattern]
 target = 'functions/state_eventss.lua'
@@ -45,24 +45,10 @@ then'''
 match_indent = true
 times = 1
 
-
+# Exclude poker hands.
 [[patches]]
 [patches.pattern]
-target = "state_eventss.lua"
-pattern = '''mult = mod_mult(G.GAME.hands[text].mult)
-        hand_chips = mod_chips(G.GAME.hands[text].chips)'''
-position = "after"
-payload = '''MadLib.calculate_mult({
-}
-MadLib.calculate_chips({
-}
-'''
-match_indent = true
-
-# Exclude cards?! (DOES NOT WORK?!)
-[[patches]]
-[patches.pattern]
-target = 'functions/state_eventss.lua'
+target = 'functions/misc_functions.lua'
 pattern = '''results.top = nil'''
 position = 'after'
 payload = '''
