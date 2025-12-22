@@ -779,22 +779,6 @@ function MadLib.apply_seals(cards,seal)
     end)
 end
 
--- DEPRECATED?
-function MadLib.chalcard(rank,suit)
-    return { r = rank, s = suit}
-end
-
--- DEPRECATED?
-function MadLib.challenge_rank_add(deck, rank, quantity)
-    local suit_map = {}
-    MadLib.loop_func(deck, function(m) if m.s and not suit_map[m.s] then suit_map[m.s] = true end end)
-    MadLib.loop_table(suit_map, function(k)
-        MadLib.number_func(quantity or 1, function()
-            table.insert(deck, MadLib.chalcard(rank, k))
-        end)
-    end)
-    return deck
-end
 function MadLib.read_list(list,prefix)
     tell('TABLE READING' .. (prefix and (' - ' .. prefix) or '') .. ':')
     MadLib.loop_func(list, function(v)
@@ -802,23 +786,6 @@ function MadLib.read_list(list,prefix)
     end)
     tell('END READING')
     return list
-end
-
-function MadLib.get_base_challenge_deck()
-    local deck = {}
-    MadLib.loop_func({
-        'C','D','H','S'
-    }, function(s)
-        MadLib.loop_func({ '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A' }, function(r)
-            table.insert(deck, MadLib.chalcard{r,s})
-        end)
-    end)
-    return deck
-end
-
-function MadLib.challenge_deck_add(deck,cards)
-    MadLib.loop_func(cards, function(v) table.insert(deck,v) end)
-    return deck
 end
 
 function MadLib.define_get_currency_sell_ui (card)
@@ -860,81 +827,6 @@ function MadLib.manipulate_chips_mult(ch,mu)
     end
     hand_chips  = ch or hand_chips
     mult        = mu or mult
-end
-
--- DEPRECATED!
-function MadLib.get_simple_score_data(t,card,val)
-    if type(card) ~= "table" then
-        print(card)
-        return false
-    end
-    local ret = {}
-    --tell('ret['..t.add..'] = '..tostring(lenient_bignum(val)))
-    ret[t.add]      = lenient_bignum( val or (card.ability.extra or card.ability or {})[t.set])
-    ret['colour']   = t.colour
-    return ret
-end
-
-
--- DEPRECATED!
-function MadLib.get_simple_upgrade_data(t,card,val,bypass_safety,table)
-    local table = table or 'extra'
-    local get_table = card.ability[table]
-
-    get_table[t.set] = not bypass_safety
-        and math.max(get_table[t.set] + val, 0) -- no negative mult
-        or get_table[t.set] + val
-
-    return {
-        message     = localize('k_upgrade_ex'),
-        colour      = t.colour,
-        card        = card
-    }
-end
-
--- DEPRECATED!
-function MadLib.get_detailed_upgrade_data(t,card,val,bypass_safety)
-    local var_key = (string.sub(t.key, 1, 2) == 'a_' and string.sub(t.key, 3))
-        or t.key
-
-    card.ability.extra[var_key] = not bypass_safety
-        and math.max(card.ability.extra[var_key] + val, 0) -- no negative mult
-        or card.ability.extra[var_key] + val
-
-    return {
-        message = localize({
-            type    = "variable",
-            key     = t.key,
-            vars    = { "+" .. number_format(val) },
-            card    = card
-        }),
-    }
-end
-
--- DEPRECATED?
-function MadLib.get_debuff_data(card, msg)
-    return { message = localize(msg or 'k_debuffed'), colour = G.C.RED, card = card }
-end
-
--- DEPRECATED?
-function MadLib.get_retrigger_data(card, reps, msg)
-    return { message = localize(msg or 'k_again_ex'), repetitions = reps or 1, card = card }
-end
-
--- DEPRECATED?
-function MadLib.get_safe_data(card, msg)
-    return { message = localize(msg or 'k_safe_ex'), card = card }
-end
-
--- DEPRECATED?
-function MadLib.get_add_money_data(card, amt)
-    if not card or (not amt or (card.ability.extra and card.ability.extra.money)) then return {} end
-    return { card = card, dollars = amt or card.ability.extra.money }
-end
-
--- DEPRECATED!
-function MadLib.simple_card_message(c, t)
-    return { message = t, card = c }
 end
 
 -- Allows you to dupe cards and shit
