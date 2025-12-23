@@ -803,28 +803,21 @@ else -- no ptsaka
 end
 
 function MadLib.hand_passes_check(cards, hands, text)
-    if not cards then return true end
-
-    if G.GAME.modifiers.min_hand_size ~= nil and G.GAME.modifiers.min_hand_size > #cards then
-        tell('Too small')
+    if not cards then 
+        return true
+    elseif G.GAME.modifiers.min_hand_size ~= nil and G.GAME.modifiers.min_hand_size > #cards then
+        --tell('Too small')
+        return false
+    elseif G.GAME.modifiers.max_hand_size ~= nil and G.GAME.modifiers.max_hand_size < #cards then
+        --tell('Too big')
         return false
     end
-
-    if G.GAME.modifiers.max_hand_size ~= nil and G.GAME.modifiers.max_hand_size < #cards then
-        tell('Too big')
-        return false
-    end
-
     return true
 end
 
 -- manipulates chip and mult values
 function MadLib.manipulate_chips_mult(ch,mu)
-    if G.HUD:get_UIE_by_ID('chip_UI_count') then
-        G.HUD:get_UIE_by_ID('chip_UI_count'):juice_up(0.5, 0.5)
-    else
-       print('Mamma mia! Where is the chips mult?')
-    end
+    if G.HUD:get_UIE_by_ID('chip_UI_count') then G.HUD:get_UIE_by_ID('chip_UI_count'):juice_up(0.5, 0.5) end
     hand_chips  = ch or hand_chips
     mult        = mu or mult
 end
@@ -1132,13 +1125,6 @@ end
 function MadLib.is_rank(card, id, bypass_rankless, base_id)
     base_id = base_id or (card and card.base.id)
     if not base_id then return false end
-    if G.jokers then
-        MadLib.loop_func(G.jokers.cards, function(v)
-            local info = MadLib.RankManipulation[v.config.center.key]
-            if not info then return end
-            base_id = (base_id == info.from_rank) and info.to_rank or base_id
-        end)
-    end
     if (SMODS.has_no_rank(card) and not bypass_rankless) then return false end
     --if MadLib.get_quantum_rank_pass(card,id) then return true end
     return (card and card:get_id() or card.base.id) == id
@@ -1187,9 +1173,4 @@ function MadLib.is_base_rank(card)
         and MadLib.list_matches_one(MadLib.RankTypes.Base, function(v)
             return card.base.value == v
         end)
-end
-
-function MadLib.joker_check_rank(card, joker, default)
-    local source = type(joker.ability.extra) == 'table' and joker.ability.extra or joker.ability
-    return MadLib.is_rank(card, SMODS.Ranks[source.rank or default].id)
 end
