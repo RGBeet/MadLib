@@ -2,6 +2,10 @@ if not JokerDisplay then return end
 tell('LOADING JOKERDISPLAY STUFF YAY!')
 MadLib.JokerDisplay = {}
 
+function MadLib.JokerDisplay.valid_card(playing_card)
+    return playing_card.facing and not (playing_card.facing == 'back') and not playing_card.debuff
+end
+
 function MadLib.JokerDisplay.get_cards_matching(cards, func)
     local count = 0
     MadLib.loop_func(cards, function(v)

@@ -150,8 +150,10 @@ local draw_ref = Game.draw
 function Game:draw()
     draw_ref(self)
     
+    --[[
     love.graphics.setColor(1, 1, 1, 1) 
     love.graphics.print("ticks:" .. MadLib.ticks, 300, 16)
     love.graphics.print("dtcounter:" .. MadLib.delta_timer, 300, 16+32)
     love.graphics.print("dt:" .. MadLib.delta, 300, 16+64)
+    ]]
 end

@@ -89,7 +89,7 @@ local load_data = function(folder)
                 end
                 if content.RarityValues then
                     MadLib.loop_table(content.RarityValues, function(key,data)
-                        content.RarityValues[key] = data
+                        MadLib.RarityValues[key] = data
                     end)
                 end
                 if content.RankCompat then

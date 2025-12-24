@@ -333,7 +333,6 @@ function MadLib.get_card_points(c)
     return pts
 end
 
-
 -- Used for tarots which turn X items into new cards?
 function MadLib.can_use_transform_tarot(card)
 	return G.hand and (#G.hand.highlighted >= 1 and #G.hand.highlighted <= card.ability.max_highlighted)

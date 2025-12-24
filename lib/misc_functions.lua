@@ -1174,3 +1174,7 @@ function MadLib.is_base_rank(card)
             return card.base.value == v
         end)
 end
+
+function MadLib.joker_check_rank(card, joker, default)
+    return MadLib.is_rank(card, SMODS.Ranks[joker.ability.rank or default].id)
+end

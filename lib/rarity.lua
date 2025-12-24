@@ -1,7 +1,9 @@
 -- Takes a rarity id. If it's in MadLib's rarity index, return that value.
 -- Otherwise, return -1.
 function MadLib.get_rarity_value(val)
-	return MadLib.RarityValues[val] and MadLib.RarityValues[val].value or -1
+    local ret =  MadLib.RarityValues[tostring(val)]
+    print(ret and ret.value or "NONE")
+	return ret and ret.value or -1
 end
 
 -- returns a table from a string

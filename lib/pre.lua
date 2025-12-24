@@ -166,10 +166,10 @@ MadLib = {
     -- Contains detailed information about rarities - used for cross-modding stuff
     RarityValues = {},
     RarityConversions = { -- Vanilla rarity values, cause sometimes they use numbers?
-        ['Common']      = 1,
-        ['Uncommon']    = 2,
-        ['Rare']        = 3,
-        ['Legendary']   = 4,
+        [1]     = 'Common',
+        [2]     = 'Uncommon',
+        [3]     = 'Rare',
+        [4]     = 'Legendary',
     },
     SpecificRanks = {},
     SpecificSuits = {},
