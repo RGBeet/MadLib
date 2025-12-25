@@ -156,3 +156,19 @@ position = "at"
 payload =  '''from_shop = (MadLib.get_shop_state() or G.STATE == G.STATES.SMODS_BOOSTER_OPENED or G.STATE == G.STATES.SMODS_REDEEM_VOUCHER) or nil,'''
 overwrite = true
 match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = "SMODS.localize_perma_bonuses(specific_vars, desc_nodes)"
+position = "before"
+payload = '''MadLib.set_playing_card_ui(card, specific_vars, desc_nodes)'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''if first_pass and not (_c.set == 'Edition') and badges then'''
+position = "before"
+payload = '''info_queue, specific_vars, desc_nodes = MadLib.set_joker_ui(card, info_queue, specific_vars, desc_nodes)'''
+match_indent = true

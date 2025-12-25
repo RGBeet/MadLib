@@ -1178,3 +1178,38 @@ end
 function MadLib.joker_check_rank(card, joker, default)
     return MadLib.is_rank(card, SMODS.Ranks[joker.ability.rank or default].id)
 end
+
+MadLib.CardUIs = {
+    Ranks   = {
+
+    },
+    Suits   = {
+
+    },
+    Jokers = {
+
+    },
+    Misc    = {
+        
+    }
+}
+-- Adds UI for special ranks!
+function MadLib.set_playing_card_ui(card, specific_vars, desc_nodes)
+    if not card then return end
+    MadLib.loop_table(MadLib.PlayingCardUIs.Ranks, function(k,v)
+        if SMODS.Ranks[k] and card:get_id() == SMODS.Ranks[k].id then
+            localize{ type = 'other', key = 'rgmc_info_'..v, nodes = desc_nodes }
+        end
+    end)
+    --[[
+    MadLib.loop_table(MadLib.CardUIs.Misc, function(k,v)
+        if v.func(card) then
+            localize(v.get_localization(specific_vars, desc_nodes))
+        end
+    end)
+    ]]
+end
+
+function MadLib.set_joker_ui(card, info_queue, specific_vars, desc_nodes)
+    return info_queue, specific_vars, desc_nodes
+end

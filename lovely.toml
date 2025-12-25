@@ -38,3 +38,14 @@ pattern = '''if (area == G.shop_jokers) or (area == G.pack_cards) then
 position = "at"
 payload =  ""
 match_indent = true
+
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/utils.lua"]'''
+pattern = "if eval.repetitions <= 0 then"
+position = 'at'
+payload = "if MadLib.compare_numbers(eval.repetitions, 0) <= 1 then"
+match_indent = true
+
+
