@@ -1130,6 +1130,16 @@ function MadLib.is_rank(card, id, bypass_rankless, base_id)
     return (card and card:get_id() or card.base.id) == id
 end
 
+function MadLib.has_rank(card, other_card, ranks, bypass_rankless, base_id)
+    base_id = base_id or (card and card.base.id)
+    if not base_id then return false end
+    if (SMODS.has_no_rank(card) and not bypass_rankless) then return false end
+    --if MadLib.get_quantum_rank_pass(card,id) then return true end
+    return MadLib.list_matches_one(Madcap.Funcs.get_joker_ranks(ranks), function(v) 
+        return MadLib.is_rank(other_card, SMODS.Ranks[v].id)
+    end)
+end
+
 function MadLib.get_value(card)
     return card.base.value
 end
@@ -1213,3 +1223,8 @@ end
 function MadLib.set_joker_ui(card, info_queue, specific_vars, desc_nodes)
     return info_queue, specific_vars, desc_nodes
 end
+
+function MadLib.get_rank_locvar(card, rank)
+    return localize(Madcap.Funcs.get_joker_rank(card, rank), 'ranks')
+end
+
