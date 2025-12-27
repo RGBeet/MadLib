@@ -172,3 +172,12 @@ pattern = '''if first_pass and not (_c.set == 'Edition') and badges then'''
 position = "before"
 payload = '''info_queue, specific_vars, desc_nodes = MadLib.set_joker_ui(card, info_queue, specific_vars, desc_nodes)'''
 match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/misc_functions.lua'
+pattern = '''if next(parts._3) and next(parts._2) then'''
+position = "before"
+payload = '''print(parts._3)
+print(parts._2)'''
+match_indent = true

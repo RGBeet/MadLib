@@ -160,7 +160,6 @@ end
 
 function MadLib.get_value_from_id(_id)
     local rank_key = MadLib.RankIds[_id]
-    print(rank_key)
     return SMODS.Ranks[rank_key] or nil
 end
 
@@ -182,8 +181,6 @@ function MadLib.pair_cards(v1,v2,id,length,remove)
     v1.ids, v2.ids = v1.ids or {}, v2.ids or {}
     v1.ids[id or 'default'] = (not remove) and _string or nil
     v2.ids[id or 'default'] = (not remove) and _string or nil
-    print(v1.ids[id or 'default'])
-    print(v2.ids[id or 'default'])
     return _string
 end
 
@@ -205,7 +202,6 @@ end
 function MadLib.suit_get_counterpart_lightdark(suit)
     if not MadLib.SuitConversions.LightAndDark[suit] then return suit end
     local conv = pseudorandom_element(MadLib.SuitConversions.LightAndDark[suit], pseudoseed('madlib_lightdark'))
-    print(MadLib.SuitConversions.LightAndDark)
     return conv
 end
 
@@ -213,7 +209,6 @@ end
 function MadLib.suit_get_counterpart_basemodded(suit)
     if not MadLib.SuitConversions.BaseAndModded[suit] then return suit end
     local conv = pseudorandom_element(MadLib.SuitConversions.BaseAndModded[suit], pseudoseed('madlib_basemodded'))
-    print(MadLib.SuitConversions.BaseAndModded)
     return conv
 end
 
@@ -540,14 +535,9 @@ end
 -- only using their "full discards" (e.g. 5 cards per discard, 3 discards = 15)
 -- Specifically applies to G.deck
 function MadLib.get_possible_deck(_cards)
-
     local max_discard_size  = G.GAME.starting_params.discard_limit  or 5
     local num_discards      = G.GAME.current_round.discards_left    or 3
     local deck_selection    = {}
-
-    --print('Max Discard Size: ' ..  tostring(G.GAME.starting_params.discard_limit))
-    --print('Discards Left: ' ..  tostring(G.GAME.current_round.discards_left))
-
     local i = 0
     while (#_cards - i) > (max_discard_size * num_discards) and i < #_cards do
         table.insert(deck_selection,_cards[#_cards - i])
@@ -561,7 +551,6 @@ end
 --
 function MadLib.banana_remove(card, msg)
     if not (card and card.T)then
-        print('Card does not exist!')
         return nil
     end
     MadLib.simple_event(function()
@@ -782,7 +771,6 @@ end
 function MadLib.read_list(list,prefix)
     tell('TABLE READING' .. (prefix and (' - ' .. prefix) or '') .. ':')
     MadLib.loop_func(list, function(v)
-        print(v)
     end)
     tell('END READING')
     return list
@@ -1026,7 +1014,6 @@ function MadLib.post_scoring_event(event)
     if not G.GAME then return end
     G.GAME.post_scoring_events = G.GAME.post_scoring_events or {}
     G.GAME.post_scoring_events[#G.GAME.post_scoring_events+1] = event
-    print('Added to Post Scoring Events! (' .. number_format(#G.GAME.post_scoring_events).. ')')
     return event
 end
 
@@ -1037,12 +1024,9 @@ function MadLib.do_special_destroy_effect(card)
 end
 
 function MadLib.do_post_scoring_stuff()
-    --print('Attempting to do final scoring stuff... (' .. number_format(G.GAME.post_scoring_events and #G.GAME.post_scoring_events or 0) ..')')
-    --print('Total score is ' .. number_format(total_score) .. '.')
     local text, disp_text, poker_hands, s, non_loc_disp_text = G.FUNCS.get_poker_hand_info(G.play.cards)
     if G.GAME.post_scoring_events then
         delay(1.5)
-        --print('FINAL STEPS: ' .. #G.GAME.post_scoring_events)
         MadLib.loop_func(G.GAME.post_scoring_events, function(v,i)
             if 
                 v.type == 'ease_score'
@@ -1064,7 +1048,6 @@ function MadLib.do_post_scoring_stuff()
                         G.GAME.chip_text    = number_format(new_score)
                         local chip_UI       = G.HUD:get_UIE_by_ID('chip_UI_count')
                         if chip_UI then chip_UI:juice_up() end
-                        --print('Score changed! Total score is now ' .. G.GAME.chip_text .. '.')
                         play_sound('timpani', 1.0, 0.6)
                         return true 
                     end,
@@ -1106,7 +1089,6 @@ function MadLib.do_post_scoring_stuff()
     end
 
     for i=1, #cards_destroyed do
-        print("MY NAME JEFF")
         --MadLib.do_special_destroy_effect(cards_destroyed[i])
         SMODS.destroy_cards(cards_destroyed[i], nil, nil, false)
         delay(0.8)
@@ -1115,29 +1097,89 @@ end
 
 function MadLib.get_final_score(val)
     local round_score = SMODS.calculate_round_score()
-    print('Total Score: ' .. number_format(total_score))
-    print('Game Chips: ' .. number_format(G.GAME.chips))
-    print('Round Score: ' .. number_format(round_score))
-    print('Final Score: ' .. number_format(MadLib.add(total_score, round_score)))
     return mod_total_score(MadLib.add(total_score, round_score))
 end
 
-function MadLib.is_rank(card, id, bypass_rankless, base_id)
-    base_id = base_id or (card and card.base.id)
-    if not base_id then return false end
-    if (SMODS.has_no_rank(card) and not bypass_rankless) then return false end
-    --if MadLib.get_quantum_rank_pass(card,id) then return true end
-    return (card and card:get_id() or card.base.id) == id
+
+local string_commas = function(values)
+    local ret = ""
+    for i=1,#values do
+        ret = ret .. values[i]
+        if i < #values then
+            ret = ret .. ', '
+        end
+    end
+    return ret
 end
 
-function MadLib.has_rank(card, other_card, ranks, bypass_rankless, base_id)
-    base_id = base_id or (card and card.base.id)
-    if not base_id then return false end
-    if (SMODS.has_no_rank(card) and not bypass_rankless) then return false end
-    --if MadLib.get_quantum_rank_pass(card,id) then return true end
-    return MadLib.list_matches_one(Madcap.Funcs.get_joker_ranks(ranks), function(v) 
-        return MadLib.is_rank(other_card, SMODS.Ranks[v].id)
+function MadLib.rank_id(key)
+    return SMODS.Rank[key] and SMODS.Rank[key].id
+end
+
+function MadLib.is_rank_full(playing_card, id, values)
+    values = values or { playing_card:get_id() }
+
+    -- Check Jokers
+    MadLib.loop_func(G.jokers and G.jokers.cards or {}, function(v)
+        if not v.config.center.modify_playing_card_rank then return end
+        local ret = v.config.center:modify_playing_card_rank(v, playing_card, values)
+        if not ret then return end
+
+        -- Add ranks to list
+        if ret.add_rank then
+            if SMODS.Ranks[ret.add_rank] then 
+                values[#values+1] = SMODS.Ranks[ret.add_rank].id
+            end
+        elseif ret.add_ranks then
+            for _, v2 in pairs(ret.add_ranks) do
+                if SMODS.Ranks[ret.v2] then
+                    values[#values+1] = SMODS.Ranks[ret.v2].id 
+                end
+            end
+        end
+
+        -- Remove ranks from list
+        if ret.remove_rank and SMODS.Ranks[ret.remove_rank] then
+            for k,v2 in pairs(values) do
+                if v2 == ret.remove_rank then values[k] = nil; break end
+            end
+        elseif ret.remove_ranks then
+            for _,v2 in pairs(ret.remove_ranks) do
+                for i=#values,1,-1 do
+                    if values[i] == v2 then values[i] = nil end
+                end
+            end
+        end
+
     end)
+    
+    --print(string_commas(values) .. ' - ' .. tostring(id))
+    for i=1, #values do -- if one matches
+        if values[i] == id then
+            return true
+        end
+    end
+    
+    return false
+end
+
+function MadLib.is_rank(playing_card, key)
+    if not SMODS.Ranks[key] then return false end
+    --print(key)
+    return MadLib.is_rank_full(playing_card, SMODS.Ranks[key].id)
+end
+
+
+function MadLib.has_rank(playing_card, keys)
+    return MadLib.list_matches_one(keys, function(v) 
+        return MadLib.is_rank(playing_card, v)
+    end)
+end
+
+-- gets a list of IDs
+function MadLib.get_rank_values(card)
+    local values = { card.base.value }
+    return values
 end
 
 function MadLib.get_value(card)
@@ -1157,7 +1199,7 @@ end
 function MadLib.has_odd_rank(card)
     return not SMODS.has_no_rank(card)
         and MadLib.list_matches_one(MadLib.RankTypes.Odd, function(v) 
-            return MadLib.is_rank(card,MadLib.rank_to_id(v))
+            return MadLib.is_rank(card, MadLib.rank_to_id(v))
         end)
 end
 
@@ -1165,7 +1207,7 @@ end
 function MadLib.has_even_rank(card)
     return not SMODS.has_no_rank(card)
         and MadLib.list_matches_one(MadLib.RankTypes.Even, function(v) 
-            return MadLib.is_rank(card,SMODS.Ranks[v].id)
+            return MadLib.is_rank(card, MadLib.rank_to_id(v))
         end)
 end
 
@@ -1173,7 +1215,7 @@ end
 function MadLib.has_fib_rank(card)
     return not SMODS.has_no_rank(card)
         and MadLib.list_matches_one(MadLib.RankTypes.Fibonacci, function(v) 
-            return MadLib.is_rank(card,SMODS.Ranks[v].id)
+            return MadLib.is_rank(card, MadLib.rank_to_id(v))
         end)
 end
 
@@ -1186,7 +1228,7 @@ function MadLib.is_base_rank(card)
 end
 
 function MadLib.joker_check_rank(card, joker, default)
-    return MadLib.is_rank(card, SMODS.Ranks[joker.ability.rank or default].id)
+    return MadLib.is_rank(card, joker.ability.rank or (joker.ability.extra and joker.ability.extra.rank) or default)
 end
 
 MadLib.CardUIs = {
@@ -1228,3 +1270,54 @@ function MadLib.get_rank_locvar(card, rank)
     return localize(Madcap.Funcs.get_joker_rank(card, rank), 'ranks')
 end
 
+function MadLib.check_X_same(num, hand, ret, or_more)
+    return or_more and (#ret >= num) or (#ret == num)
+end
+
+function get_X_same(num, hand, or_more)
+    local ret = {}
+    local four_fingers = num
+    local ranks = {}
+    for i, v in pairs(SMODS.Rank.obj_buffer) do
+        ranks[#ranks + 1] = v
+    end
+    if #hand < four_fingers then 
+        return ret 
+    else
+        for j = 1, #ranks do
+            local t = {}
+            local rank = ranks[j]
+            local x_count = 0
+            for i=1, #hand do
+                if MadLib.is_rank(hand[i], rank) then x_count = x_count + 1;  t[#t+1] = hand[i] end 
+            end
+            if MadLib.check_X_same(num, hand, t, or_more) then
+                table.insert(ret, t)
+            end
+        end
+        return ret
+    end
+    return {}
+end
+
+function MadLib.get_two_pair(parts, hand)
+    local pass = (#parts._2 > 1)
+    return pass and parts._all_pairs or {}
+end
+
+function MadLib.get_full_house(parts, hand)
+    local pass = (#parts._3 > 0 and #parts._2 > 1)
+    return pass and parts._all_pairs or {}
+end
+
+SMODS.PokerHand:take_ownership('Two Pair', {
+    evaluate = function(parts, hand)
+        return MadLib.get_two_pair(parts, hand)
+    end
+}, true)
+
+SMODS.PokerHand:take_ownership('Full House', {
+    evaluate = function(parts, hand)
+        return MadLib.get_full_house(parts, hand)
+    end
+}, true)

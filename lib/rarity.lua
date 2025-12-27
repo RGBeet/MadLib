@@ -2,7 +2,6 @@
 -- Otherwise, return -1.
 function MadLib.get_rarity_value(val)
     local ret =  MadLib.RarityValues[tostring(val)]
-    --print(ret and ret.value or "NONE")
 	return ret and ret.value or -1
 end
 
@@ -74,6 +73,5 @@ function MadLib.get_jokers_matching_rarities(rarities, group)
             table.insert(jokers,j)
         end
     end)
-    --print(#jokers)
     return jokers
 end

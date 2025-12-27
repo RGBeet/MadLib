@@ -82,5 +82,3 @@ pattern = "local trigger = 'before'"
 position = "at"
 payload = "local trigger = extra.trigger or 'before'"
 match_indent = true
-
-
