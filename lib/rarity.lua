@@ -2,7 +2,7 @@
 -- Otherwise, return -1.
 function MadLib.get_rarity_value(val)
     local ret =  MadLib.RarityValues[tostring(val)]
-    print(ret and ret.value or "NONE")
+    --print(ret and ret.value or "NONE")
 	return ret and ret.value or -1
 end
 

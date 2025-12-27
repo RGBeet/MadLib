@@ -243,24 +243,24 @@ end
 
 -- Returns whether N1 is greater than N2. Works with or without Talisman.
 
-MadLib.big_fix = function(n)
+ function MadLib.big_fix(n)
     return (type(n) == 'table') and n or to_big(n)  
 end
 
-MadLib.big_fix_and = function(n1, n2)
-    if type(lenient_bignum(n1)) ~= type(lenient_bignum(n2)) then
-        return MadLib.big_fix(n1), MadLib.big_fix(n2)
-    end
-    return n1, n2
+ function MadLib.big_fix_and(n1, n2)
+    return MadLib.big_fix(n1), MadLib.big_fix(n2)
 end
 
 MadLib.compare_numbers = Talisman and function(n1,n2)
-    local cn1 = MadLib.big_fix(n1)
-    local cn2 = MadLib.big_fix(n2)
+    local cn1, cn2 = MadLib.big_fix_and(n1,n2)
+    cn1 = cn1 or -math.huge
+    cn2 = cn2 or math.huge
     if          cn1 < cn2 then return -1
     elseif      cn1 > cn2 then return 1 end
     return 0
 end or function(n1,n2)
+    cn1 = cn1 or -math.huge
+    cn2 = cn2 or math.huge
     if          n1 < n2 then return -1
     elseif      n1 > n2 then return 1 end
     return 0
@@ -279,6 +279,9 @@ MadLib.is_zero = function(n1)
 end
 
 MadLib.add = Talisman and function(n1,n2)
+    if not (n1 or n2) then return 0 end
+    if not n1 then return n2 end
+    if not n2 then return n1 end
     local cn1, cn2 = MadLib.big_fix_and(n1, n2)
     return cn1 + cn2
 end or function(n1,n2)
@@ -286,6 +289,9 @@ end or function(n1,n2)
 end
 
 MadLib.subtract = Talisman and function(n1,n2)
+    if not (n1 or n2) then return 0 end
+    if not n1 then return n2 end
+    if not n2 then return n1 end
     local cn1, cn2 = MadLib.big_fix_and(n1, n2)
     return cn1 - cn2
 end or function(n1,n2)
@@ -293,6 +299,9 @@ end or function(n1,n2)
 end
 
 MadLib.multiply = Talisman and function(n1,n2)
+    if not (n1 or n2) then return 0 end
+    if not n1 then return n2 end
+    if not n2 then return n1 end
     local cn1, cn2 = MadLib.big_fix_and(n1, n2)
     return cn1 * cn2
 end or function(n1,n2)
@@ -304,6 +313,9 @@ MadLib.get_negative = function(n)
 end
 
 MadLib.divide = Talisman and function(n1,n2)
+    if not (n1 or n2) then return 0 end
+    if not n1 then return n2 end
+    if not n2 then return n1 end
     local cn1, cn2 = MadLib.big_fix_and(n1, n2)
     local z = to_big(0)
     return (n2 == z and nil) or to_big(cn1 / cn2)
@@ -313,6 +325,9 @@ end or function(n1,n2)
 end
 
 MadLib.exponent = Talisman and function(n1,n2)
+    if not (n1 or n2) then return 0 end
+    if not n1 then return n2 end
+    if not n2 then return n1 end
     local cn1, cn2 = MadLib.big_fix_and(n1, n2)
     return cn1 ^ cn2
 end or function(n1,n2)

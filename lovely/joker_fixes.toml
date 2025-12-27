@@ -1,0 +1,22 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 5000
+
+# Ice Cream
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.ability.extra.chips - self.ability.extra.chip_mod <= 0 then"
+position = 'at'
+payload = "if MadLib.compare_numbers(MadLib.subtract(self.ability.extra.chips, self.ability.extra.chip_mod), 0) < 1 then"
+match_indent = true
+
+# Popcorn
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.ability.mult - self.ability.extra <= 0 then"
+position = 'at'
+payload = "if MadLib.compare_numbers(MadLib.subtract(self.ability.mult, self.ability.extra), 0) < 1 then"
+match_indent = true
