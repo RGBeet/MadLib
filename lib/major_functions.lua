@@ -259,8 +259,8 @@ MadLib.compare_numbers = Talisman and function(n1,n2)
     elseif      cn1 > cn2 then return 1 end
     return 0
 end or function(n1,n2)
-    cn1 = cn1 or -math.huge
-    cn2 = cn2 or math.huge
+    n1 = n1 or -math.huge
+    n2 = n2 or math.huge
     if          n1 < n2 then return -1
     elseif      n1 > n2 then return 1 end
     return 0
