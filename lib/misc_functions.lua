@@ -1321,3 +1321,68 @@ SMODS.PokerHand:take_ownership('Full House', {
         return MadLib.get_full_house(parts, hand)
     end
 }, true)
+
+function MadLib.get_random_rank_from_cards(cards, equal_chance)
+    local rank_map = {}
+
+    MadLib.loop_func(cards, function(v)
+        local r = v.base.value
+        if equal_chance then
+            rank_map[r] = 1
+        else
+            rank_map[r] = (rank_map[r] or 0) + 1
+        end
+    end)
+
+    local total_weight = 0
+    for _, w in pairs(rank_map) do
+        total_weight = total_weight + w
+    end
+
+    local rand = math.random(total_weight)
+
+    for rank, weight in pairs(rank_map) do
+        rand = rand - weight
+        if rand <= 0 then
+            return rank
+        end
+    end
+end
+
+function MadLib.get_random_suit_from_cards(cards, equal_chance)
+    local rank_map = {}
+
+    MadLib.loop_func(cards, function(v)
+        local r = v.base.suit
+        if equal_chance then
+            rank_map[r] = 1
+        else
+            rank_map[r] = (rank_map[r] or 0) + 1
+        end
+    end)
+
+    local total_weight = 0
+    for _, w in pairs(rank_map) do
+        total_weight = total_weight + w
+    end
+
+    local rand = math.random(total_weight)
+
+    for rank, weight in pairs(rank_map) do
+        rand = rand - weight
+        if rand <= 0 then
+            return rank
+        end
+    end
+end
+
+function MadLib.card_is_highlighted(card)
+    return card.highlighted
+end
+
+function MadLib.get_highlighted_cards(area, ignore)
+    if not area and area.cards then return {} end
+    return MadLib.get_list_matches(area.cards, function(v)
+        return v ~= ignore and MadLib.card_is_highlighted(v)
+    end)
+end

@@ -21,7 +21,7 @@ end
 
 -- Gets a color based on whether the
 function MadLib.get_warning_colour(p)
-    local percent = MadLib.clamp(p,0,1)
+    local percent = MadLib.clamp(to_number(p),0,1)
     return percent < 0.5
         and G.C.RED -- MadLib.mix_hex_colors(G.C.RED, G.C.GOLD, percent / 0.5)
     or percent < 1.0
