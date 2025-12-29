@@ -849,6 +849,10 @@ function Card:get_quantity_value()
     return 1
 end
 
+function Card:quantity_exists()
+	return MadLib.is_positive_number(self:get_quantity_value())
+end
+
 function Card:can_score_card()
     return self:get_quantity_value() >= 1
 end
@@ -1199,7 +1203,7 @@ end
 function MadLib.has_odd_rank(card)
     return not SMODS.has_no_rank(card)
         and MadLib.list_matches_one(MadLib.RankTypes.Odd, function(v) 
-            return MadLib.is_rank(card, MadLib.rank_to_id(v))
+            return MadLib.is_rank(card, v)
         end)
 end
 
@@ -1207,7 +1211,7 @@ end
 function MadLib.has_even_rank(card)
     return not SMODS.has_no_rank(card)
         and MadLib.list_matches_one(MadLib.RankTypes.Even, function(v) 
-            return MadLib.is_rank(card, MadLib.rank_to_id(v))
+            return MadLib.is_rank(card, v)
         end)
 end
 
@@ -1215,7 +1219,7 @@ end
 function MadLib.has_fib_rank(card)
     return not SMODS.has_no_rank(card)
         and MadLib.list_matches_one(MadLib.RankTypes.Fibonacci, function(v) 
-            return MadLib.is_rank(card, MadLib.rank_to_id(v))
+            return MadLib.is_rank(card, v)
         end)
 end
 

@@ -91,3 +91,17 @@ function evaluate_poker_hand(hand)
     end
     return results
 end
+
+local mod_mult_ref = mod_mult
+function mod_mult(_mult)
+    if not _mult then print('ERROR! No _Mult') end
+    _mult = _mult or 0
+    return mod_mult_ref(_mult)
+end
+
+local mod_chips_ref = mod_chips
+function mod_chips(_chips)
+    if not _chips then print('ERROR! No _Mult') end
+    _chips = _chips or 0
+    return mod_chips_ref(_chips)
+end

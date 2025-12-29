@@ -7,10 +7,10 @@ priority = 10000
 [[patches]]
 [patches.pattern]
 target = 'functions/state_events.lua'
-pattern = 'function evaluate_play_main(text, disp_text, poker_hands, scoring_hand, non_loc_disp_text, percent, percent_delta)'
+pattern = 'G.GAME.hands[text].played = G.GAME.hands[text].played + 1'
 position = 'after'
 match_indent = true
-payload = '''   total_score = mod_total_score(G.GAME.chips); needs_editing = true'''
+payload = '''total_score = mod_total_score(G.GAME.chips); needs_editing = true'''
 
 # Use this value instead of calculate_round_score() upon easing the HUD
 [[patches]]
