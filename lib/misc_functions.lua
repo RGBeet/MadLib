@@ -420,7 +420,7 @@ function MadLib.get_most_played_hand(count_all)
 	local most_played, cur_order = -1, -1
 	for k, v in pairs(G.GAME.hands) do
 		if
-            (not (count_all and not v.enabled))
+            (count_all or v.enabled)
 			or v.played > most_played
 			or (v.played == most_played and cur_order > v.order)
 		then
