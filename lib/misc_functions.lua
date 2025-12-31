@@ -1390,3 +1390,7 @@ function MadLib.get_highlighted_cards(area, ignore)
         return v ~= ignore and MadLib.card_is_highlighted(v)
     end)
 end
+
+function MadLib.is_joker(card, key, exclude_debuffed)
+    return type(card) == 'table' and card.config.center.key == key and not (exclude_debuffed and card.debuff)
+end
