@@ -243,12 +243,12 @@ function MadLib.get_card_total_value(v)
 end
 
 -- Event for setting a seal.
-function MadLib.seal_event(card, seal, snd)
+function MadLib.seal_event(card, seal)
     MadLib.event({
         func = function()
             card:set_seal(seal or "red", true, true)
             card:juice_up(0.5, 0.7)
-            play_sound((snd or 'tarot2'), 0.76, 0.4)
+            play_sound(('tarot2'), 0.76, 0.4)
             return true
         end
     })

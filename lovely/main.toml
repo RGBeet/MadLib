@@ -173,11 +173,11 @@ position = "before"
 payload = '''info_queue, specific_vars, desc_nodes = MadLib.set_joker_ui(card, info_queue, specific_vars, desc_nodes)'''
 match_indent = true
 
+# Add context for leveling up poker hands?!
 [[patches]]
 [patches.pattern]
-target = 'functions/misc_functions.lua'
-pattern = '''if next(parts._3) and next(parts._2) then'''
-position = "before"
-payload = '''print(parts._3)
-print(parts._2)'''
+target = 'functions/common_events.lua'
+pattern = "amount = amount or 1"
+position = "after"
+payload = '''SMODS.calculate_context({other_card = card, level_up_hand = hand, levels = amount})'''
 match_indent = true
